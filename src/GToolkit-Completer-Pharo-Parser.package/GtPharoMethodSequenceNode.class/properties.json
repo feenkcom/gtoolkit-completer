@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "",
+	"super" : "GtPharoSequenceNode",
+	"category" : "GToolkit-Completer-Pharo-Parser",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"pragmas"
+	],
+	"name" : "GtPharoMethodSequenceNode",
+	"type" : "normal"
+}

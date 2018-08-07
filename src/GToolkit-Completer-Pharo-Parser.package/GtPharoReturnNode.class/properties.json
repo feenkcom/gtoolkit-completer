@@ -1,0 +1,14 @@
+{
+	"commentStamp" : "",
+	"super" : "GtPharoProgramNode",
+	"category" : "GToolkit-Completer-Pharo-Parser",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"upArrow",
+		"value"
+	],
+	"name" : "GtPharoReturnNode",
+	"type" : "normal"
+}

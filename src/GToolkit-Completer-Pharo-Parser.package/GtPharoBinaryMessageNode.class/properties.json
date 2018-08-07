@@ -1,0 +1,14 @@
+{
+	"commentStamp" : "",
+	"super" : "GtPharoMessageNode",
+	"category" : "GToolkit-Completer-Pharo-Parser",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"selectorPart",
+		"value"
+	],
+	"name" : "GtPharoBinaryMessageNode",
+	"type" : "normal"
+}

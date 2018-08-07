@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "",
+	"super" : "GtPharoLiteralNode",
+	"category" : "GToolkit-Completer-Pharo-Parser",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"value"
+	],
+	"name" : "GtPharoCharacterLiteralNode",
+	"type" : "normal"
+}

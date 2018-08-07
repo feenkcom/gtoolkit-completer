@@ -1,0 +1,16 @@
+{
+	"commentStamp" : "",
+	"super" : "GtPharoValueNode",
+	"category" : "GToolkit-Completer-Pharo-Parser",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"leftBrace",
+		"rightBrace",
+		"periods",
+		"values"
+	],
+	"name" : "GtPharoArrayNode",
+	"type" : "normal"
+}

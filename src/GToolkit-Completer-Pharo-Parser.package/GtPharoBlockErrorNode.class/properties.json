@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "",
+	"super" : "GtPharoBlockNode",
+	"category" : "GToolkit-Completer-Pharo-Parser",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"smaccError"
+	],
+	"name" : "GtPharoBlockErrorNode",
+	"type" : "normal"
+}

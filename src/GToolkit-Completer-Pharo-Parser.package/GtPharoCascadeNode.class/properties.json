@@ -1,0 +1,15 @@
+{
+	"commentStamp" : "",
+	"super" : "GtPharoValueNode",
+	"category" : "GToolkit-Completer-Pharo-Parser",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"receiver",
+		"messages",
+		"semicolons"
+	],
+	"name" : "GtPharoCascadeNode",
+	"type" : "normal"
+}
