@@ -1,0 +1,25 @@
+{
+	"commentStamp" : "",
+	"super" : "Object",
+	"category" : "GToolkit-Completer",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [
+		"MaxPopupItems",
+		"PopupDelayMilliseconds"
+	],
+	"instvars" : [
+		"strategy",
+		"completionDelay",
+		"textElement",
+		"overlay",
+		"listElement",
+		"eventFilters",
+		"popupEventFilters",
+		"lastWasText",
+		"previewAction",
+		"ignoreTextChangeEvent"
+	],
+	"name" : "GtCompletionController",
+	"type" : "normal"
+}

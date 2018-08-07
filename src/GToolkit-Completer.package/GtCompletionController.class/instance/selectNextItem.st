@@ -1,0 +1,3 @@
+private
+selectNextItem
+	listElement selectNext

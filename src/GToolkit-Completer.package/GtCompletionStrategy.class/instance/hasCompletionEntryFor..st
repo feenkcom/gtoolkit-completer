@@ -1,0 +1,3 @@
+testing
+hasCompletionEntryFor: aString
+	^ false

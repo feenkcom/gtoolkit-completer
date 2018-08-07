@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "",
+	"super" : "GtCompletionStrategy",
+	"category" : "GToolkit-Completer",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"completions"
+	],
+	"name" : "GtStringsCompletionStrategy",
+	"type" : "normal"
+}

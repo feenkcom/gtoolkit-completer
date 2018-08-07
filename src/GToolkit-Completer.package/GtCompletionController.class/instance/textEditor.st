@@ -1,0 +1,3 @@
+private
+textEditor
+	^ textElement editor

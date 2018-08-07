@@ -1,0 +1,14 @@
+{
+	"commentStamp" : "",
+	"super" : "GtCompletionAction",
+	"category" : "GToolkit-Completer",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"text",
+		"position"
+	],
+	"name" : "GtInsertTextCompletionAction",
+	"type" : "normal"
+}

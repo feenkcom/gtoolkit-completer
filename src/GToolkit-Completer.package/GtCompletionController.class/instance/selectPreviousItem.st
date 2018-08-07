@@ -1,0 +1,3 @@
+private
+selectPreviousItem
+	listElement selectPrevious
