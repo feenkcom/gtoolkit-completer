@@ -1,0 +1,16 @@
+{
+	"commentStamp" : "",
+	"super" : "GtCompletionStrategy",
+	"category" : "GToolkit-Completer-Pharo",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"class",
+		"isMethod",
+		"variables",
+		"max"
+	],
+	"name" : "GtPharoCompletionStrategy",
+	"type" : "normal"
+}
