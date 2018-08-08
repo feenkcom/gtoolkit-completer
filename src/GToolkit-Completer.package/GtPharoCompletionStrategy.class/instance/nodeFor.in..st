@@ -3,6 +3,6 @@ nodeFor: anInteger in: anAST
 	| node |
 	anAST
 		withAllNodesDo: [ :each | 
-			(anInteger between: anAST startPosition and: anAST stopPosition)
+			(anInteger between: each startPosition and: each stopPosition)
 				ifTrue: [ node := each ] ].
 	^ node

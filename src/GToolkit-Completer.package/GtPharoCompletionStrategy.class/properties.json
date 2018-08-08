@@ -4,7 +4,9 @@
 	"category" : "GToolkit-Completer-Pharo",
 	"classinstvars" : [ ],
 	"pools" : [ ],
-	"classvars" : [ ],
+	"classvars" : [
+		"SelectorCache"
+	],
 	"instvars" : [
 		"class",
 		"isMethod",

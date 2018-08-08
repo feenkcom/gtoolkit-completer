@@ -9,4 +9,6 @@ addActionsFor: anAST at: anInteger to: actions
 	(node isKindOf: GtPharoMessageNode)
 		ifTrue: [ self addMessageActionsFor: node at: anInteger to: actions ].
 	(node isKindOf: GtPharoSymbolLiteralNode)
-		ifTrue: [ self addSymbolActionsFor: node at: anInteger to: actions ]
+		ifTrue: [ self addSymbolActionsFor: node at: anInteger to: actions ].
+	(node isKindOf: GtPharoMethodNode)
+		ifTrue: [ self addMethodActionsFor: node at: anInteger to: actions ]
