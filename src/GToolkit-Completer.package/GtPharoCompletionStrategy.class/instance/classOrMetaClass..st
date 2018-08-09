@@ -1,4 +1,4 @@
-initialize-release
+accessing
 classOrMetaClass: aClass
 	class := aClass.
 	class notNil

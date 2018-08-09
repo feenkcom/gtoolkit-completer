@@ -1,5 +1,7 @@
 private-selector
-selectorsForReceiver: aNode matching: aString
-	"currently we don't implement any type inferencing"
-
-	^ SelectorCache weightedFirst: max startingWith: aString
+selectorsForReceiver: aBehavior matching: aString
+	| tree |
+	tree := aBehavior notNil
+		ifTrue: [ GtPrefixTree withAll: aBehavior allSelectors ]
+		ifFalse: [ SelectorCache ].
+	^ tree weightedFirst: maxItems startingWith: aString

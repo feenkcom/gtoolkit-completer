@@ -1,7 +1,5 @@
 accessing
-completionActionsFor: aText at: positionInteger max: maxSize
-	| actions |
-	max := maxSize.
-	actions := OrderedCollection new.
-	(self parseSource: aText asString) ifNotNil: [ :tree | self addActionsFor: tree at: positionInteger to: actions ].
-	^ actions
+completionActionsFor: aText at: positionInteger max: maxInteger
+	maxItems := maxInteger.
+	index := positionInteger.
+	^ (self parseSource: aText asString) ifNil: [ #() ] ifNotNil: [ :tree | self actionsFor: tree at: positionInteger ]

@@ -1,3 +1,0 @@
-accessing
-selectorParts
-	self subclassResponsibility

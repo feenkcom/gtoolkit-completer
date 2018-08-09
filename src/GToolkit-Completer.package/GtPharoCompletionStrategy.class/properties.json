@@ -11,7 +11,8 @@
 		"class",
 		"isMethod",
 		"variables",
-		"max"
+		"index",
+		"maxItems"
 	],
 	"name" : "GtPharoCompletionStrategy",
 	"type" : "normal"

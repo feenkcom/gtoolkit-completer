@@ -1,0 +1,21 @@
+*GToolkit-Completer
+completionActionsFor: aStrategy
+	| seen prefix actions |
+	(selectorParts size = 1 and: [ selectorParts first stopPosition = aStrategy index ])
+		ifFalse: [ ^ #() ].
+	prefix := selectorParts first source.
+	seen := Set new.
+	actions := OrderedCollection new.
+	(aStrategy hierarchyMethodsStartingWith: prefix)
+		do: [ :each | 
+			((seen includes: each selector) or: [ aStrategy classOrMetaClass includesSelector: each selector ])
+				ifFalse: [ seen add: each selector.
+					actions
+						add:
+							(GtInsertTextCompletionAction
+								labeled: each selector
+								completion: ((aStrategy signatureFor: each) allButFirst: prefix size)
+								position: aStrategy index).
+					actions size = aStrategy maxItems
+						ifTrue: [ ^ actions ] ] ].
+	^ actions
