@@ -1,6 +1,7 @@
 initialize-release
 initialize
 	super initialize.
+	cursorElement := nil.
 	strategy := GtCompletionStrategy new.
 	overlay := GtCompletionOverlayElement new.
 	overlay clipChildren: true.
