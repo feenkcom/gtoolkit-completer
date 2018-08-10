@@ -5,6 +5,7 @@ showPopupAt: anIndex
 		ifTrue: [ ^ self ].
 	listElement background: Color white.
 	self deselectAll.
-	overlay geometry: (BlRectangle extent: 100 @ 50).
-	overlay attachTo: textElement.
-	textElement parent addChild: overlay
+	cursorElement ifNotNil: [
+		overlay geometry: (BlRectangle extent: 100 @ 50).
+		overlay attachTo: cursorElement.
+		textElement parent addChild: overlay ]

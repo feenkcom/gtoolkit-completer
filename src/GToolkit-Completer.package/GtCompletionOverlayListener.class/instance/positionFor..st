@@ -1,3 +1,4 @@
 geometry
 positionFor: anElement
-	^ 200 @ 0
+	^ super positionFor: anElement
+	"^ 200 @ 0"
