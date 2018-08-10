@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "",
+	"super" : "GtCompletionStrategy",
+	"category" : "GToolkit-Completer-Documenter",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"annotationTags"
+	],
+	"name" : "GtPDocumenterCompletionStrategy",
+	"type" : "normal"
+}
