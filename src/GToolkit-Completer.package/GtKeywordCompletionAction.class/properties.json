@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "",
+	"super" : "GtInsertTextCompletionAction",
+	"category" : "GToolkit-Completer",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"endPosition"
+	],
+	"name" : "GtKeywordCompletionAction",
+	"type" : "normal"
+}

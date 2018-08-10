@@ -1,10 +1,9 @@
 event handling
 processKeystroke: anEvent
+	anEvent char = Character tab
+		ifTrue: [ ^ self processTabKey: anEvent ].
 	self isShowingPopup
 		ifFalse: [ ^ self ].
-	anEvent char = Character tab
-		ifTrue: [ self completeWithCursor: true.
-			^ anEvent consumed: true ].
 	self cancelPreview.
 	anEvent char = Character arrowDown
 		ifTrue: [ self selectNextItem.
