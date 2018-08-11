@@ -1,9 +1,9 @@
 documenter
 documenterCompleter
 	<gtExample>
-	| editor completionStrategy completionController |
-	editor := GtDocumenter editorForText: ''.
+	| editorElement completionStrategy completionController |
+	editorElement := GtDocumenter editorForText: ''.
 	completionStrategy := GtPDocumenterCompletionStrategy new.
-	completionController := GtCompletionController on: editor contentElement strategy: completionStrategy.
+	completionController := GtCompletionController on: editorElement strategy: completionStrategy.
 	completionController install.
-	^ editor
+	^ editorElement
