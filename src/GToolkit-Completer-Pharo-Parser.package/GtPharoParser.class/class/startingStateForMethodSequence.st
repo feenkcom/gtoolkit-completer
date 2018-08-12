@@ -1,0 +1,3 @@
+generated
+startingStateForMethodSequence
+	^ 2

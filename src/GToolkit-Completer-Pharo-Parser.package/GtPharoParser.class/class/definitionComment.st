@@ -4,7 +4,7 @@ definitionComment
 %prefix GtPharo;
 %suffix Node;
 %root Program;
-%start Sequence Statement;
+%start Method MethodSequence Statement;
 %id <bar> <binary>;
 %hierarchy Value (
 	Array

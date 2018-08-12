@@ -18,7 +18,7 @@ smalltalkCompleter
 			c horizontal matchParent.
 			c vertical matchParent ].
 	editorElement editor: editor.
-	completionStrategy := GtPharoCompletionStrategy new.
+	completionStrategy := GtPharoCompletionStrategy newForMethod.
 	completionStrategy classOrMetaClass: GtPharoCompletionStrategy.
 	completionController := GtCompletionController on: editorElement strategy: completionStrategy.
 	completionController install.
