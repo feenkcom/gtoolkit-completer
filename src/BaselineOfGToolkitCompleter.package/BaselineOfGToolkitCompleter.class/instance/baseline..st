@@ -17,4 +17,4 @@ baseline: spec
 						'SmaCC'
 						'GToolkit-Completer-Pharo-Parser' ) ];
 				package: 'GToolkit-Completer-Pharo-Parser' with: [ 
-					spec requires: #( 'Smacc' ) ] ]
+					spec requires: #( 'SmaCC' ) ] ]
