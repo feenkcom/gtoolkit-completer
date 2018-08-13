@@ -5,4 +5,4 @@ initialize
 	PRAbstractAnnotation
 		allSubclassesDo: [ :class | 
 			class isAbstract
-				ifFalse: [ annotationTags add: '${' , class tag , ':' ] ]
+				ifFalse: [ annotationTags add: '${' , class tag ] ]

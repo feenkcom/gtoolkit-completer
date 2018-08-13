@@ -1,0 +1,15 @@
+{
+	"commentStamp" : "",
+	"super" : "GtCompletionAction",
+	"category" : "GToolkit-Completer",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"from",
+		"to",
+		"deletedString"
+	],
+	"name" : "GtDeleteTextCompletionAction",
+	"type" : "normal"
+}
