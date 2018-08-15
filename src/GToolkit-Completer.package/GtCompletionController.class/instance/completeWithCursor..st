@@ -1,7 +1,12 @@
 private
 completeWithCursor: aBoolean
+	| partial |
+	partial := false.
 	previewAction notNil
-		ifTrue: [ previewAction finishCompletionOn: self moveCursor: aBoolean.
+		ifTrue: [ partial := previewAction isPartial.
+			previewAction finishCompletionOn: self moveCursor: aBoolean.
 			previewAction := nil ].
 	self deselectAll.
-	self removePopup
+	partial
+		ifTrue: [ self updatePopupItemsAt: self position ]
+		ifFalse: [ self removePopup ]

@@ -1,6 +1,7 @@
 initialize-release
 initialize
 	super initialize.
+	drillDownActions := OrderedCollection new.
 	cursorElement := nil.
 	strategy := GtCompletionStrategy new.
 	overlay := GtCompletionOverlayElement new.
@@ -12,4 +13,4 @@ initialize
 		stencil: [ :each :anIndex | BrListLabelStencil new text: each displayString ].
 	overlay addChild: listElement.
 	lastWasText := false.
-	ignoreTextChangeEvent := false
+	ignoreTextEvents := false

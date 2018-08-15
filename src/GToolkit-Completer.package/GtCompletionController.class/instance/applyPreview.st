@@ -1,8 +1,7 @@
 private
 applyPreview
-	ignoreTextChangeEvent := true.
-	[ previewAction := self selectedCompletionItem.
-	previewAction notNil
-		ifTrue: [ previewAction previewOn: self ] ]
-		ensure: [ ignoreTextChangeEvent := false ].
+	self
+		ignoreTextEventsWhile: [ previewAction := self selectedCompletionItem.
+			previewAction notNil
+				ifTrue: [ previewAction previewOn: self ] ].
 	lastWasText := false

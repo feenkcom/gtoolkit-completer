@@ -18,8 +18,9 @@
 		"popupEventFilters",
 		"lastWasText",
 		"previewAction",
-		"ignoreTextChangeEvent",
-		"cursorElement"
+		"drillDownActions",
+		"cursorElement",
+		"ignoreTextEvents"
 	],
 	"name" : "GtCompletionController",
 	"type" : "normal"

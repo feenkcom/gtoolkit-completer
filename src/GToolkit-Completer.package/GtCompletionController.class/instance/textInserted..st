@@ -1,5 +1,5 @@
 event handling
 textInserted: anEvent
-	ignoreTextChangeEvent
+	ignoreTextEvents
 		ifFalse: [ self startCompletionAt: anEvent index + 1 ].
 	lastWasText := true

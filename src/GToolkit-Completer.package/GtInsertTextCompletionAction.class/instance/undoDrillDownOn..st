@@ -1,0 +1,3 @@
+executing
+undoDrillDownOn: aCompletionController
+	aCompletionController textEditor moveCursorTo: position

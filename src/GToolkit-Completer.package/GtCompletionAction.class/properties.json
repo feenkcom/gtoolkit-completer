@@ -6,7 +6,8 @@
 	"pools" : [ ],
 	"classvars" : [ ],
 	"instvars" : [
-		"label"
+		"label",
+		"partial"
 	],
 	"name" : "GtCompletionAction",
 	"type" : "normal"

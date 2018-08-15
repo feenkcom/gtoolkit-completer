@@ -1,3 +1,3 @@
-accessing
+private
 to: anInteger
 	to := anInteger

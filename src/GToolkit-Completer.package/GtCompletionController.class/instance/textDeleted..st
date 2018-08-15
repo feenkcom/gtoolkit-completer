@@ -1,5 +1,5 @@
 event handling
 textDeleted: anEvent
-	ignoreTextChangeEvent
+	ignoreTextEvents
 		ifFalse: [ self startCompletionAt: anEvent fromIndex - 1 ].
 	lastWasText := true
