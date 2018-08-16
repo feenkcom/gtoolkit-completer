@@ -7,4 +7,5 @@ completionActionsFor: aText at: positionInteger max: maxSize
 	(self hasCompletionEntryFor: prefix)
 		ifFalse: [ ^ #() ].
 	^ (self first: maxSize startingWith: prefix)
-		collect: [ :each | GtInsertTextCompletionAction labeled: each completion: (each copyFrom: prefix size + 1 to: each size) position: positionInteger ]
+		collect:
+			[ :each | GtInsertTextCompletionAction labeled: each completion: (each allButFirst: prefix size) position: positionInteger ]

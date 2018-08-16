@@ -5,7 +5,7 @@ completeWithCursor: aBoolean
 	previewAction notNil
 		ifTrue: [ partial := previewAction isPartial.
 			previewAction finishCompletionOn: self moveCursor: aBoolean.
-			previewAction := nil ].
+			self resetActions ].
 	self deselectAll.
 	partial
 		ifTrue: [ self updatePopupItemsAt: self position ]

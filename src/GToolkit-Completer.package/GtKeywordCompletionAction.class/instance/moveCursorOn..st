@@ -1,0 +1,3 @@
+executing
+moveCursorOn: aCompletionController
+	aCompletionController advanceCursorToNextUncompletedItem

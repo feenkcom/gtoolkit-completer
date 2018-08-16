@@ -4,7 +4,10 @@
 	"category" : "GToolkit-Completer",
 	"classinstvars" : [ ],
 	"pools" : [ ],
-	"classvars" : [ ],
+	"classvars" : [
+		"PreviewAttribute",
+		"SearchAttribute"
+	],
 	"instvars" : [
 		"label",
 		"partial"

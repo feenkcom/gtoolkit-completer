@@ -1,3 +1,2 @@
 executing
 finishCompletionOn: aCompletionController moveCursor: aBoolean
-	self subclassResponsibility

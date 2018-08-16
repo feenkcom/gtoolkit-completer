@@ -7,8 +7,5 @@ completionActionsFor: aStrategy
 	variables := self localVariables first: aStrategy maxItems startingWith: prefix.
 	variables addAll: (aStrategy variables first: aStrategy maxItems - variables size startingWith: prefix).
 	^ variables
-		collect: [ :each | 
-			GtInsertTextCompletionAction
-				labeled: each
-				completion: (each copyFrom: prefix size + 1 to: each size)
-				position: aStrategy index ]
+		collect:
+			[ :each | GtInsertTextCompletionAction labeled: each completion: (each allButFirst: prefix size) position: aStrategy index ]

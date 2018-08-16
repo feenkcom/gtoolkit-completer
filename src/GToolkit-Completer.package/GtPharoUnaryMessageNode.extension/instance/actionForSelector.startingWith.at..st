@@ -5,7 +5,7 @@ actionForSelector: aSymbol startingWith: aString at: anInteger
 	actionClass := isKeyword
 		ifTrue: [ GtKeywordCompletionAction ]
 		ifFalse: [ GtInsertTextCompletionAction ].
-	action := actionClass labeled: aSymbol completion: (aSymbol copyFrom: aString size + 1 to: aSymbol size) position: anInteger.
+	action := actionClass labeled: aSymbol completion: (aSymbol allButFirst: aString size) position: anInteger.
 	(isKeyword and: [ self needsParenthesisForKeyword ])
 		ifTrue: [ action addParenthesesBefore: parent receiver startPosition ].
 	^ action
