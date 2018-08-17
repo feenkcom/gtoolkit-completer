@@ -1,9 +1,15 @@
 actions
 install
-	self textEditor
-		when: BrTextEditorInsertedEvent do: [ :event | self textInserted: event ];
-		when: BrTextEditorDeletedEvent do: [ :event | self textDeleted: event ];
-		when: BrTextEditorCursorMovedEvent do: [ :event | self cursorMoved: event ].
+	eventHandlers := {(BlEventHandler
+		on: BrTextEditorInsertedEvent
+		do: [ :event | self textInserted: event ]).
+	(BlEventHandler
+		on: BrTextEditorDeletedEvent
+		do: [ :event | self textDeleted: event ]).
+	(BlEventHandler
+		on: BrTextEditorCursorMovedEvent
+		do: [ :event | self cursorMoved: event ])}.
+	eventHandlers do: [ :each | self textEditor addEventHandler: each ].
 	eventFilters := {(BlEventHandler
 		on: BlKeystrokeEvent
 		do: [ :event | self processKeystroke: event ]).
@@ -11,9 +17,13 @@ install
 		on: BlKeyDownEvent
 		do: [ :event | self processKeyDown: event ])}.
 	eventFilters do: [ :each | textElement addEventFilter: each ].
-	listElement
-		when: BrSelectionChanged do: [ :event | self updatePreview ];
-		when: BlDblClickEvent do: [ :event | self doubleClickList: true ].
+	popupEventHandlers := {(BlEventHandler
+		on: BrSelectionChanged
+		do: [ :event | self updatePreview ]).
+	(BlEventHandler
+		on: BlDblClickEvent
+		do: [ :event | self doubleClickList: true ])}.
+	popupEventHandlers do: [ :each | listElement addEventHandler: each ].
 	popupEventFilters := {(BlEventHandler
 		on: BlKeystrokeEvent
 		do: [ :event | self processPopupKeystroke: event ])}.
