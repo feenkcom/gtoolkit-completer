@@ -4,4 +4,4 @@ labeled: aString completion: completionString position: anInteger
 		labeled: aString
 		completion: completionString
 		position: anInteger
-		from: anInteger - aString size + completionString size
+		from: anInteger - aString size + completionString size + 1

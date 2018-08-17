@@ -1,7 +1,7 @@
 {
 	"commentStamp" : "",
 	"super" : "GtInsertTextCompletionAction",
-	"category" : "GToolkit-Completer",
+	"category" : "GToolkit-Completer-Pharo",
 	"classinstvars" : [ ],
 	"pools" : [ ],
 	"classvars" : [ ],
