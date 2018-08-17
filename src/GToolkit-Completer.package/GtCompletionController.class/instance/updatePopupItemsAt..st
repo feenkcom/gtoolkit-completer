@@ -6,7 +6,8 @@ updatePopupItemsAt: anIndex
 		on: Error
 		do: [ :ex | ex return: #() ].
 	self completionActions: items.
-	self deselectFrom: items size + 1.
+	self deselectAll.
 	items isEmpty
 		ifTrue: [ ^ self removePopup ].
+	self selectIndex: 1.
 	self applyPreview

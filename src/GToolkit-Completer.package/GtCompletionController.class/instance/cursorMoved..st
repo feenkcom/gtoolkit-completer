@@ -4,5 +4,4 @@ cursorMoved: anEvent
 		ifTrue: [ ^ self ].
 	lastWasText
 		ifFalse: [ self completeWithCursor: false ].
-	lastWasText := false.
-	self resetActions
+	lastWasText := false

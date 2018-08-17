@@ -1,4 +1,4 @@
-private
+private-popup
 selectedCompletionItem
 	| index |
 	index := self selectedCompletionIndex.

@@ -1,4 +1,4 @@
-private
+private-popup
 selectedCompletionIndex
 	| selection |
 	selection := listElement selection.
