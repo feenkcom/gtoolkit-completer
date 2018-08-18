@@ -10,6 +10,6 @@ undoDrillDown
 			action undoDrillDownOn: self.
 			previewAction := action.
 			self deselectAll.
-			self updatePopupItemsAt: self position.
+			self updatePopupItemsAt: self position autoSelect: false.
 			self selectAction: action.
 			self applyPreview ]

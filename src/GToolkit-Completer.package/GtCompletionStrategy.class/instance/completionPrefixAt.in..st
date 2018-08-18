@@ -1,7 +1,7 @@
 accessing
 completionPrefixAt: anIndex in: blText
 	| startIndex |
-	anIndex <= self minimumPrefixLength
+	anIndex < self minimumPrefixLength
 		ifTrue: [ ^ nil ].
 	startIndex := anIndex.
 	[ (self isSeparatorCharacter: (blText at: startIndex))

@@ -7,4 +7,4 @@ drillDown
 			previewAction drillDownOn: self.
 			previewAction := nil.
 			self deselectAll.
-			self updatePopupItemsAt: self position ]
+			self updatePopupItemsAt: self position autoSelect: true ]
