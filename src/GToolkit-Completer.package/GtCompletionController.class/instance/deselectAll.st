@@ -1,3 +1,3 @@
 private-popup
 deselectAll
-	self deselectFrom: 1
+	listElement selection deselect: 1 to: MaxPopupItems
