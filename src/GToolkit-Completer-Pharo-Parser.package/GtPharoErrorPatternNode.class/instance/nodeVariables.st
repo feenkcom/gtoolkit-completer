@@ -1,3 +1,3 @@
 generated
 nodeVariables
-	^ #(#smaccError #body)
+	^ #(#smaccError)

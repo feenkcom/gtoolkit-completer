@@ -1,0 +1,3 @@
+generated
+startingStateForMethodPattern
+	^ 4

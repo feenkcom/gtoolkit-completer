@@ -6,9 +6,9 @@
 	"pools" : [ ],
 	"classvars" : [ ],
 	"instvars" : [
-		"pattern",
-		"body"
+		"selectorParts",
+		"variables"
 	],
-	"name" : "GtPharoMethodNode",
+	"name" : "GtPharoMethodPatternNode",
 	"type" : "normal"
 }

@@ -1,9 +1,9 @@
 *GToolkit-Completer
 completionActionsFor: aStrategy
 	| seen prefix actions |
-	(selectorParts size = 1 and: [ selectorParts first stopPosition = aStrategy index ])
+	(self selectorParts size = 1 and: [ self selectorParts first stopPosition = aStrategy index ])
 		ifFalse: [ ^ #() ].
-	prefix := selectorParts first source.
+	prefix := self selectorParts first source.
 	seen := Set new.
 	actions := OrderedCollection new.
 	(aStrategy hierarchyMethodsStartingWith: prefix)

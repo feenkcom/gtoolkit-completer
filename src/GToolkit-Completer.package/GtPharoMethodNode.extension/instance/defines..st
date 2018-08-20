@@ -1,3 +1,3 @@
 *GToolkit-Completer
 defines: aString
-	^ variables anySatisfy: [ :each | each name value = aString ]
+	^ self variables anySatisfy: [ :each | each name value = aString ]

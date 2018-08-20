@@ -4,7 +4,7 @@ definitionComment
 %prefix GtPharo;
 %suffix Node;
 %root Program;
-%start Method MethodSequence Statement;
+%start Method MethodSequence Statement MethodPattern;
 %id <bar> <binary>;
 %hierarchy Value (
 	Array
@@ -21,8 +21,8 @@ definitionComment
 %hierarchy Message (UnaryMessage BinaryMessage KeywordMessage);
 %hierarchy Sequence (MethodSequence);
 %hierarchy Pragma (PragmaError);
-%hierarchy Method (MethodError);
 %hierarchy Block (BlockError);
+%hierarchy MethodPattern (ErrorPattern);
 %ignore_variables leftParen rightParen leftBar rightBar leftBracket rightBracket semicolon colon period ;
 
 
@@ -129,18 +129,15 @@ default literalArray <whitespace>
 	: (\`  [^\`]* \`)+
 	;
 Method
-	: MethodPattern MethodSequence 'body' {{}}
-	| ErrorPattern MethodSequence 'body' {{MethodError}}
+	: MethodPattern 'pattern' MethodSequence 'body' {{}}
 	;
 MethodPattern
-	: <name> 'selectorPart'
-	| <binary> 'selectorPart' Variable 'variable'
-	| KeywordPattern
-	;
-ErrorPattern
-	: <binary> 'selectorPart' error 'smaccError'
-	| <keyword> 'selectorPart' error 'smaccError'
-	| (<keyword> 'selectorPart' Variable 'variable')+ <keyword> 'selectorPart' error 'smaccError'
+	: <name> 'selectorPart' {{}}
+	| <binary> 'selectorPart' Variable 'variable' {{}}
+	| KeywordPattern {{}}
+	| <binary> 'selectorPart' error 'smaccError' {{ErrorPattern}}
+	| <keyword> 'selectorPart' error 'smaccError' {{ErrorPattern}}
+	| (<keyword> 'selectorPart' Variable 'variable')+ <keyword> 'selectorPart' error 'smaccError' {{ErrorPattern}}
 	;
 Pragmas
 	: Pragma 'pragma'+

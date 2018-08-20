@@ -1,6 +1,6 @@
 {
 	"commentStamp" : "",
-	"super" : "GtPharoMethodNode",
+	"super" : "GtPharoMethodPatternNode",
 	"category" : "GToolkit-Completer-Pharo-Parser",
 	"classinstvars" : [ ],
 	"pools" : [ ],
@@ -8,6 +8,6 @@
 	"instvars" : [
 		"smaccError"
 	],
-	"name" : "GtPharoMethodErrorNode",
+	"name" : "GtPharoErrorPatternNode",
 	"type" : "normal"
 }
