@@ -10,6 +10,7 @@
 	"instvars" : [
 		"class",
 		"isMethod",
+		"implicitVariables",
 		"variables",
 		"index",
 		"maxItems"
