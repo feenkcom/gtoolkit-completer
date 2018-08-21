@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "",
+	"super" : "BrRBTextStyler",
+	"category" : "GToolkit-Completer-Pharo",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"methodPatternSource"
+	],
+	"name" : "BrRBMethodBodyTextStyler",
+	"type" : "normal"
+}
