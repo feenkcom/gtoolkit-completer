@@ -21,7 +21,7 @@ install
 		on: BrSelectionChanged
 		do: [ :event | self updatePreview ]).
 	(BlEventHandler
-		on: BlDblClickEvent
+		on: BlDoubleClickEvent
 		do: [ :event | self doubleClickList: true ])}.
 	popupEventHandlers do: [ :each | listElement addEventHandler: each ].
 	popupEventFilters := {(BlEventHandler
