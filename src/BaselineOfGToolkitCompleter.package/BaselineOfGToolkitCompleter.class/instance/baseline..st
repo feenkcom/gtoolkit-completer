@@ -8,9 +8,7 @@ baseline: spec
 				baseline: 'SmaCC' with: [ 
 					spec repository: 'github://j-brant/SmaCC/src' ];
 				baseline: 'Brick' with: [ 
-					spec 
-						repository: 'github://pharo-graphics/Brick/src';
-						loads: #core ];
+					spec repository: 'github://pharo-graphics/Brick/src' ];
 				package: 'GToolkit-Completer' with: [ 
 					spec requires: #( 
 						'Brick'
