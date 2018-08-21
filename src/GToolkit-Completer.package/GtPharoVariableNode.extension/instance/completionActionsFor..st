@@ -4,7 +4,7 @@ completionActionsFor: aStrategy
 	self stopPosition = aStrategy index
 		ifFalse: [ ^ #() ].
 	prefix := name source.
-	allLocalVariables := aStrategy implicitVariables
+	allLocalVariables := aStrategy hasImplicitVariables
 		ifTrue: [ self implicitLocalVariables ]
 		ifFalse: [ self localVariables ].
 	variables := allLocalVariables first: aStrategy maxItems startingWith: prefix.
