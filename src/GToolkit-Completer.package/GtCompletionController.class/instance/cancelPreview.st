@@ -1,7 +1,13 @@
-private
+private - preview
 cancelPreview
-	previewAction isNil
-		ifTrue: [ ^ self ].
+	previewAction
+		ifNil: [ ^ self ].
+
 	self
-		ignoreTextEventsWhile: [ previewAction undoPreviewOn: self.
+		ignoreTextEventsWhile: [
+			GtCompletionCancelPreviewSignal new
+					action: previewAction;
+					emit.
+			
+			previewAction undoPreviewOn: self.
 			previewAction := nil ]

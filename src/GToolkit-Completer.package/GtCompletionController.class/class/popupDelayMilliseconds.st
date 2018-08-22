@@ -1,3 +1,0 @@
-accessing
-popupDelayMilliseconds
-	^ PopupDelayMilliseconds

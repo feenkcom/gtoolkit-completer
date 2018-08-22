@@ -1,15 +1,20 @@
-private-popup
-updatePopupItemsAt: anIndex autoSelect: aBoolean
-	| items |
-	self cancelPreview.
-	items := [ (self strategyAt: anIndex) completionActionsFor: self text at: anIndex max: MaxPopupItems ]
+private - popup
+updatePopupItemsAt: anIndex autoSelect: shouldSelectFirst
+	| theActions |
+
+	theActions := [ (self strategyAt: anIndex) completionActionsFor: self text at: anIndex max: MaxPopupItems ]
 		on: Error
 		do: [ :ex | ex return: #() ].
-	self completionActions: items.
+
+	"action is deselected => preview is cancelled"
 	self deselectAll.
-	aBoolean
+	self completionActions: theActions.
+
+	theActions
+		ifEmpty: [ ^ self removePopup ].
+
+	shouldSelectFirst
 		ifFalse: [ ^ self ].
-	items isEmpty
-		ifTrue: [ ^ self removePopup ].
-	self selectIndex: 1.
-	self applyPreview
+
+	"first item is selected => preview is shown"
+	self selectFirst

@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "",
+	"super" : "ContextStackSignal",
+	"category" : "GToolkit-Completer-Signals",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"action"
+	],
+	"name" : "GtCompletionApplyPreviewSignal",
+	"type" : "normal"
+}

@@ -1,5 +1,7 @@
-private-popup
+private - popup
 startPopupDelayAt: anIndex
-	completionDelay := [ (Delay forMilliseconds: self class popupDelayMilliseconds) wait.
-	UIManager default defer: [ self showPopupAt: anIndex ].
-	completionDelay := nil ] fork
+	"Completion delay must already have element: attached,
+	see ${method:GtCompletionController>>#textElement:}$"
+
+	completionDelay action: [ self showPopupAt: anIndex ].
+	completionDelay start

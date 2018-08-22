@@ -6,9 +6,9 @@ openOn: aString withStrategy: aCompletionStrategy entering: anArray
 	completionController := GtCompletionController on: editorElement strategy: aCompletionStrategy.
 	completionController install.
 	completionController instVarNamed: 'cursorElement' put: editorElement.
-	[ delay := GtCompletionController popupDelayMilliseconds.
-	GtCompletionController popupDelayMilliseconds: 2.
+	[ delay := GtCompletionController popupDelay.
+	GtCompletionController popupDelay: 2 milliSeconds.
 	[ self enter: anArray into: completionController.
 	self pauseForCompletion ]
-		ensure: [ GtCompletionController popupDelayMilliseconds: delay ] ] fork.
+		ensure: [ GtCompletionController popupDelay: delay ] ] fork.
 	^ completionController

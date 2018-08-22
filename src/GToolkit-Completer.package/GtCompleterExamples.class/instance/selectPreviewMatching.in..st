@@ -4,8 +4,8 @@ selectPreviewMatching: aString in: completionController
 	completionController completionActions isEmpty
 		ifTrue: [ ^ self ].
 	100
-		timesRepeat: [ | action |
-			action := completionController selectedCompletionItem.
-			(aString match: action label)
-				ifTrue: [ ^ self ].
+		timesRepeat: [		
+			completionController selectedCompletionItemDo: [ :aCompletionItem |
+				(aString match: aCompletionItem label)
+					ifTrue: [ ^ self ] ].
 			completionController selectNextItem ]

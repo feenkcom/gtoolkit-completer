@@ -1,3 +1,3 @@
-private-popup
+private - list selection
 selectPreviousItem
 	listElement selectPrevious

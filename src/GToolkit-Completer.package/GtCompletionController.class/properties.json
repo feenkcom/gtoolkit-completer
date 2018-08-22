@@ -1,12 +1,12 @@
 {
-	"commentStamp" : "",
+	"commentStamp" : "AliakseiSyrel 8/22/2018 13:28",
 	"super" : "Object",
-	"category" : "GToolkit-Completer",
+	"category" : "GToolkit-Completer-UI",
 	"classinstvars" : [ ],
 	"pools" : [ ],
 	"classvars" : [
 		"MaxPopupItems",
-		"PopupDelayMilliseconds"
+		"PopupDelay"
 	],
 	"instvars" : [
 		"strategy",

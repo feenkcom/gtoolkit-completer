@@ -1,4 +1,6 @@
 geometry
 positionFor: anElement
-	^ super positionFor: anElement
-	"^ 200 @ 0"
+	| topLeftCorner |
+	
+	topLeftCorner := (super positionFor: anElement).
+	^ topLeftCorner + anElement bounds inSpace extent

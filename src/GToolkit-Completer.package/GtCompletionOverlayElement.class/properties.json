@@ -1,7 +1,7 @@
 {
 	"commentStamp" : "",
 	"super" : "BlOverlayElement",
-	"category" : "GToolkit-Completer",
+	"category" : "GToolkit-Completer-UI",
 	"classinstvars" : [ ],
 	"pools" : [ ],
 	"classvars" : [ ],

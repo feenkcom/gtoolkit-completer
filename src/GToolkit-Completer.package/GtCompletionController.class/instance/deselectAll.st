@@ -1,3 +1,5 @@
-private-popup
+private - list selection
 deselectAll
-	listElement selection deselect: 1 to: MaxPopupItems
+	"Deselect all completion actions"
+
+	listElement deselectAll

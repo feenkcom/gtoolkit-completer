@@ -12,4 +12,4 @@ undoDrillDown
 			self deselectAll.
 			self updatePopupItemsAt: self position autoSelect: false.
 			self selectAction: action.
-			self applyPreview ]
+			self showPreview ]

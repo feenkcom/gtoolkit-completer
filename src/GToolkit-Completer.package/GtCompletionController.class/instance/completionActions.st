@@ -1,3 +1,5 @@
-private
+private - accessing
 completionActions
-	^ listElement viewModel items
+	<return: #Collection of: #GtCompletionAction>
+
+	^ listElement items

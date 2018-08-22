@@ -1,8 +1,11 @@
-private
-startCompletionAt: anInteger
+private - popup
+startCompletionAt: aTextIndex
 	self terminatePopupDelay.
-	((self strategyAt: anInteger) hasCompletionsAt: anInteger in: self text)
-		ifTrue: [ ^ self isShowingPopup
-				ifTrue: [ self updatePopupItemsAt: anInteger autoSelect: true ]
-				ifFalse: [ self startPopupDelayAt: anInteger ] ].
-	self removePopup
+	
+	"If there are no completions for a given index, remove the popup"
+	((self strategyAt: aTextIndex) hasCompletionsAt: aTextIndex in: self text)
+		ifFalse: [ ^ self removePopup ].
+
+	self isShowingPopup
+		ifTrue: [ self updatePopupItemsAt: aTextIndex autoSelect: true ]
+		ifFalse: [ self startPopupDelayAt: aTextIndex ]

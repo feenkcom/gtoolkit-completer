@@ -1,16 +1,18 @@
 initialize-release
 initialize
 	super initialize.
+
 	drillDownActions := OrderedCollection new.
-	cursorElement := nil.
 	strategy := GtCompletionStrategy new.
-	overlay := GtCompletionOverlayElement new.
-	overlay clipChildren: true.
-	listElement := BrSimpleList new.
-	listElement
-		border: (BlBorder paint: Color lightGray width: 1);
-		display: #();
-		stencil: [ :each :anIndex | BrListLabelStencil new text: each displayString ].
+
+	cursorElement := nil.
+
+	listElement := self newCompletionList.
+	overlay := self newPopupElement.
 	overlay addChild: listElement.
+	
+	completionDelay := BlDelayedTaskAction new.
+	completionDelay delay: self class popupDelay.
+
 	lastWasText := false.
 	ignoreTextEvents := false

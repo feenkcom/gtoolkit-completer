@@ -1,4 +1,4 @@
 class initialization
 initialize
-	PopupDelayMilliseconds := 200.
+	PopupDelay := 200 milliSeconds.
 	MaxPopupItems := 100

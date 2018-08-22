@@ -1,3 +1,3 @@
-private
-completionActions: aCollection
-	listElement viewModel items: aCollection
+private - accessing
+completionActions: aCollectionOfGtCompletionAction
+	listElement items: aCollectionOfGtCompletionAction
