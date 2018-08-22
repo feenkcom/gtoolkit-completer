@@ -7,7 +7,8 @@ processKeyDown: anEvent
 			self removePopup.
 			anEvent consumed: true ].
 	(anEvent key = Key arrowRight and: [ anEvent modifiers isCmd ])
-		ifTrue: [ self drillDown.
+		ifTrue: [
+			self drillDown.
 			anEvent consumed: true ].
 	(anEvent key = Key arrowLeft and: [ anEvent modifiers isCmd ])
 		ifTrue: [ self undoDrillDown.

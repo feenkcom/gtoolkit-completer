@@ -1,10 +1,11 @@
 initialize-release
 textElement: anEditorElement
 	textElement := anEditorElement.
-	textElement when: BrTextEditorCursorElementAddedEvent do: [ :e |
-		cursorElement := e cursorElement.
-		overlay attachTo: cursorElement ].
-	textElement when: BrTextEditorCursorElementRemovedEvent do: [ :e |
-		cursorElement := nil.
-		overlay detach ].
+	textElement
+		when: BrTextEditorCursorElementAddedEvent
+		do: [ :anEvent | self onCursorAttached: anEvent cursorElement ].
+	textElement
+		when: BrTextEditorCursorElementRemovedEvent
+		do: [ :anEvent | self onCursorDetached: anEvent cursorElement ].
+
 	completionDelay element: textElement

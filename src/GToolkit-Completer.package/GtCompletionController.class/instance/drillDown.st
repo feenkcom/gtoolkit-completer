@@ -1,10 +1,11 @@
 private
 drillDown
-	previewAction isNil
-		ifTrue: [ ^ self ].
+	previewAction
+		ifNil: [ ^ self ].
+	
 	self
-		ignoreTextEventsWhile: [ drillDownActions addLast: previewAction.
+		ignoreTextEventsWhile: [
+			drillDownActions addLast: previewAction.
 			previewAction drillDownOn: self.
 			previewAction := nil.
-			self deselectAll.
 			self updatePopupItemsAt: self position autoSelect: true ]

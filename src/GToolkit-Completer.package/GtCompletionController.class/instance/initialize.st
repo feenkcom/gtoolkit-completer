@@ -10,7 +10,7 @@ initialize
 	listElement := self newCompletionList.
 	overlay := self newPopupElement.
 	overlay addChild: listElement.
-	
+
 	completionDelay := BlDelayedTaskAction new.
 	completionDelay delay: self class popupDelay.
 

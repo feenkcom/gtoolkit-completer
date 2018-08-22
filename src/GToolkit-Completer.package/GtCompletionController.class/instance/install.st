@@ -19,7 +19,7 @@ install
 	eventFilters do: [ :each | textElement addEventFilter: each ].
 	popupEventHandlers := {(BlEventHandler
 		on: BrSelectionChanged
-		do: [ :event | self showPreview ]).
+		do: [ :event | self onSelectionChanged: event ]).
 	(BlEventHandler
 		on: BlDoubleClickEvent
 		do: [ :event | self doubleClickList: true ])}.
