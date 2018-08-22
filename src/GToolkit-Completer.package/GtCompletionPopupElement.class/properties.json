@@ -1,11 +1,14 @@
 {
 	"commentStamp" : "",
-	"super" : "BlOverlayElement",
+	"super" : "BlElement",
 	"category" : "GToolkit-Completer-UI",
 	"classinstvars" : [ ],
 	"pools" : [ ],
 	"classvars" : [ ],
-	"instvars" : [ ],
-	"name" : "GtCompletionOverlayElement",
+	"instvars" : [
+		"referenceElement",
+		"overlayListener"
+	],
+	"name" : "GtCompletionPopupElement",
 	"type" : "normal"
 }

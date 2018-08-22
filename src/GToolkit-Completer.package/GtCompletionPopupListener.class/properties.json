@@ -1,11 +1,14 @@
 {
 	"commentStamp" : "",
-	"super" : "BlOverlayListener",
+	"super" : "BlElementEventListener",
 	"category" : "GToolkit-Completer-UI",
 	"classinstvars" : [ ],
 	"pools" : [ ],
 	"classvars" : [ ],
-	"instvars" : [ ],
-	"name" : "GtCompletionOverlayListener",
+	"instvars" : [
+		"overlayElement",
+		"attachmentsCount"
+	],
+	"name" : "GtCompletionPopupListener",
 	"type" : "normal"
 }
