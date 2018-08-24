@@ -1,3 +1,0 @@
-executing
-drillDownOn: aCompletionController
-	self finishCompletionOn: aCompletionController moveCursor: true

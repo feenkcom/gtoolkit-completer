@@ -1,3 +1,0 @@
-generated
-pattern
-	^ pattern

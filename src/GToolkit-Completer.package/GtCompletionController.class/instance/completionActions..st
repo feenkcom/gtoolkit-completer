@@ -1,3 +1,0 @@
-private - accessing
-completionActions: aCollectionOfGtCompletionAction
-	listElement items: aCollectionOfGtCompletionAction

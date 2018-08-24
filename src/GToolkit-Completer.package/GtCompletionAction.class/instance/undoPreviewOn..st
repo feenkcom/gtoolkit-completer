@@ -1,3 +1,0 @@
-executing
-undoPreviewOn: aCompletionController
-	self subclassResponsibility

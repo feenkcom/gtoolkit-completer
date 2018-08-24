@@ -1,3 +1,0 @@
-*GToolkit-Completer
-completionActionsFor: aGtPharoCompletionStrategy
-	^ #()

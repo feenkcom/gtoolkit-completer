@@ -1,3 +1,0 @@
-generated
-nameAssignmentId
-	^ 5
