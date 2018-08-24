@@ -16,13 +16,12 @@ GtKeywordCompletionAction >> addKeywordsAndArgsOn: aCompletionController [
 	self
 		keywordsAndArgumentNamesDo: [ :keyword :arg | 
 			first
-				ifFalse: [ aCompletionController textEditor insertString: ' ' at: endPosition.
+				ifFalse: [ self insert: ' ' at: endPosition on: aCompletionController.
 					endPosition := endPosition + 1 ].
-			aCompletionController textEditor insertString: keyword , ' ' at: endPosition.
+			self insert: keyword , ' ' at: endPosition on: aCompletionController.
 			endPosition := endPosition + keyword size + 1.
-			aCompletionController textEditor insertString: arg at: endPosition.
-			(aCompletionController text from: endPosition to: endPosition + arg size - 1)
-				attributes: {GtCompletionPartAttribute new}.
+			self insert: arg at: endPosition on: aCompletionController.
+			(aCompletionController text from: endPosition to: endPosition + arg size - 1) attributes: {GtCompletionPartAttribute new}.
 			endPosition := endPosition + arg size.
 			first := false ]
 ]
@@ -34,27 +33,66 @@ GtKeywordCompletionAction >> addParenthesesBefore: anIndex [
 
 { #category : #private }
 GtKeywordCompletionAction >> addParenthesesOn: aCompletionController [
-	parenIndex isNil
-		ifTrue: [ ^ self ].
-	aCompletionController textEditor insertString: ')' at: endPosition.
+	self hasParentheses
+		ifFalse: [ ^ self ].
+	self insert: ')' at: endPosition on: aCompletionController.
 	endPosition := endPosition + 1.
-	aCompletionController textEditor insertString: '(' at: parenIndex - 1
+	self insert: '(' at: parenIndex - 1 on: aCompletionController
+]
+
+{ #category : #private }
+GtKeywordCompletionAction >> addParenthesisAttributeOn: aCompletionController [
+	self hasParentheses
+		ifFalse: [ ^ self ].
+	self addPreviewAttributeForText: '(' at: parenIndex - 1 on: aCompletionController
+]
+
+{ #category : #private }
+GtKeywordCompletionAction >> clearPreviewAttributesOn: aCompletionController [
+	super clearPreviewAttributesOn: aCompletionController.
+	self hasParentheses
+		ifTrue: [ self clearPreviewAttributesOn: aCompletionController at: parenIndex - 1 ]
+]
+
+{ #category : #private }
+GtKeywordCompletionAction >> completedMessage [
+	^ String
+		streamContents: [ :stream | 
+			| first |
+			first := true.
+			self
+				keywordsAndArgumentNamesDo: [ :keyword :arg | 
+					first
+						ifTrue: [ first := false ]
+						ifFalse: [ stream space ].
+					stream
+						nextPutAll: keyword;
+						space;
+						nextPutAll: arg ].
+			self hasParentheses
+				ifTrue: [ stream nextPut: $) ] ]
+]
+
+{ #category : #executing }
+GtKeywordCompletionAction >> finishCompletionOn: aCompletionController moveCursor: aBoolean [
+	self clearPreviewAttributesOn: aCompletionController.
+	self addKeywordsAndArgsOn: aCompletionController.
+	self addParenthesesOn: aCompletionController.
+	aBoolean
+		ifFalse: [ ^ self ].
+	self moveCursorOn: aCompletionController
 ]
 
 { #category : #private }
 GtKeywordCompletionAction >> fromIndex [
-	^ parenIndex isNil
-		ifTrue: [ super fromIndex ]
-		ifFalse: [ parenIndex ]
+	^ self hasParentheses
+		ifTrue: [ parenIndex ]
+		ifFalse: [ super fromIndex ]
 ]
 
-{ #category : #private }
-GtKeywordCompletionAction >> highlightPreviewComponentOn: aCompletionController [
-	endPosition <= position
-		ifTrue: [ ^ self ].
-	self addPreviewAttributes: aCompletionController text from: position + 1 to: endPosition.
-	parenIndex notNil
-		ifTrue: [ self addPreviewAttributes: aCompletionController text from: parenIndex to: parenIndex ]
+{ #category : #testing }
+GtKeywordCompletionAction >> hasParentheses [
+	^ parenIndex notNil
 ]
 
 { #category : #private }
@@ -71,22 +109,11 @@ GtKeywordCompletionAction >> moveCursorOn: aCompletionController [
 
 { #category : #executing }
 GtKeywordCompletionAction >> previewOn: aCompletionController [
-	self highlightSearchComponentOn: aCompletionController.
-	self addKeywordsAndArgsOn: aCompletionController.
-	self addParenthesesOn: aCompletionController.
-	self highlightPreviewComponentOn: aCompletionController
+	self addPreviewAttributeForText: self completedMessage at: position on: aCompletionController.
+	self addParenthesisAttributeOn: aCompletionController
 ]
 
 { #category : #private }
 GtKeywordCompletionAction >> toIndex [
 	^ endPosition
-]
-
-{ #category : #executing }
-GtKeywordCompletionAction >> undoPreviewOn: aCompletionController [
-	self removeAttributesFromText: aCompletionController text.
-	parenIndex notNil
-		ifTrue: [ aCompletionController textEditor delete: parenIndex - 1 to: parenIndex ].
-	aCompletionController textEditor delete: position to: endPosition.
-	aCompletionController textEditor cursor position: position
 ]

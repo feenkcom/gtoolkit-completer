@@ -122,11 +122,13 @@ GtPrefixTree >> maxWeight: anObject [
 { #category : #private }
 GtPrefixTree >> nodeFor: aString startingAt: anIndex do: aBlock [
 	| nextIndex |
-	(anIndex > aString size or: [ prefix size > (aString size - anIndex + 1) ])
+	anIndex > aString size
 		ifTrue: [ ^ aBlock value: self value: (aString copyFrom: 1 to: anIndex - 1) ].
-	1 to: prefix size do: [ :i | 
+	1 to: (prefix size min: aString size - anIndex + 1) do: [ :i | 
 		(prefix at: i) = (aString at: anIndex + i - 1)
 			ifFalse: [ ^ self ] ].
+	prefix size > (aString size - anIndex + 1)
+		ifTrue: [ ^ aBlock value: self value: (aString copyFrom: 1 to: anIndex - 1) ].
 	nextIndex := anIndex + prefix size.
 	nextIndex > aString size
 		ifTrue: [ ^ aBlock value: self value: (aString copyFrom: 1 to: anIndex - 1) ].

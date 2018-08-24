@@ -5,20 +5,8 @@ Class {
 		'label',
 		'partial'
 	],
-	#classVars : [
-		'PreviewAttribute',
-		'SearchAttribute'
-	],
-	#category : 'GToolkit-Completer'
+	#category : #'GToolkit-Completer'
 }
-
-{ #category : #'class initialization' }
-GtCompletionAction class >> initialize [
-	PreviewAttribute := BrTextBackgroundAttribute paint: Color yellow.
-	PreviewAttribute beNotOverwritableByStyler.
-	SearchAttribute := BrTextBackgroundAttribute paint: Color lightGreen.
-	SearchAttribute beNotOverwritableByStyler
-]
 
 { #category : #'instance creation' }
 GtCompletionAction class >> labeled: aString [
@@ -32,14 +20,11 @@ GtCompletionAction >> = anObject [
 	^ self class = anObject class and: [ self label = anObject label ]
 ]
 
-{ #category : #'private-attributes' }
-GtCompletionAction >> addPreviewAttributes: aText from: startIndex to: endIndex [
-	(aText from: (startIndex min: aText size) to: (endIndex min: aText size)) attributes: {PreviewAttribute}
-]
-
-{ #category : #'private-attributes' }
-GtCompletionAction >> addSearchAttributes: aText from: startIndex to: endIndex [
-	(aText from: (startIndex min: aText size) to: (endIndex min: aText size)) attributes: {SearchAttribute}
+{ #category : #'private-text modification' }
+GtCompletionAction >> delete: from to: to on: aCompletionController [
+	aCompletionController textEditor deleter
+		delete: from to: to;
+		delete
 ]
 
 { #category : #displaying }
@@ -67,6 +52,13 @@ GtCompletionAction >> initialize [
 	partial := false
 ]
 
+{ #category : #'private-text modification' }
+GtCompletionAction >> insert: aString at: anInteger on: aCompletionController [
+	aCompletionController textEditor inserter
+		insertString: aString at: anInteger;
+		insert
+]
+
 { #category : #testing }
 GtCompletionAction >> isPartial [
 	^ partial
@@ -90,14 +82,6 @@ GtCompletionAction >> partial: aBoolean [
 { #category : #executing }
 GtCompletionAction >> previewOn: aCompletionController [
 	self subclassResponsibility
-]
-
-{ #category : #'private-attributes' }
-GtCompletionAction >> removeAttributes: aText from: startIndex to: endIndex [
-	aText
-		clearAttributes: (startIndex min: aText size)
-		to: (endIndex min: aText size)
-		if: [ :attr | attr == SearchAttribute or: [ attr == PreviewAttribute ] ]
 ]
 
 { #category : #executing }

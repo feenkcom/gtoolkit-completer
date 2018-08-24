@@ -22,6 +22,14 @@ GtDeleteTextCompletionAction >> = anObject [
 	^ super = anObject and: [ self from = anObject from and: [ self to = anObject to ] ]
 ]
 
+{ #category : #executing }
+GtDeleteTextCompletionAction >> finishCompletionOn: aCompletionController moveCursor: aBoolean [
+	from > to
+		ifTrue: [ ^ self ].
+	deletedString := (aCompletionController text from: from to: to) asString.
+	self delete: from - 1 to: to on: aCompletionController
+]
+
 { #category : #private }
 GtDeleteTextCompletionAction >> from [
 	^ from
@@ -41,8 +49,9 @@ GtDeleteTextCompletionAction >> hash [
 GtDeleteTextCompletionAction >> previewOn: aCompletionController [
 	from > to
 		ifTrue: [ ^ self ].
-	deletedString := (aCompletionController text from: from to: to) asString.
-	aCompletionController textEditor delete: from - 1 to: to
+	(aCompletionController text from: from to: to) attributes: {GtPreviewDeletionAttribute new}.
+	aCompletionController textEditor invalidate: from to: to.
+	aCompletionController textEditor update: from to: to
 ]
 
 { #category : #private }
@@ -56,8 +65,15 @@ GtDeleteTextCompletionAction >> to: anInteger [
 ]
 
 { #category : #executing }
-GtDeleteTextCompletionAction >> undoPreviewOn: aCompletionController [
+GtDeleteTextCompletionAction >> undoDrillDownOn: aCompletionController [
 	deletedString isNil
 		ifTrue: [ ^ self ].
-	aCompletionController textEditor insertString: deletedString at: from - 1
+	self insert: deletedString at: from - 1 on: aCompletionController
+]
+
+{ #category : #executing }
+GtDeleteTextCompletionAction >> undoPreviewOn: aCompletionController [
+	aCompletionController text clearAttributes: from to: to if: [ :each | each class = GtPreviewDeletionAttribute ].
+	aCompletionController textEditor invalidate: from to: to.
+	aCompletionController textEditor update: from to: to
 ]

@@ -32,9 +32,29 @@ GtInsertTextCompletionAction >> = anObject [
 	^ super = anObject and: [ self text = anObject text and: [ self position = anObject position ] ]
 ]
 
+{ #category : #private }
+GtInsertTextCompletionAction >> addPreviewAttributeForText: aString at: anInteger on: aCompletionController [
+	(aCompletionController text from: anInteger to: anInteger) attributes: {(GtPreviewCompletionAttribute for: aString)}.
+	aCompletionController textEditor invalidate: anInteger to: anInteger.
+	aCompletionController textEditor update: anInteger to: anInteger
+]
+
+{ #category : #private }
+GtInsertTextCompletionAction >> clearPreviewAttributesOn: aCompletionController [
+	self clearPreviewAttributesOn: aCompletionController at: position
+]
+
+{ #category : #private }
+GtInsertTextCompletionAction >> clearPreviewAttributesOn: aCompletionController at: anInteger [
+	aCompletionController text clearAttributes: anInteger to: anInteger if: [ :attr | attr class = GtPreviewCompletionAttribute ].
+	aCompletionController textEditor invalidate: anInteger to: anInteger.
+	aCompletionController textEditor update: anInteger to: anInteger
+]
+
 { #category : #executing }
 GtInsertTextCompletionAction >> finishCompletionOn: aCompletionController moveCursor: aBoolean [
-	self removeAttributesFromText: aCompletionController text.
+	self clearPreviewAttributesOn: aCompletionController.
+	self insert: text at: position on: aCompletionController.
 	aBoolean
 		ifFalse: [ ^ self ].
 	self moveCursorOn: aCompletionController
@@ -48,20 +68,6 @@ GtInsertTextCompletionAction >> fromIndex [
 { #category : #comparing }
 GtInsertTextCompletionAction >> hash [
 	^ super hash bitXor: (text hash bitXor: position hash)
-]
-
-{ #category : #private }
-GtInsertTextCompletionAction >> highlightPreviewComponentOn: aCompletionController [
-	self text size <= 0
-		ifTrue: [ ^ self ].
-	self addPreviewAttributes: aCompletionController text from: position + 1 to: position + self text size
-]
-
-{ #category : #private }
-GtInsertTextCompletionAction >> highlightSearchComponentOn: aCompletionController [
-	searchStartPosition > position
-		ifTrue: [ ^ self ].
-	self addSearchAttributes: aCompletionController text from: searchStartPosition to: position
 ]
 
 { #category : #executing }
@@ -83,14 +89,7 @@ GtInsertTextCompletionAction >> position: anInteger [
 GtInsertTextCompletionAction >> previewOn: aCompletionController [
 	text isEmpty
 		ifTrue: [ ^ self ].
-	aCompletionController textEditor insertString: text at: position.
-	self highlightSearchComponentOn: aCompletionController.
-	self highlightPreviewComponentOn: aCompletionController
-]
-
-{ #category : #private }
-GtInsertTextCompletionAction >> removeAttributesFromText: aText [
-	self removeAttributes: aText from: self fromIndex to: self toIndex
+	self addPreviewAttributeForText: text at: position on: aCompletionController
 ]
 
 { #category : #'initialize-release' }
@@ -115,13 +114,12 @@ GtInsertTextCompletionAction >> toIndex [
 
 { #category : #executing }
 GtInsertTextCompletionAction >> undoDrillDownOn: aCompletionController [
+	text isEmpty
+		ifFalse: [ self delete: position to: position + text size on: aCompletionController ].
 	aCompletionController textEditor moveCursorTo: position
 ]
 
 { #category : #executing }
 GtInsertTextCompletionAction >> undoPreviewOn: aCompletionController [
-	self removeAttributesFromText: aCompletionController text.
-	text isEmpty
-		ifFalse: [ aCompletionController textEditor delete: position to: position + text size ].
-	aCompletionController textEditor moveCursorTo: position
+	self clearPreviewAttributesOn: aCompletionController
 ]

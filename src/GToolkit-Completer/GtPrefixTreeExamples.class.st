@@ -30,6 +30,16 @@ GtPrefixTreeExamples >> oneToHundredTree [
 ]
 
 { #category : #examples }
+GtPrefixTreeExamples >> singleItemFirstStartingWith [
+	<gtExample>
+	| tree |
+	tree := GtPrefixTree new.
+	tree add: 'abc'.
+	self assert: (tree first: 100 startingWith: 'aa') isEmpty.
+	^ tree
+]
+
+{ #category : #examples }
 GtPrefixTreeExamples >> singleItemTree [
 	<gtExample>
 	^ self emptyTree

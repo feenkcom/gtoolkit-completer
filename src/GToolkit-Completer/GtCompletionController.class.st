@@ -307,7 +307,9 @@ GtCompletionController >> nextUncompletedItem [
 	[ position <= text size and: [ self isUncompletedAt: position ] ] whileTrue: [ position := position + 1 ].
 	[ position <= text size ]
 		whileTrue: [ (self isUncompletedAt: position)
-				ifTrue: [ self textEditor select: position to: position + 1.
+				ifTrue: [ self textEditor selecter
+						select: position to: position + 1;
+						select.
 					^ position ].
 			position := position + 1 ].
 	^ nil
@@ -343,12 +345,10 @@ GtCompletionController >> processKeyDown: anEvent [
 	self isShowingPopup
 		ifFalse: [ ^ self ].
 	anEvent key = Key escape
-		ifTrue: [ self cancelPreview.
-			self removePopup.
+		ifTrue: [ self removePopup.
 			anEvent consumed: true ].
 	(anEvent key = Key arrowRight and: [ anEvent modifiers isCmd ])
-		ifTrue: [
-			self drillDown.
+		ifTrue: [ self drillDown.
 			anEvent consumed: true ].
 	(anEvent key = Key arrowLeft and: [ anEvent modifiers isCmd ])
 		ifTrue: [ self undoDrillDown.
@@ -406,6 +406,7 @@ GtCompletionController >> processTabKey: anEvent [
 
 { #category : #'private - popup' }
 GtCompletionController >> removePopup [
+	self cancelPreview.
 	self terminatePopupDelay.
 	overlay detach.
 	overlay removeFromParent
