@@ -23,7 +23,8 @@ GtPreviewCompletionAttribute >> affect: aBrText in: anEditorElement [
 	attributes := (anEditorElement editor text attributesAt: aBrText end) reject: [ :each | each = self ].
 	text attributes: attributes.
 	^ (BlTextElement text: text)
-		background: (Color gray alpha: 0.4);
+		background: (BrGlamorousColors lightBorderColor);
+		padding: (BlInsets top: 3 left: 0 bottom: 3 right: 0);
 		yourself
 ]
 
