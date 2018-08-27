@@ -307,8 +307,10 @@ GtCompletionController >> nextUncompletedItem [
 	[ position <= text size and: [ self isUncompletedAt: position ] ] whileTrue: [ position := position + 1 ].
 	[ position <= text size ]
 		whileTrue: [ (self isUncompletedAt: position)
-				ifTrue: [ self textEditor selecter
-						select: position to: position + 1;
+				ifTrue: [
+					self textEditor selecter
+						from: position to: position + 1;
+						withoutCursorUpdate;
 						select.
 					^ position ].
 			position := position + 1 ].
