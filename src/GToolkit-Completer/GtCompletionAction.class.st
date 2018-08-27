@@ -54,6 +54,8 @@ GtCompletionAction >> initialize [
 
 { #category : #'private-text modification' }
 GtCompletionAction >> insert: aString at: anInteger on: aCompletionController [
+	aString isEmpty
+		ifTrue: [ ^ self ].
 	aCompletionController textEditor inserter
 		at: anInteger;
 		string: aString;

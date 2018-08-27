@@ -71,16 +71,6 @@ GtCompletionController class >> popupDelay: aDuration [
 	PopupDelay := aDuration
 ]
 
-{ #category : #private }
-GtCompletionController >> advanceCursorToNextUncompletedItem [
-	self nextUncompletedItem
-		ifNotNil: [ :position | 
-			self textEditor moveCursorTo: position.
-			self removeUncompletedAttributeAt: position.
-			^ true ].
-	^ false
-]
-
 { #category : #'private - preview' }
 GtCompletionController >> applyPreview [
 
@@ -265,6 +255,15 @@ GtCompletionController >> isUncompletedAt: position [
 	^ (self text attributesAt: position) anySatisfy: [ :each | each isKindOf: GtCompletionPartAttribute ]
 ]
 
+{ #category : #private }
+GtCompletionController >> moveCursorToNextUncompletedItem: direction [
+	^ (self nextUncompletedItem: direction)
+		ifNil: [ false ]
+		ifNotNil: [ :position | 
+			self textEditor moveCursorTo: position.
+			true ]
+]
+
 { #category : #'private - instance creation' }
 GtCompletionController >> newCompletionList [
 	<return: #BrSimpleList>
@@ -300,20 +299,25 @@ GtCompletionController >> newPopupElement [
 ]
 
 { #category : #private }
-GtCompletionController >> nextUncompletedItem [
-	| text position |
+GtCompletionController >> nextUncompletedItem: direction [
+	| text position originalPosition |
 	text := self text.
-	position := self textEditor cursor position.
-	[ position <= text size and: [ self isUncompletedAt: position ] ] whileTrue: [ position := position + 1 ].
-	[ position <= text size ]
+	originalPosition := self textEditor cursor position.
+	position := originalPosition.
+	[ (position between: 1 and: text size) and: [ self isUncompletedAt: position ] ] whileTrue: [ position := position + direction ].
+	[ position between: 1 and: text size ]
 		whileTrue: [ (self isUncompletedAt: position)
-				ifTrue: [
-					self textEditor selecter
-						from: position to: position + 1;
-						withoutCursorUpdate;
-						select.
+				ifTrue: [ self selectUncompletedAt: position.
 					^ position ].
-			position := position + 1 ].
+			position := position + direction ].
+	position := direction > 0
+		ifTrue: [ 1 ]
+		ifFalse: [ text size ].
+	[ position ~= originalPosition ]
+		whileTrue: [ (self isUncompletedAt: position)
+				ifTrue: [ self selectUncompletedAt: position.
+					^ position ].
+			position := position + direction ].
 	^ nil
 ]
 
@@ -398,11 +402,15 @@ GtCompletionController >> processReturnKey: anEvent [
 
 { #category : #'event handling' }
 GtCompletionController >> processTabKey: anEvent [
+	| direction |
 	self isShowingPopup
 		ifTrue: [ self completeWithCursor: true.
 			^ anEvent consumed: true ].
 	self isAtStartOfLine
-		ifFalse: [ self advanceCursorToNextUncompletedItem
+		ifFalse: [ direction := anEvent modifiers isShift
+				ifTrue: [ -1 ]
+				ifFalse: [ 1 ].
+			(self moveCursorToNextUncompletedItem: direction)
 				ifTrue: [ anEvent consumed: true ] ]
 ]
 
@@ -470,6 +478,22 @@ GtCompletionController >> selectNextItem [
 { #category : #'private - list selection' }
 GtCompletionController >> selectPreviousItem [
 	listElement selectPrevious
+]
+
+{ #category : #private }
+GtCompletionController >> selectUncompletedAt: position [
+	| first last size |
+	first := position - 1.
+	[ first >= 1 and: [ self isUncompletedAt: first ] ] whileTrue: [ first := first - 1 ].
+	last := position + 1.
+	size := self text size.
+	[ last <= size and: [ self isUncompletedAt: last ] ] whileTrue: [ last := last + 1 ].
+	last := last - 1.
+	self textEditor selecter
+		overwrite;
+		from: first to: last;
+		withoutCursorUpdate;
+		select
 ]
 
 { #category : #'private - list selection' }

@@ -10,9 +10,14 @@ Class {
 
 { #category : #private }
 GtKeywordCompletionAction >> addKeywordsAndArgsOn: aCompletionController [
-	| first |
+	| first argLocations |
 	first := true.
 	endPosition := position.
+	self hasParentheses
+		ifTrue: [ self insert: ')' at: position on: aCompletionController.
+			self insert: '(' at: parenIndex - 1 on: aCompletionController.
+			endPosition := endPosition + 1 ].
+	argLocations := OrderedCollection new.
 	self
 		keywordsAndArgumentNamesDo: [ :keyword :arg | 
 			first
@@ -20,10 +25,13 @@ GtKeywordCompletionAction >> addKeywordsAndArgsOn: aCompletionController [
 					endPosition := endPosition + 1 ].
 			self insert: keyword , ' ' at: endPosition on: aCompletionController.
 			endPosition := endPosition + keyword size + 1.
+			argLocations add: (endPosition + 1 to: endPosition + arg size).
 			self insert: arg at: endPosition on: aCompletionController.
-			(aCompletionController text from: endPosition to: endPosition + arg size - 1) attributes: {GtCompletionPartAttribute new}.
 			endPosition := endPosition + arg size.
-			first := false ]
+			first := false ].
+	argLocations do: [ :each | (aCompletionController text from: each first to: each last) attributes: {GtCompletionPartAttribute new} ].
+	self hasParentheses
+		ifTrue: [ endPosition := endPosition + 1 ]
 ]
 
 { #category : #'initialize-release' }
@@ -77,7 +85,6 @@ GtKeywordCompletionAction >> completedMessage [
 GtKeywordCompletionAction >> finishCompletionOn: aCompletionController moveCursor: aBoolean [
 	self clearPreviewAttributesOn: aCompletionController.
 	self addKeywordsAndArgsOn: aCompletionController.
-	self addParenthesesOn: aCompletionController.
 	aBoolean
 		ifFalse: [ ^ self ].
 	self moveCursorOn: aCompletionController
@@ -104,7 +111,8 @@ GtKeywordCompletionAction >> keywordsAndArgumentNamesDo: aBlock [
 
 { #category : #executing }
 GtKeywordCompletionAction >> moveCursorOn: aCompletionController [
-	aCompletionController advanceCursorToNextUncompletedItem
+	aCompletionController textEditor moveCursorTo: position.
+	aCompletionController moveCursorToNextUncompletedItem: 1
 ]
 
 { #category : #executing }
