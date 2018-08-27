@@ -23,7 +23,7 @@ GtCompletionAction >> = anObject [
 { #category : #'private-text modification' }
 GtCompletionAction >> delete: from to: to on: aCompletionController [
 	aCompletionController textEditor deleter
-		delete: from to: to;
+		from: from to: to;
 		delete
 ]
 
@@ -55,7 +55,8 @@ GtCompletionAction >> initialize [
 { #category : #'private-text modification' }
 GtCompletionAction >> insert: aString at: anInteger on: aCompletionController [
 	aCompletionController textEditor inserter
-		insertString: aString at: anInteger;
+		at: anInteger;
+		string: aString;
 		insert
 ]
 

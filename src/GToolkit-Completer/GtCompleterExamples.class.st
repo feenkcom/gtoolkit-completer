@@ -50,28 +50,51 @@ GtCompleterExamples >> cmdRightOn: completionController [
 { #category : #completing }
 GtCompleterExamples >> completeWithCursorMove [
 	<gtExample>
-	^ self openOn: '12345' withStrategy: self alphabetStrategy entering: #(0 $b 4)	"'bb12345' no highlighting"
+	| aCompleter |
+
+	aCompleter := self openOn: '12345' withStrategy: self alphabetStrategy entering: #(0 $b 4).
+
+	self assert: aCompleter textEditor text asString equals: 'b12345'.
+	self assert: aCompleter textEditor cursor position equals: 4.
+	self assert: aCompleter textEditor selection isEmpty.
+
+	^ aCompleter
 ]
 
 { #category : #completing }
 GtCompleterExamples >> completeWithTab [
 	<gtExample>
-	^ self openOn: '' withStrategy: self alphabetStrategy entering: #(0 'dd' #tabOn:)	"dddd"
+	| aCompleter |
+	
+	aCompleter := self openOn: '' withStrategy: self alphabetStrategy entering: #(0 'dd' #tabOn:).
+
+	self assert: aCompleter textEditor text asString equals: 'dd'.
+	self assert: aCompleter textEditor cursor position equals: 2.
+	self assert: aCompleter textEditor selection isEmpty.
+
+	^ aCompleter
 ]
 
 { #category : #completing }
 GtCompleterExamples >> completionPreview [
 	<gtExample>
-	^ self openOn: '' withStrategy: self alphabetStrategy entering: #(0 $c)	"'ccc' highlighted with preview"
+	| aCompleter |
+	
+	aCompleter := self openOn: '' withStrategy: self alphabetStrategy entering: #(0 $c).
+
+	self assert: aCompleter textEditor text asString equals: 'c'.
+	self assert: aCompleter textEditor cursor position equals: 1.
+	self assert: aCompleter textEditor selection isEmpty.
+
+	^ aCompleter
 ]
 
 { #category : #private }
 GtCompleterExamples >> deleteSelectedTextOn: completionController [
-	completionController textEditor selection allSelections
-		do: [ :each | 
-			each from < each to
-				ifTrue: [ completionController textEditor delete: each from to: each to.
-					^ completionController textEditor selectNone ] ]
+
+	completionController textEditor deleter
+		selected;
+		delete
 ]
 
 { #category : #private }
@@ -82,6 +105,9 @@ GtCompleterExamples >> editorElementFor: aString [
 	editor text: text.
 	editorElement := BrEditorElement new.
 	editorElement editor: editor.
+	editorElement constraintsDo: [ :c |
+		c horizontal matchParent.
+		c vertical matchParent ].
 	^ editorElement
 ]
 
@@ -119,13 +145,12 @@ GtCompleterExamples >> escapeOn: completionController [
 
 { #category : #private }
 GtCompleterExamples >> insertString: aString on: completionController [
-	self deleteSelectedTextOn: completionController.
-	aString
-		do: [ :each | 
-			| position |
-			position := completionController textEditor cursor position.
-			completionController textEditor insertString: (String with: each) at: position.
-			self moveCursorTo: position + 1 on: completionController ]
+
+	"inserter deletes selected text by default"
+	completionController textEditor inserter
+		atCursor;
+		string: aString;
+		insert
 ]
 
 { #category : #smalltalk }
@@ -167,17 +192,29 @@ GtCompleterExamples >> moveCursorTo: anInteger on: aCompletionController [
 
 { #category : #private }
 GtCompleterExamples >> openOn: aString withStrategy: aCompletionStrategy entering: anArray [
-	| editorElement completionController delay |
+	| editorElement completionController aSpace |
+	
 	editorElement := self editorElementFor: aString.
-	BlElement new addChild: editorElement.
+	"editor must have focus for cursor to appear"
+	editorElement requestFocus.
+
 	completionController := GtCompletionController on: editorElement strategy: aCompletionStrategy.
 	completionController install.
-	completionController instVarNamed: 'cursorElement' put: editorElement.
-	[ delay := GtCompletionController popupDelay.
-	GtCompletionController popupDelay: 2 milliSeconds.
-	[ self enter: anArray into: completionController.
-	self pauseForCompletion ]
-		ensure: [ GtCompletionController popupDelay: delay ] ] fork.
+
+	aSpace := BlSpace new.
+	"simulated time allows us to instantly advance space time by a given duration without using forks"
+	aSpace time: BlTime simulated.
+	aSpace addChild: editorElement.
+
+	self enter: anArray into: completionController.
+	"we manually ask the space to step one frame"
+	aSpace pulse.
+
+	"advance time by popup delay (instantly)"
+	aSpace time wait: GtCompletionController popupDelay.
+	"perform one more frame"
+	aSpace pulse.
+
 	^ completionController
 ]
 
