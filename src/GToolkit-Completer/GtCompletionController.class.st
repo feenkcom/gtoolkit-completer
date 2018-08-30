@@ -232,9 +232,12 @@ GtCompletionController >> install [
 
 { #category : #testing }
 GtCompletionController >> isAtStartOfLine [
-	| text position char |
+	| text position char aCursor |
+
 	text := self text.
-	position := self textEditor cursor position.
+	aCursor := self textEditor cursor first.
+	position := aCursor position.
+
 	[ position > 0 and: [ (char := text at: position) isSeparator ] ]
 		whileTrue: [ (char = Character cr or: [ char = Character lf ])
 				ifTrue: [ ^ true ].
@@ -300,9 +303,10 @@ GtCompletionController >> newPopupElement [
 
 { #category : #private }
 GtCompletionController >> nextUncompletedItem: direction [
-	| text position originalPosition |
+	| text position originalPosition aCursor |
 	text := self text.
-	originalPosition := self textEditor cursor position.
+	aCursor := self textEditor cursor first.
+	originalPosition := aCursor position.
 	position := originalPosition.
 	[ (position between: 1 and: text size) and: [ self isUncompletedAt: position ] ] whileTrue: [ position := position + direction ].
 	[ position between: 1 and: text size ]
@@ -343,7 +347,7 @@ GtCompletionController >> onSelectionChanged: anEvent [
 
 { #category : #private }
 GtCompletionController >> position [
-	^ self textEditor cursor position
+	^ self textEditor cursor first position
 ]
 
 { #category : #'event handling' }

@@ -55,7 +55,7 @@ GtCompleterExamples >> completeWithCursorMove [
 	aCompleter := self openOn: '12345' withStrategy: self alphabetStrategy entering: #(0 $b 4).
 
 	self assert: aCompleter textEditor text asString equals: 'b12345'.
-	self assert: aCompleter textEditor cursor position equals: 4.
+	self assert: (aCompleter textEditor cursor allCursors collect: #position) equals: #(4).
 	self assert: aCompleter textEditor selection isEmpty.
 
 	^ aCompleter
@@ -69,7 +69,7 @@ GtCompleterExamples >> completeWithTab [
 	aCompleter := self openOn: '' withStrategy: self alphabetStrategy entering: #(0 'dd' #tabOn:).
 
 	self assert: aCompleter textEditor text asString equals: 'dd'.
-	self assert: aCompleter textEditor cursor position equals: 2.
+	self assert: (aCompleter textEditor cursor allCursors collect: #position) equals: #(2).
 	self assert: aCompleter textEditor selection isEmpty.
 
 	^ aCompleter
@@ -83,7 +83,7 @@ GtCompleterExamples >> completionPreview [
 	aCompleter := self openOn: '' withStrategy: self alphabetStrategy entering: #(0 $c).
 
 	self assert: aCompleter textEditor text asString equals: 'c'.
-	self assert: aCompleter textEditor cursor position equals: 1.
+	self assert: (aCompleter textEditor cursor allCursors collect: #position) equals: #(1).
 	self assert: aCompleter textEditor selection isEmpty.
 
 	^ aCompleter
