@@ -1,0 +1,258 @@
+Class {
+	#name : #GtRenameAction,
+	#superclass : #Object,
+	#instVars : [
+		'textElement',
+		'editorHandlers',
+		'elementFilters',
+		'originalLocations',
+		'originalText',
+		'originalCursorPosition',
+		'originalIndex'
+	],
+	#category : #'GToolkit-Completer'
+}
+
+{ #category : #pharo }
+GtRenameAction class >> findVariableNodeIn: astNode at: anInteger [
+	astNode
+		withAllNodesDo: [ :node | 
+			((node isKindOf: GtPharoVariableNode) and: [ anInteger between: node startPosition and: node stopPosition ])
+				ifTrue: [ ^ node ] ]
+		andTokensDo: [ :each |  ]
+		includesErrors: true.
+	^ nil
+]
+
+{ #category : #'instance creation' }
+GtRenameAction class >> locations: aCollectionOfIntervals element: aTextEditorElement [
+	^ self new
+		textElement: aTextEditorElement;
+		locations: aCollectionOfIntervals;
+		yourself
+]
+
+{ #category : #pharo }
+GtRenameAction class >> pharoRenameLocalsOn: aTextEditorElement [
+	^ [ | editor text ast items action |
+	editor := aTextEditorElement editor.
+	editor cursor cursorsCount = 1
+		ifFalse: [ ^ self ].
+	text := editor text.
+	ast := GtPharoParser parseWithErrors: text asString.
+	items := OrderedCollection new.
+	(self findVariableNodeIn: ast at: editor cursor first position)
+		ifNotNil: [ :node | 
+			node whoDefines
+				ifNotNil: [ :definer | 
+					definer
+						withAllNodesDo: [ :each | 
+							each = node
+								ifTrue: [ items add: (each startPosition to: each stopPosition) ] ]
+						andTokensDo: nil
+						includesErrors: true ] ].
+	action := self locations: items element: aTextEditorElement.
+	action install ]
+		on: Error
+		do: [ :ex | ex return: nil ]
+]
+
+{ #category : #actions }
+GtRenameAction >> accept [
+	self uninstall.
+	self removeExtraCursors
+]
+
+{ #category : #private }
+GtRenameAction >> addCursors [
+	| offset navigator |
+	originalIndex := self intervalForPosition: originalCursorPosition.
+	offset := originalCursorPosition - (originalLocations at: originalIndex) first.
+	navigator := self textEditor navigator.
+	navigator removeAll.
+	originalLocations do: [ :each | navigator addAt: each first + offset ].
+	navigator apply
+]
+
+{ #category : #private }
+GtRenameAction >> addRenameAttributes [
+	| text |
+	text := self text.
+	originalLocations
+		do: [ :each | 
+			(text from: each first to: each last) attributes: {GtRenameAttribute new}.
+			self textEditor invalidate: each first to: each last.
+			self textEditor update: each first to: each last ]
+]
+
+{ #category : #actions }
+GtRenameAction >> cancel [
+	self uninstall.
+	self undoChanges
+]
+
+{ #category : #'event handling' }
+GtRenameAction >> cursorMoved: anEvent [
+	self uninstall
+]
+
+{ #category : #'initialize-release' }
+GtRenameAction >> initialize [
+	super initialize.
+	originalLocations := #().
+	editorHandlers := #().
+	elementFilters := #()
+]
+
+{ #category : #installation }
+GtRenameAction >> install [
+	originalLocations isEmpty
+		ifTrue: [ ^ self ].
+	self saveOriginalState.
+	self addRenameAttributes.
+	self addCursors.
+	self installEventHandlers.
+	self selectName
+]
+
+{ #category : #installation }
+GtRenameAction >> installEventHandlers [
+	editorHandlers := {(BlEventHandler
+		on: BrTextEditorCursorMovedEvent
+		do: [ :event | self cursorMoved: event ])}.
+	editorHandlers do: [ :each | self textEditor addEventHandler: each ].
+	elementFilters := {(BlEventHandler
+		on: BlKeystrokeEvent
+		do: [ :event | self processKeystroke: event ]).
+	(BlEventHandler
+		on: BlKeyDownEvent
+		do: [ :event | self processKeyDown: event ])}.
+	elementFilters do: [ :each | self textElement addEventFilter: each ]
+]
+
+{ #category : #private }
+GtRenameAction >> intervalForPosition: aPosition [
+	originalLocations
+		keysAndValuesDo: [ :i :each | 
+			(aPosition between: each first - 1 and: each last)
+				ifTrue: [ ^ i ] ].
+	^ 0
+]
+
+{ #category : #testing }
+GtRenameAction >> isRenameAttribute: anAttribute [
+	^ anAttribute isKindOf: GtRenameAttribute
+]
+
+{ #category : #accessing }
+GtRenameAction >> locations: aCollectionOfIntervals [
+	originalLocations := aCollectionOfIntervals asSortedCollection: [ :a :b | a first < b first ].
+	self validateLocations
+]
+
+{ #category : #'event handling' }
+GtRenameAction >> processKeyDown: anEvent [
+	anEvent key = Key escape
+		ifTrue: [ self cancel.
+			anEvent consumed: true ]
+]
+
+{ #category : #'event handling' }
+GtRenameAction >> processKeystroke: anEvent [
+	(anEvent char = Character tab or: [ anEvent char = Character cr ])
+		ifTrue: [ self accept.
+			anEvent consumed: true ]
+]
+
+{ #category : #private }
+GtRenameAction >> removeAttributes [
+	self text clearAttributes: [ :each | self isRenameAttribute: each ].
+	self textEditor invalidate: 1 to: self text size.
+	self textEditor update: 1 to: self text size
+]
+
+{ #category : #private }
+GtRenameAction >> removeExtraCursors [
+	| count |
+	self textEditor cursor cursorsCount = originalLocations size
+		ifFalse: [ ^ self ].
+	count := 1.
+	self textEditor cursor
+		do: [ :each | 
+			count = originalIndex
+				ifTrue: [ ^ self textEditor navigator
+						removeAll;
+						addAt: each position;
+						apply ].
+			count := count + 1 ]
+]
+
+{ #category : #private }
+GtRenameAction >> saveOriginalState [
+	| text |
+	text := self text.
+	originalText := text copy.
+	originalCursorPosition := self textEditor cursor first position
+]
+
+{ #category : #private }
+GtRenameAction >> selectName [
+	| selecter |
+	selecter := self textEditor selecter.
+	originalLocations do: [ :each | selecter from: each first - 1 to: each last ].
+	selecter select
+]
+
+{ #category : #accessing }
+GtRenameAction >> text [
+	^ self textEditor text
+]
+
+{ #category : #accessing }
+GtRenameAction >> textEditor [
+	^ self textElement editor
+]
+
+{ #category : #accessing }
+GtRenameAction >> textElement [
+	^ textElement
+]
+
+{ #category : #accessing }
+GtRenameAction >> textElement: aTextEditorElement [
+	textElement := aTextEditorElement
+]
+
+{ #category : #private }
+GtRenameAction >> undoChanges [
+	self textEditor text: originalText.
+	self textEditor moveCursorTo: originalCursorPosition
+]
+
+{ #category : #installation }
+GtRenameAction >> uninstall [
+	self uninstallEventHandlers.
+	self removeAttributes
+]
+
+{ #category : #installation }
+GtRenameAction >> uninstallEventHandlers [
+	elementFilters do: [ :each | self textElement removeEventFilter: each ].
+	editorHandlers do: [ :each | self textEditor removeEventHandler: each ]
+]
+
+{ #category : #private }
+GtRenameAction >> validateLocations [
+	| lastLocation size |
+	originalLocations isEmpty
+		ifTrue: [ ^ self ].
+	lastLocation := 0.
+	size := originalLocations first size.
+	originalLocations
+		do: [ :each | 
+			each first <= lastLocation
+				ifTrue: [ self error: 'Cannot rename overlapping locations' ].
+			lastLocation := each last.
+			each size ~= size
+				ifTrue: [ self error: 'Cannot rename items of different sizes' ] ]
+]

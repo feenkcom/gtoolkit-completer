@@ -551,7 +551,11 @@ GtCompletionController >> showPreview [
 { #category : #'private - popup' }
 GtCompletionController >> startCompletionAt: aTextIndex [
 	self terminatePopupDelay.
-	
+
+	"If we have multiple cursors, don't open the completion."
+	self textEditor cursor cursorsCount = 1
+		ifFalse: [ ^ self removePopup ].
+
 	"If there are no completions for a given index, remove the popup"
 	((self strategyAt: aTextIndex) hasCompletionsAt: aTextIndex in: self text)
 		ifFalse: [ ^ self removePopup ].
