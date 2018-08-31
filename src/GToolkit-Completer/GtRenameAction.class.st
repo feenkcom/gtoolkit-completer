@@ -8,7 +8,8 @@ Class {
 		'originalLocations',
 		'originalText',
 		'originalCursorPosition',
-		'originalIndex'
+		'originalIndex',
+		'shouldSelectNames'
 	],
 	#category : #'GToolkit-Completer'
 }
@@ -126,7 +127,8 @@ GtRenameAction >> initialize [
 	super initialize.
 	originalLocations := #().
 	editorHandlers := #().
-	elementFilters := #()
+	elementFilters := #().
+	shouldSelectNames := false
 ]
 
 { #category : #installation }
@@ -137,7 +139,7 @@ GtRenameAction >> install [
 	self addRenameAttributes.
 	self addCursors.
 	self installEventHandlers.
-	self selectName
+	self selectNames
 ]
 
 { #category : #installation }
@@ -224,11 +226,23 @@ GtRenameAction >> saveOriginalState [
 ]
 
 { #category : #private }
-GtRenameAction >> selectName [
+GtRenameAction >> selectNames [
 	| selecter |
+	shouldSelectNames
+		ifFalse: [ ^ self ].
 	selecter := self textEditor selecter.
 	originalLocations do: [ :each | selecter from: each first - 1 to: each last ].
 	selecter select
+]
+
+{ #category : #accessing }
+GtRenameAction >> shouldSelectNames [
+	^ shouldSelectNames
+]
+
+{ #category : #accessing }
+GtRenameAction >> shouldSelectNames: aBoolean [
+	shouldSelectNames := aBoolean
 ]
 
 { #category : #accessing }

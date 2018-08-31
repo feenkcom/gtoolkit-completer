@@ -1,6 +1,6 @@
 Class {
 	#name : #GtRenameAttribute,
-	#superclass : #BrTextBackgroundAttribute,
+	#superclass : #BrTextUnderlineAttribute,
 	#category : #'GToolkit-Completer'
 }
 
