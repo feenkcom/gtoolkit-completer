@@ -57,6 +57,31 @@ GtRenameAction class >> pharoRenameLocalsOn: aTextEditorElement [
 		do: [ :ex | ex return: nil ]
 ]
 
+{ #category : #pharo }
+GtRenameAction class >> pharoRenameSnippetLocalsOn: aTextEditorElement [
+	^ [ | editor text ast items action |
+	editor := aTextEditorElement editor.
+	editor cursor cursorsCount = 1
+		ifFalse: [ ^ self ].
+	text := editor text.
+	ast := GtPharoParser parseWithErrors: text asString startingAt: GtPharoParser startingStateForMethodSequence.
+	items := OrderedCollection new.
+	(self findVariableNodeIn: ast at: editor cursor first position)
+		ifNotNil: [ :node | 
+			| definer |
+			definer := node whoDefines ifNil: [ ast ].
+			definer
+				withAllNodesDo: [ :each | 
+					each = node
+						ifTrue: [ items add: (each startPosition to: each stopPosition) ] ]
+				andTokensDo: nil
+				includesErrors: true ].
+	action := self locations: items element: aTextEditorElement.
+	action install ]
+		on: Error
+		do: [ :ex | ex return: nil ]
+]
+
 { #category : #actions }
 GtRenameAction >> accept [
 	self uninstall.
@@ -92,7 +117,7 @@ GtRenameAction >> cancel [
 ]
 
 { #category : #'event handling' }
-GtRenameAction >> cursorMoved: anEvent [
+GtRenameAction >> cursorEvent: anEvent [
 	self uninstall
 ]
 
@@ -118,8 +143,11 @@ GtRenameAction >> install [
 { #category : #installation }
 GtRenameAction >> installEventHandlers [
 	editorHandlers := {(BlEventHandler
-		on: BrTextEditorCursorMovedEvent
-		do: [ :event | self cursorMoved: event ])}.
+		on: BrTextEditorCursorAddedEvent
+		do: [ :event | self cursorEvent: event ]).
+	(BlEventHandler
+		on: BrTextEditorCursorRemovedEvent
+		do: [ :event | self cursorEvent: event ])}.
 	editorHandlers do: [ :each | self textEditor addEventHandler: each ].
 	elementFilters := {(BlEventHandler
 		on: BlKeystrokeEvent
@@ -177,7 +205,7 @@ GtRenameAction >> removeExtraCursors [
 	self textEditor cursor cursorsCount = originalLocations size
 		ifFalse: [ ^ self ].
 	count := 1.
-	self textEditor cursor
+	(self textEditor cursor allCursors asSortedCollection: [ :a :b | a position < b position ])
 		do: [ :each | 
 			count = originalIndex
 				ifTrue: [ ^ self textEditor navigator
