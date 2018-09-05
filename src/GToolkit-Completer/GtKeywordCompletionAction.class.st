@@ -56,13 +56,6 @@ GtKeywordCompletionAction >> addParenthesisAttributeOn: aCompletionController [
 ]
 
 { #category : #private }
-GtKeywordCompletionAction >> clearPreviewAttributesOn: aCompletionController [
-	super clearPreviewAttributesOn: aCompletionController.
-	self hasParentheses
-		ifTrue: [ self clearPreviewAttributesOn: aCompletionController at: parenIndex - 1 ]
-]
-
-{ #category : #private }
 GtKeywordCompletionAction >> completedMessage [
 	^ String
 		streamContents: [ :stream | 
