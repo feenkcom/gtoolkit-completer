@@ -636,7 +636,7 @@ GtCompletionController >> textElement: anEditorElement [
 { #category : #'event handling' }
 GtCompletionController >> textInserted: anEvent [
 	ignoreTextEvents
-		ifFalse: [ self startCompletionAt: anEvent index + 1 ].
+		ifFalse: [ self startCompletionAt: anEvent index + anEvent text size ].
 	lastWasText := true
 ]
 
