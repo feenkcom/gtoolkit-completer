@@ -28,3 +28,8 @@ GtPharoVariableNode >> guessType: aClass [
 GtPharoVariableNode >> isLocallyDefined [
 	^ self allParents anySatisfy: [ :each | each defines: name value ]
 ]
+
+{ #category : #'*GToolkit-Completer' }
+GtPharoVariableNode >> whoDefines [
+	^ self allParents detect: [ :each | each defines: name value ] ifNone: [  ]
+]
