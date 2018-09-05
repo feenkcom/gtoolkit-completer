@@ -107,6 +107,13 @@ GtInsertTextCompletionAction >> toIndex [
 	^ position + text size
 ]
 
+{ #category : #translating }
+GtInsertTextCompletionAction >> translateBy: anIndex [
+	super translateBy: anIndex.
+	position := position + anIndex.
+	searchStartPosition := searchStartPosition + anIndex
+]
+
 { #category : #executing }
 GtInsertTextCompletionAction >> undoDrillDownOn: aCompletionController [
 	text isEmpty

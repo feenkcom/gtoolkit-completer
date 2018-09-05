@@ -87,6 +87,10 @@ GtCompletionAction >> previewOn: aCompletionController [
 	self subclassResponsibility
 ]
 
+{ #category : #translating }
+GtCompletionAction >> translateBy: anIndex [
+]
+
 { #category : #executing }
 GtCompletionAction >> undoDrillDownOn: aCompletionController [
 	

@@ -64,6 +64,13 @@ GtDeleteTextCompletionAction >> to: anInteger [
 	to := anInteger
 ]
 
+{ #category : #translating }
+GtDeleteTextCompletionAction >> translateBy: anIndex [
+	super translateBy: anIndex.
+	from := from + anIndex.
+	to := to + anIndex
+]
+
 { #category : #executing }
 GtDeleteTextCompletionAction >> undoDrillDownOn: aCompletionController [
 	deletedString isNil

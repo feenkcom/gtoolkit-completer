@@ -53,6 +53,12 @@ GtCompositeCompletionAction >> removeAction: aCompletionAction [
 	actions remove: aCompletionAction ifAbsent: [  ]
 ]
 
+{ #category : #translating }
+GtCompositeCompletionAction >> translateBy: anIndex [
+	super translateBy: anIndex.
+	self actions do: [ :each | each translateBy: anIndex ]
+]
+
 { #category : #executing }
 GtCompositeCompletionAction >> undoDrillDownOn: aCompletionController [
 	actions reverseDo: [ :each | each undoDrillDownOn: aCompletionController ]

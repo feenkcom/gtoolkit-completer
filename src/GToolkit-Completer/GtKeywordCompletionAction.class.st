@@ -118,3 +118,10 @@ GtKeywordCompletionAction >> previewOn: aCompletionController [
 GtKeywordCompletionAction >> toIndex [
 	^ endPosition
 ]
+
+{ #category : #translating }
+GtKeywordCompletionAction >> translateBy: anIndex [
+	super translateBy: anIndex.
+	parenIndex notNil
+		ifTrue: [ parenIndex := parenIndex + anIndex ]
+]
