@@ -139,7 +139,7 @@ GtCompletionController >> cursorMoved: anEvent [
 	(anEvent newIndex = anEvent oldIndex or: [ ignoreTextEvents ])
 		ifTrue: [ ^ self ].
 	lastWasText
-		ifFalse: [ self completeWithCursor: false ].
+		ifFalse: [ self removePopup ].
 	lastWasText := false
 ]
 
@@ -414,7 +414,8 @@ GtCompletionController >> processTabKey: anEvent [
 		ifFalse: [ direction := anEvent modifiers isShift
 				ifTrue: [ -1 ]
 				ifFalse: [ 1 ].
-			(self moveCursorToNextUncompletedItem: direction)
+			((self moveCursorToNextUncompletedItem: direction)
+				or: [ self startCompletionAt: self textEditor cursor first position ])
 				ifTrue: [ anEvent consumed: true ] ]
 ]
 
@@ -554,15 +555,18 @@ GtCompletionController >> startCompletionAt: aTextIndex [
 
 	"If we have multiple cursors, don't open the completion."
 	self textEditor cursor cursorsCount = 1
-		ifFalse: [ ^ self removePopup ].
+		ifFalse: [ self removePopup.
+			^ false ].
 
 	"If there are no completions for a given index, remove the popup"
 	((self strategyAt: aTextIndex) hasCompletionsAt: aTextIndex in: self text)
-		ifFalse: [ ^ self removePopup ].
-
+		ifFalse: [ self removePopup.
+			^ false ].
+		
 	self isShowingPopup
 		ifTrue: [ self updatePopupItemsAt: aTextIndex autoSelect: true ]
-		ifFalse: [ self startPopupDelayAt: aTextIndex ]
+		ifFalse: [ self startPopupDelayAt: aTextIndex ].
+	^ true
 ]
 
 { #category : #'private - popup' }
