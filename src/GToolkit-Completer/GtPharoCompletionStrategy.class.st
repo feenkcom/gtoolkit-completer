@@ -124,7 +124,7 @@ GtPharoCompletionStrategy >> initialize [
 	super initialize.
 	isMethod := true.
 	hasImplicitVariables := false.
-	variables := GtPrefixTree withAll: Smalltalk keys.
+	variables := GtPrefixTree withAll: Smalltalk globals keys.
 	variables addAll: #('self' 'true' 'false' 'nil' 'thisContext')
 ]
 
