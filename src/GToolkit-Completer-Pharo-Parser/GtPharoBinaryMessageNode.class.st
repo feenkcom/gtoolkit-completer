@@ -18,6 +18,11 @@ GtPharoBinaryMessageNode >> nodeVariables [
 	^ #(#value)
 ]
 
+{ #category : #accessing }
+GtPharoBinaryMessageNode >> selector [
+	^ self selectorPart value asSymbol
+]
+
 { #category : #generated }
 GtPharoBinaryMessageNode >> selectorPart [
 	^ selectorPart

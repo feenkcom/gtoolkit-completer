@@ -8,3 +8,8 @@ Class {
 GtPharoMessageNode >> acceptVisitor: aProgramVisitor [
 	^ aProgramVisitor visitMessage: self
 ]
+
+{ #category : #accessing }
+GtPharoMessageNode >> selector [
+	^ self subclassResponsibility
+]

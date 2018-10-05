@@ -30,6 +30,11 @@ GtPharoKeywordMessageNode >> initialize [
 	values := OrderedCollection new: 2.
 ]
 
+{ #category : #accessing }
+GtPharoKeywordMessageNode >> selector [
+	^ (String streamContents: [ :stream | self selectorParts do: [ :each | stream nextPutAll: each value ] ]) asSymbol
+]
+
 { #category : #generated }
 GtPharoKeywordMessageNode >> selectorParts [
 	^ selectorParts

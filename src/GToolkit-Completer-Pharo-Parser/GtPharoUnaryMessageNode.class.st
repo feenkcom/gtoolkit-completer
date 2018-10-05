@@ -12,6 +12,11 @@ GtPharoUnaryMessageNode >> acceptVisitor: aProgramVisitor [
 	^ aProgramVisitor visitUnaryMessage: self
 ]
 
+{ #category : #accessing }
+GtPharoUnaryMessageNode >> selector [
+	^ self selectorPart value asSymbol
+]
+
 { #category : #generated }
 GtPharoUnaryMessageNode >> selectorPart [
 	^ selectorPart

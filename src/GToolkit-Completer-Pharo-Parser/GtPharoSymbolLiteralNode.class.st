@@ -12,6 +12,17 @@ GtPharoSymbolLiteralNode >> acceptVisitor: aProgramVisitor [
 	^ aProgramVisitor visitSymbolLiteral: self
 ]
 
+{ #category : #accessing }
+GtPharoSymbolLiteralNode >> asSymbol [
+	| name |
+	name := self value source.
+	name first = $#
+		ifTrue: [ name := name copyFrom: 2 to: name size ].
+	name first = $'
+		ifTrue: [ name := (name copyFrom: 2 to: name size - 1) copyReplaceAll: '''''' with: '''' ].
+	^ name asSymbol
+]
+
 { #category : #generated }
 GtPharoSymbolLiteralNode >> tokenVariables [
 	^ #(#value)
