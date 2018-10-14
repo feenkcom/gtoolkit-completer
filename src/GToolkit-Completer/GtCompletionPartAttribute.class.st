@@ -1,7 +1,7 @@
 Class {
 	#name : #GtCompletionPartAttribute,
-	#superclass : #BrTextAttribute,
-	#category : 'GToolkit-Completer'
+	#superclass : #BlTextAttribute,
+	#category : #'GToolkit-Completer'
 }
 
 { #category : #comparing }

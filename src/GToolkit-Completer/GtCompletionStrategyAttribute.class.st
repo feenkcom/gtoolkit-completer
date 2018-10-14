@@ -1,10 +1,10 @@
 Class {
 	#name : #GtCompletionStrategyAttribute,
-	#superclass : #BrTextAttribute,
+	#superclass : #BlTextAttribute,
 	#instVars : [
 		'strategy'
 	],
-	#category : 'GToolkit-Completer'
+	#category : #'GToolkit-Completer'
 }
 
 { #category : #comparing }

@@ -1,6 +1,6 @@
 Class {
 	#name : #GtPreviewDeletionAttribute,
-	#superclass : #BrTextAttribute,
+	#superclass : #BlTextAttribute,
 	#category : #'GToolkit-Completer'
 }
 
