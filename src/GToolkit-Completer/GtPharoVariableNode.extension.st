@@ -21,6 +21,8 @@ GtPharoVariableNode >> guessType: aClass [
 		ifTrue: [ ^ aClass ].
 	name value = 'super'
 		ifTrue: [ ^ aClass superclass ].
+	aClass notNil
+		ifTrue: [ (aClass bindingOf: name value asSymbol) ifNotNil: [ :binding | ^ binding value class ] ].
 	^ super guessType: aClass
 ]
 

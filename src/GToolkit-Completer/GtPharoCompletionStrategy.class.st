@@ -19,7 +19,12 @@ Class {
 { #category : #'class initialization' }
 GtPharoCompletionStrategy class >> initialize [
 	SelectorCache := GtPrefixTree new.
-	Smalltalk allClassesDo: [ :each | SelectorCache addAll: each selectors ]
+	Smalltalk
+		allClassesDo: [ :each | 
+			SelectorCache
+				addAll: each selectors;
+				addAll: each class selectors ].
+	Smalltalk allTraits do: [ :each | SelectorCache addAll: each selectors ]
 ]
 
 { #category : #'instance creation' }
