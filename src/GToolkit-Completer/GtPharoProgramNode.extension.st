@@ -1,6 +1,19 @@
 Extension { #name : #GtPharoProgramNode }
 
 { #category : #'*GToolkit-Completer' }
+GtPharoProgramNode >> actionForSelector: aSymbol startingWith: aString at: anInteger [
+	| isKeyword actionClass action |
+	isKeyword := aSymbol last = $:.
+	actionClass := isKeyword
+		ifTrue: [ GtKeywordCompletionAction ]
+		ifFalse: [ GtInsertTextCompletionAction ].
+	action := actionClass labeled: aSymbol completion: (aSymbol allButFirst: aString size) position: anInteger.
+	(isKeyword and: [ self needsParenthesisForKeyword ])
+		ifTrue: [ action addParenthesesBefore: parent receiver startPosition ].
+	^ action
+]
+
+{ #category : #'*GToolkit-Completer' }
 GtPharoProgramNode >> completionActionsFor: aGtPharoCompletionStrategy [
 	^ #()
 ]
@@ -34,4 +47,9 @@ GtPharoProgramNode >> localVariables [
 GtPharoProgramNode >> localVariablesInto: aCollection [
 	parent notNil
 		ifTrue: [ parent localVariablesInto: aCollection ]
+]
+
+{ #category : #'*GToolkit-Completer' }
+GtPharoProgramNode >> needsParenthesisForKeyword [
+	^ false
 ]

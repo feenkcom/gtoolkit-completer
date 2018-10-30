@@ -8,12 +8,13 @@ Class {
 		'methodPattern',
 		'variables',
 		'index',
-		'maxItems'
+		'maxItems',
+		'pragmas'
 	],
 	#classVars : [
 		'SelectorCache'
 	],
-	#category : 'GToolkit-Completer-Pharo'
+	#category : #'GToolkit-Completer-Pharo'
 }
 
 { #category : #'class initialization' }
@@ -168,6 +169,23 @@ GtPharoCompletionStrategy >> parseSource: aString [
 		ifFalse: [ GtPharoParser parseWithErrors: aString startingAt: GtPharoParser startingStateForMethodSequence ] ]
 		on: SmaCCParserError
 		do: [ :ex | ex return: nil ]
+]
+
+{ #category : #'private-pragmas' }
+GtPharoCompletionStrategy >> pragmas [
+	pragmas isNil
+		ifTrue: [ pragmas := GtPrefixTree new.
+			Smalltalk image
+				allClassesAndTraitsDo: [ :each | 
+					[ :cls | cls selectors do: [ :sel | (cls >> sel) pragmas do: [ :pragma | pragmas add: pragma selector ] ] ]
+						value: each;
+						value: each class ] ].
+	^ pragmas
+]
+
+{ #category : #'private-pragmas' }
+GtPharoCompletionStrategy >> pragmas: anInteger startingWith: aString [
+	^ self pragmas weightedFirst: anInteger startingWith: aString
 ]
 
 { #category : #'private-selector' }
