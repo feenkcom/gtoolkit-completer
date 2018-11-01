@@ -25,7 +25,7 @@ GtRenamerExamples >> smalltalkRenamer [
 			(BlShortcut new
 				combination:
 					(BlKeyCombination builder
-						meta;
+						primary;
 						key: Key r;
 						build);
 				action: [ GtRenameAction pharoRenameLocalsOn: editorElement ]).
