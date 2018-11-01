@@ -73,6 +73,8 @@ GtCompositeRenameAction >> addLocations: integerCollection to: anEditor [
 { #category : #private }
 GtCompositeRenameAction >> addRenameAttributesToOtherEditors [
 	self removeOtherAttributes.
+	newSize < 1
+		ifTrue: [ ^ self ].
 	otherEditors
 		keysAndValuesDo: [ :editor :positions | 
 			positions do: [ :each | (editor text from: each to: each + newSize - 1) attributes: {GtRenameAttribute new} ].
@@ -86,9 +88,6 @@ GtCompositeRenameAction >> editorEventHandlers [
 	^ super editorEventHandlers
 		,
 			{(BlEventHandler
-				on: BrTextEditorInsertedEvent
-				do: [ :event | self textInserted: event ]).
-			(BlEventHandler
 				on: BrTextEditorDeletedEvent
 				do: [ :event | self textDeleted: event ])}
 ]
@@ -129,13 +128,19 @@ GtCompositeRenameAction >> removeOtherAttributes [
 
 { #category : #private }
 GtCompositeRenameAction >> replaceFrom: from to: to with: aString in: anEditor [
-	anEditor deleter
-		from: from - 1 to: to;
-		delete.
-	anEditor inserter
-		at: from - 1;
-		string: aString;
-		insert
+	| attributes |
+	attributes := #().
+	from <= to
+		ifTrue: [ attributes := anEditor text attributesAt: from.
+			anEditor deleter
+				from: from - 1 to: to;
+				delete ].
+	aString notEmpty
+		ifTrue: [ anEditor inserter
+				at: from - 1;
+				string: aString;
+				insert.
+			(anEditor text from: from to: from + aString size) attributes: attributes ]
 ]
 
 { #category : #'event handling' }
@@ -153,6 +158,7 @@ GtCompositeRenameAction >> textDeleted: anEvent [
 { #category : #'event handling' }
 GtCompositeRenameAction >> textInserted: anEvent [
 	| oldSize |
+	super textInserted: anEvent.
 	(anEvent index between: originalLocations first first - 1 and: originalLocations first first + newSize - 1)
 		ifFalse: [ ^ self ].
 	oldSize := newSize.

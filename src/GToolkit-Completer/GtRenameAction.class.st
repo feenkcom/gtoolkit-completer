@@ -129,7 +129,10 @@ GtRenameAction >> editorEventHandlers [
 		do: [ :event | self cursorEvent: event ]).
 	(BlEventHandler
 		on: BrTextEditorCursorRemovedEvent
-		do: [ :event | self cursorEvent: event ])}
+		do: [ :event | self cursorEvent: event ]).
+	(BlEventHandler
+		on: BrTextEditorInsertedEvent
+		do: [ :event | self textInserted: event ])}
 ]
 
 { #category : #installation }
@@ -273,6 +276,18 @@ GtRenameAction >> textElement [
 { #category : #accessing }
 GtRenameAction >> textElement: aTextEditorElement [
 	textElement := aTextEditorElement
+]
+
+{ #category : #'event handling' }
+GtRenameAction >> textInserted: anEvent [
+	| from to |
+	from := anEvent index + 1.
+	to := anEvent index + anEvent text size.
+	((self textEditor text attributesAt: from) anySatisfy: [ :each | each isKindOf: GtRenameAttribute ])
+		ifTrue: [ ^ self ].
+	(self textEditor text from: from to: to) attributes: {GtRenameAttribute new}.
+	self textEditor invalidate: from to: to.
+	self textEditor update: from to: to
 ]
 
 { #category : #private }
