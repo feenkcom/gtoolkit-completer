@@ -38,7 +38,7 @@ GtRenameAction class >> pharoRenameLocalsOn: aTextEditorElement [
 	^ [ | editor text ast items action |
 	editor := aTextEditorElement editor.
 	editor cursor cursorsCount = 1
-		ifFalse: [ ^ self ].
+		ifFalse: [ ^ nil ].
 	text := editor text.
 	ast := GtPharoParser parseWithErrors: text asString.
 	items := OrderedCollection new.
@@ -63,7 +63,7 @@ GtRenameAction class >> pharoRenameSnippetLocalsOn: aTextEditorElement [
 	^ [ | editor text ast items action |
 	editor := aTextEditorElement editor.
 	editor cursor cursorsCount = 1
-		ifFalse: [ ^ self ].
+		ifFalse: [ ^ nil ].
 	text := editor text.
 	ast := GtPharoParser parseWithErrors: text asString startingAt: GtPharoParser startingStateForMethodSequence.
 	items := OrderedCollection new.
@@ -122,6 +122,26 @@ GtRenameAction >> cursorEvent: anEvent [
 	self uninstall
 ]
 
+{ #category : #installation }
+GtRenameAction >> editorEventHandlers [
+	^ {(BlEventHandler
+		on: BrTextEditorCursorAddedEvent
+		do: [ :event | self cursorEvent: event ]).
+	(BlEventHandler
+		on: BrTextEditorCursorRemovedEvent
+		do: [ :event | self cursorEvent: event ])}
+]
+
+{ #category : #installation }
+GtRenameAction >> elementEventHandlers [
+	^ {(BlEventHandler
+		on: BlKeystrokeEvent
+		do: [ :event | self processKeystroke: event ]).
+	(BlEventHandler
+		on: BlKeyDownEvent
+		do: [ :event | self processKeyDown: event ])}
+]
+
 { #category : #'initialize-release' }
 GtRenameAction >> initialize [
 	super initialize.
@@ -144,19 +164,9 @@ GtRenameAction >> install [
 
 { #category : #installation }
 GtRenameAction >> installEventHandlers [
-	editorHandlers := {(BlEventHandler
-		on: BrTextEditorCursorAddedEvent
-		do: [ :event | self cursorEvent: event ]).
-	(BlEventHandler
-		on: BrTextEditorCursorRemovedEvent
-		do: [ :event | self cursorEvent: event ])}.
+	editorHandlers := self editorEventHandlers.
 	editorHandlers do: [ :each | self textEditor addEventHandler: each ].
-	elementFilters := {(BlEventHandler
-		on: BlKeystrokeEvent
-		do: [ :event | self processKeystroke: event ]).
-	(BlEventHandler
-		on: BlKeyDownEvent
-		do: [ :event | self processKeyDown: event ])}.
+	elementFilters := self elementEventHandlers.
 	elementFilters do: [ :each | self textElement addEventFilter: each ]
 ]
 
