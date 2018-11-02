@@ -140,7 +140,7 @@ GtCompositeRenameAction >> replaceFrom: from to: to with: aString in: anEditor [
 				at: from - 1;
 				string: aString;
 				insert.
-			(anEditor text from: from to: from + aString size) attributes: attributes ]
+			(anEditor text from: from to: from + aString size - 1) attributes: attributes ]
 ]
 
 { #category : #'event handling' }
