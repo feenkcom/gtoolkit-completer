@@ -9,7 +9,8 @@ Class {
 		'originalText',
 		'originalCursorPosition',
 		'originalIndex',
-		'shouldSelectNames'
+		'shouldSelectNames',
+		'isInstalled'
 	],
 	#category : #'GToolkit-Completer'
 }
@@ -151,7 +152,8 @@ GtRenameAction >> initialize [
 	originalLocations := #().
 	editorHandlers := #().
 	elementFilters := #().
-	shouldSelectNames := false
+	shouldSelectNames := false.
+	isInstalled := false
 ]
 
 { #category : #installation }
@@ -162,7 +164,8 @@ GtRenameAction >> install [
 	self addRenameAttributes.
 	self addCursors.
 	self installEventHandlers.
-	self selectNames
+	self selectNames.
+	isInstalled := true
 ]
 
 { #category : #installation }
@@ -180,6 +183,11 @@ GtRenameAction >> intervalForPosition: aPosition [
 			(aPosition between: each first - 1 and: each last)
 				ifTrue: [ ^ i ] ].
 	^ 0
+]
+
+{ #category : #testing }
+GtRenameAction >> isInstalled [
+	^ isInstalled
 ]
 
 { #category : #testing }
@@ -299,7 +307,8 @@ GtRenameAction >> undoChanges [
 { #category : #installation }
 GtRenameAction >> uninstall [
 	self uninstallEventHandlers.
-	self removeAttributes
+	self removeAttributes.
+	isInstalled := false
 ]
 
 { #category : #installation }
