@@ -6,7 +6,7 @@ GtPharoBlockNode >> defines: aString [
 ]
 
 { #category : #'*GToolkit-Completer' }
-GtPharoBlockNode >> guessType: aClass [
+GtPharoBlockNode >> guessType: completionStrategy [
 	^ [  ] class
 ]
 

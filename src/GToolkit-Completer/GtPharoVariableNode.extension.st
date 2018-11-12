@@ -16,14 +16,8 @@ GtPharoVariableNode >> completionActionsFor: aStrategy [
 ]
 
 { #category : #'*GToolkit-Completer' }
-GtPharoVariableNode >> guessType: aClass [
-	name value = 'self'
-		ifTrue: [ ^ aClass ].
-	name value = 'super'
-		ifTrue: [ ^ aClass superclass ].
-	aClass notNil
-		ifTrue: [ (aClass bindingOf: name value asSymbol) ifNotNil: [ :binding | ^ binding value class ] ].
-	^ super guessType: aClass
+GtPharoVariableNode >> guessType: completionStrategy [
+	^ (completionStrategy typeOfVariable: name value) ifNil: [ super guessType: completionStrategy ]
 ]
 
 { #category : #'*GToolkit-Completer' }

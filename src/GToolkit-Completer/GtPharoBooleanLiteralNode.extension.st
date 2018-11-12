@@ -1,6 +1,6 @@
 Extension { #name : #GtPharoBooleanLiteralNode }
 
 { #category : #'*GToolkit-Completer' }
-GtPharoBooleanLiteralNode >> guessType: aClass [
+GtPharoBooleanLiteralNode >> guessType: completionStrategy [
 	^ Boolean
 ]

@@ -7,7 +7,7 @@ GtPharoUnaryMessageNode >> completionActionsFor: strategy [
 	selectorPart stopPosition = index
 		ifFalse: [ ^ #() ].
 	startingText := selectorPart value.
-	^ (strategy selectorsForReceiver: (parent receiver guessType: strategy classOrMetaClass) matching: startingText)
+	^ (strategy selectorsForReceiver: (parent receiver guessType: strategy) matching: startingText)
 		collect: [ :each | self actionForSelector: each startingWith: startingText at: index ]
 ]
 

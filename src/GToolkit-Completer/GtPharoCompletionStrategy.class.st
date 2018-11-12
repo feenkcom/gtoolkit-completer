@@ -9,7 +9,8 @@ Class {
 		'variables',
 		'index',
 		'maxItems',
-		'pragmas'
+		'pragmas',
+		'variableTypes'
 	],
 	#classVars : [
 		'SelectorCache'
@@ -53,6 +54,16 @@ GtPharoCompletionStrategy class >> newForSnippet [
 { #category : #private }
 GtPharoCompletionStrategy >> actionsFor: anAST at: anInteger [
 	^ (self nodeFor: anInteger in: anAST) ifNil: [ #() ] ifNotNil: [ :node | node completionActionsFor: self ]
+]
+
+{ #category : #accessing }
+GtPharoCompletionStrategy >> blockVariables: aDictionary [
+	variableTypes := Dictionary new.
+	aDictionary
+		keysAndValuesDo: [ :name :cls | 
+			variables add: name.
+			variableTypes at: name put: cls ].
+	self isMethod: false
 ]
 
 { #category : #accessing }
@@ -208,6 +219,19 @@ GtPharoCompletionStrategy >> signatureFor: aMethod [
 			(ast variables isEmpty
 				ifTrue: [ ast selectorParts ]
 				ifFalse: [ ast variables ]) last stopPosition
+]
+
+{ #category : #typing }
+GtPharoCompletionStrategy >> typeOfVariable: aString [
+	aString = 'self'
+		ifTrue: [ ^ self classOrMetaClass ].
+	aString = 'super'
+		ifTrue: [ ^ self classOrMetaClass superclass ].
+	self classOrMetaClass notNil
+		ifTrue: [ (self classOrMetaClass bindingOf: aString asSymbol) ifNotNil: [ :binding | ^ binding value class ] ].
+	variableTypes notNil
+		ifTrue: [ (variableTypes at: aString ifAbsent: [ nil ]) ifNotNil: [ :cls | ^ cls ] ].
+	^ nil
 ]
 
 { #category : #accessing }

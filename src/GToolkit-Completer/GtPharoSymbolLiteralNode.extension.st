@@ -1,6 +1,6 @@
 Extension { #name : #GtPharoSymbolLiteralNode }
 
 { #category : #'*GToolkit-Completer' }
-GtPharoSymbolLiteralNode >> guessType: aClass [
+GtPharoSymbolLiteralNode >> guessType: completionStrategy [
 	^ Symbol
 ]

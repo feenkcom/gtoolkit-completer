@@ -1,6 +1,6 @@
 Extension { #name : #GtPharoValueNode }
 
 { #category : #'*GToolkit-Completer' }
-GtPharoValueNode >> guessType: aClass [
+GtPharoValueNode >> guessType: completionStrategy [
 	^ nil
 ]
