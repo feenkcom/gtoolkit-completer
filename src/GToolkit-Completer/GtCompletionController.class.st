@@ -679,8 +679,8 @@ GtCompletionController >> updatePopupItemsAt: anIndex autoSelect: shouldSelectFi
 	self deselectAll.
 	self completionActions: theActions.
 
-	theActions
-		ifEmpty: [ ^ self removePopup ].
+	(theActions isEmpty or: [ theActions size = 1 and: [ theActions first affectsText not ] ])
+		ifTrue: [ ^ self removePopup ].
 
 	shouldSelectFirst
 		ifFalse: [ ^ self ].

@@ -55,6 +55,11 @@ GtKeywordCompletionAction >> addParenthesisAttributeOn: aCompletionController [
 	self addPreviewAttributeForText: '(' at: parenIndex - 1 on: aCompletionController
 ]
 
+{ #category : #testing }
+GtKeywordCompletionAction >> affectsText [
+	^ true
+]
+
 { #category : #private }
 GtKeywordCompletionAction >> completedMessage [
 	^ String

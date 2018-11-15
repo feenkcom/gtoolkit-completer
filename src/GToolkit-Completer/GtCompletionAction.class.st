@@ -20,6 +20,11 @@ GtCompletionAction >> = anObject [
 	^ self class = anObject class and: [ self label = anObject label ]
 ]
 
+{ #category : #testing }
+GtCompletionAction >> affectsText [
+	^ partial
+]
+
 { #category : #'private-text modification' }
 GtCompletionAction >> delete: from to: to on: aCompletionController [
 	aCompletionController textEditor deleter

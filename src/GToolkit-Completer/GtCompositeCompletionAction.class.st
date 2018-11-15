@@ -22,6 +22,11 @@ GtCompositeCompletionAction >> addAction: aCompletionAction [
 	actions add: aCompletionAction
 ]
 
+{ #category : #testing }
+GtCompositeCompletionAction >> affectsText [
+	^ super affectsText or: [ actions anySatisfy: [ :each | each affectsText ] ]
+]
+
 { #category : #executing }
 GtCompositeCompletionAction >> drillDownOn: aCompletionController [
 	actions do: [ :each | each drillDownOn: aCompletionController ]
