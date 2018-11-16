@@ -22,7 +22,10 @@ GtPreviewCompletionAttribute >> affect: aBrText in: anEditorElement [
 	text := string asRopedText.
 	attributes := (anEditorElement editor text attributesAt: aBrText end) reject: [ :each | each = self ].
 	text attributes: attributes.
+
 	^ (BlTextElement text: text)
+		ascentBaseline;
+		looseMesurement;
 		background: (BrGlamorousColors lightBorderColor alpha: 0.5);
 		padding: (BlInsets top: 3 left: 0 bottom: 3 right: 0);
 		yourself

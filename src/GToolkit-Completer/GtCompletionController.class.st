@@ -277,8 +277,6 @@ GtCompletionController >> newCompletionList [
 			c horizontal matchParent.
 			c maxHeight: 200 ] ];
 		background: Color white;
-		border: (BlBorder paint: Color lightGray width: 1);
-		padding: (BlInsets all: 2);
 		layout: BlLinearLayout vertical;
 		constraintsDo: [ :c |
 			c vertical fitContent.
@@ -295,7 +293,7 @@ GtCompletionController >> newCompletionList [
 GtCompletionController >> newPopupElement [
 	^ GtCompletionPopupElement new
 		layout: BlLinearLayout vertical;
-		background: Color red;
+		look: BrShadowLook new;
 		constraintsDo: [ :c |
 			c vertical fitContent.
 			c horizontal exact: 200 ]
