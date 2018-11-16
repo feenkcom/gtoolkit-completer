@@ -10,7 +10,8 @@ Class {
 		'originalCursorPosition',
 		'originalIndex',
 		'shouldSelectNames',
-		'isInstalled'
+		'isInstalled',
+		'escapeCancels'
 	],
 	#category : #'GToolkit-Completer'
 }
@@ -146,6 +147,16 @@ GtRenameAction >> elementEventHandlers [
 		do: [ :event | self processKeyDown: event ])}
 ]
 
+{ #category : #accessing }
+GtRenameAction >> escapeCancels [
+	^ escapeCancels
+]
+
+{ #category : #accessing }
+GtRenameAction >> escapeCancels: aBoolean [
+	escapeCancels := aBoolean
+]
+
 { #category : #'initialize-release' }
 GtRenameAction >> initialize [
 	super initialize.
@@ -153,7 +164,8 @@ GtRenameAction >> initialize [
 	editorHandlers := #().
 	elementFilters := #().
 	shouldSelectNames := false.
-	isInstalled := false
+	isInstalled := false.
+	escapeCancels := true
 ]
 
 { #category : #installation }
@@ -203,7 +215,7 @@ GtRenameAction >> locations: aCollectionOfIntervals [
 
 { #category : #'event handling' }
 GtRenameAction >> processKeyDown: anEvent [
-	anEvent key = Key escape
+	(escapeCancels and: [ anEvent key = Key escape ])
 		ifTrue: [ self cancel.
 			anEvent consumed: true ]
 ]

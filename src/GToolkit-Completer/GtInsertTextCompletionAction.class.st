@@ -39,6 +39,11 @@ GtInsertTextCompletionAction >> addPreviewAttributeForText: aString at: anIntege
 	aCompletionController textEditor update: anInteger to: anInteger
 ]
 
+{ #category : #testing }
+GtInsertTextCompletionAction >> affectsText [
+	^ super affectsText or: [ text notEmpty ]
+]
+
 { #category : #private }
 GtInsertTextCompletionAction >> clearPreviewAttributesOn: aCompletionController [
 	aCompletionController text clearAttributes: [ :attr | attr class = GtPreviewCompletionAttribute ].

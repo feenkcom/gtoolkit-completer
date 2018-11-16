@@ -22,6 +22,11 @@ GtDeleteTextCompletionAction >> = anObject [
 	^ super = anObject and: [ self from = anObject from and: [ self to = anObject to ] ]
 ]
 
+{ #category : #testing }
+GtDeleteTextCompletionAction >> affectsText [
+	^ super affectsText or: [ from <= to ]
+]
+
 { #category : #executing }
 GtDeleteTextCompletionAction >> finishCompletionOn: aCompletionController moveCursor: aBoolean [
 	from > to
