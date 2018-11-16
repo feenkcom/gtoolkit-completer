@@ -169,6 +169,11 @@ GtCompletionController >> drillDown [
 			self updatePopupItemsAt: self position autoSelect: true ]
 ]
 
+{ #category : #testing }
+GtCompletionController >> hasCompletionActions [
+	^ self completionActions notEmpty and: [ self completionActions size ~= 1 or: [ self completionActions first affectsText ] ]
+]
+
 { #category : #private }
 GtCompletionController >> ignoreTextEventsWhile: aBlock [
 	ignoreTextEvents
@@ -527,7 +532,7 @@ GtCompletionController >> showPopupAt: anIndex [
 
 	self updatePopupItemsAt: anIndex autoSelect: true.
 
-	(self isShowingPopup or: [ self completionActions isEmpty ])
+	(self isShowingPopup or: [ self hasCompletionActions not ])
 		ifTrue: [ ^ self ].
 
 	self
@@ -679,8 +684,8 @@ GtCompletionController >> updatePopupItemsAt: anIndex autoSelect: shouldSelectFi
 	self deselectAll.
 	self completionActions: theActions.
 
-	(theActions isEmpty or: [ theActions size = 1 and: [ theActions first affectsText not ] ])
-		ifTrue: [ ^ self removePopup ].
+	self hasCompletionActions
+		ifFalse: [ ^ self removePopup ].
 
 	shouldSelectFirst
 		ifFalse: [ ^ self ].
