@@ -10,7 +10,8 @@ Class {
 		'index',
 		'maxItems',
 		'pragmas',
-		'variableTypes'
+		'variableTypes',
+		'bindings'
 	],
 	#classVars : [
 		'SelectorCache'
@@ -54,6 +55,16 @@ GtPharoCompletionStrategy class >> newForSnippet [
 { #category : #private }
 GtPharoCompletionStrategy >> actionsFor: anAST at: anInteger [
 	^ (self nodeFor: anInteger in: anAST) ifNil: [ #() ] ifNotNil: [ :node | node completionActionsFor: self ]
+]
+
+{ #category : #accessing }
+GtPharoCompletionStrategy >> bindings [
+	^ bindings
+]
+
+{ #category : #accessing }
+GtPharoCompletionStrategy >> bindings: anObject [
+	bindings := anObject
 ]
 
 { #category : #accessing }
@@ -229,6 +240,8 @@ GtPharoCompletionStrategy >> typeOfVariable: aString [
 		ifTrue: [ ^ self classOrMetaClass superclass ].
 	self classOrMetaClass notNil
 		ifTrue: [ (self classOrMetaClass bindingOf: aString asSymbol) ifNotNil: [ :binding | ^ binding value class ] ].
+	bindings notNil
+		ifTrue: [ (bindings bindingOf: aString asSymbol) ifNotNil: [ :binding | ^ binding value class ] ].
 	variableTypes notNil
 		ifTrue: [ (variableTypes at: aString ifAbsent: [ nil ]) ifNotNil: [ :cls | ^ cls ] ].
 	^ nil
