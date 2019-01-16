@@ -5,7 +5,7 @@ Class {
 		'label',
 		'partial'
 	],
-	#category : #'GToolkit-Completer'
+	#category : #'GToolkit-Completer-Actions'
 }
 
 { #category : #'instance creation' }

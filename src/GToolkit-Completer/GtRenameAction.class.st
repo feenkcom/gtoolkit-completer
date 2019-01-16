@@ -13,7 +13,7 @@ Class {
 		'isInstalled',
 		'escapeCancels'
 	],
-	#category : #'GToolkit-Completer'
+	#category : #'GToolkit-Completer-Actions'
 }
 
 { #category : #pharo }

@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'actions'
 	],
-	#category : 'GToolkit-Completer'
+	#category : #'GToolkit-Completer-Actions'
 }
 
 { #category : #comparing }
