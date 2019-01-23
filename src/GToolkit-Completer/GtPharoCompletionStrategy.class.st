@@ -110,6 +110,22 @@ GtPharoCompletionStrategy >> forMethod: aCompiledMethod [
 	self methodPattern: ast pattern
 ]
 
+{ #category : #ui }
+GtPharoCompletionStrategy >> gtItemsFor: aView [
+	<gtView>
+	^ self variables 
+		ifNil:  [ ^ aView ]
+		ifNotNil: [ self variables gtItemsFor: aView ]
+]
+
+{ #category : #ui }
+GtPharoCompletionStrategy >> gtViewChildrenFor: aView [
+	<gtView>
+	^ self variables 
+		ifNil:  [ ^ aView ]
+		ifNotNil: [ self variables gtViewChildrenFor: aView ]
+]
+
 { #category : #testing }
 GtPharoCompletionStrategy >> hasCompletionsAt: anInteger in: aText [
 	| char |

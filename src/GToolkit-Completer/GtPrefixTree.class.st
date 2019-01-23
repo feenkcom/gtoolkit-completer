@@ -87,6 +87,16 @@ GtPrefixTree >> first: anInteger startingWith: aString [
 	^ items
 ]
 
+{ #category : #ui }
+GtPrefixTree >> gtViewChildrenFor: aView [
+	<gtView>
+	^ aView columnedList
+		title: 'Children trees' translated;
+		items: [ self children ];
+		column: 'Prefix' item: [ :aPrefixTree | aPrefixTree prefix ] width: 100;
+		column: 'Tree' item: [ :aPrefixTree | aPrefixTree ]
+]
+
 { #category : #'private-testing' }
 GtPrefixTree >> hasChildren [
 	^ children notNil and: [ children notEmpty ]
