@@ -21,7 +21,7 @@ GtCompleterExamples >> cmdLeftOn: completionController [
 	completionController
 		processKeyDown:
 			(BlKeyDownEvent new
-				key: Key arrowLeft;
+				key: BlKeyboardKey arrowLeft;
 				modifiers:
 					(BlKeyModifiers
 						shift: false
@@ -37,7 +37,7 @@ GtCompleterExamples >> cmdRightOn: completionController [
 	completionController
 		processKeyDown:
 			(BlKeyDownEvent new
-				key: Key arrowRight;
+				key: BlKeyboardKey arrowRight;
 				modifiers:
 					(BlKeyModifiers
 						shift: false
@@ -133,7 +133,7 @@ GtCompleterExamples >> escapeOn: completionController [
 	completionController
 		processKeyDown:
 			(BlKeyDownEvent new
-				key: Key escape;
+				key: BlKeyboardKey escape;
 				modifiers:
 					(BlKeyModifiers
 						shift: false

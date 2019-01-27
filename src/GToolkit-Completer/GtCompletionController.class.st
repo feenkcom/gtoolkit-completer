@@ -357,15 +357,15 @@ GtCompletionController >> position [
 GtCompletionController >> processKeyDown: anEvent [
 	self isShowingPopup
 		ifFalse: [ ^ self ].
-	anEvent key = Key escape
+	anEvent key isEscape
 		ifTrue: [ self removePopup.
 			anEvent consumed: true ].
 	anEvent modifiers isPrimaryModifier
 		ifTrue: [ ^ self removePopup ].
-	(anEvent key = Key arrowRight and: [ anEvent modifiers isPrimaryModifier ])
+	(anEvent key isArrowRight and: [ anEvent modifiers isPrimaryModifier ])
 		ifTrue: [ self drillDown.
 			anEvent consumed: true ].
-	(anEvent key = Key arrowLeft and: [ anEvent modifiers isPrimaryModifier ])
+	(anEvent key isArrowLeft and: [ anEvent modifiers isPrimaryModifier ])
 		ifTrue: [ self undoDrillDown.
 			anEvent consumed: true ]
 ]
