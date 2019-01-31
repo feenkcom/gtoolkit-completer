@@ -18,7 +18,6 @@ Class {
 		'listElement',
 		'eventFilters',
 		'eventHandlers',
-		'popupEventFilters',
 		'popupEventHandlers',
 		'lastWasText',
 		'previewAction',
@@ -30,7 +29,7 @@ Class {
 		'MaxPopupItems',
 		'PopupDelay'
 	],
-	#category : 'GToolkit-Completer-UI'
+	#category : #'GToolkit-Completer-UI'
 }
 
 { #category : #'class initialization' }
@@ -205,34 +204,64 @@ GtCompletionController >> initialize [
 
 { #category : #actions }
 GtCompletionController >> install [
-	eventHandlers := {(BlEventHandler
-		on: BrTextEditorInsertedEvent
-		do: [ :event | self textInserted: event ]).
-	(BlEventHandler
-		on: BrTextEditorDeletedEvent
-		do: [ :event | self textDeleted: event ]).
-	(BlEventHandler
-		on: BrTextEditorCursorMovedEvent
-		do: [ :event | self cursorMoved: event ])}.
+	eventFilters := {		
+		GtCompletionShortcutHander new
+			completionController: self;
+			addShortcut: (BlShortcut new
+				combination: BlKeyCombination arrowDown;
+				action: [ self selectNextItem ]);
+			addShortcut: (BlShortcut new
+				combination: BlKeyCombination arrowUp;
+				action: [ self selectPreviousItem ]);
+			addShortcut: (BlShortcut new
+				combination: BlKeyCombination builder primary arrowRight build;
+				action: [ self drillDown ]);
+			addShortcut: (BlShortcut new
+				combination: BlKeyCombination builder primary arrowLeft build;
+				action: [ self undoDrillDown ]);
+			addShortcut: (BlShortcut new
+				combination: BlKeyCombination return;
+				action: [ self completeWithCursor: true ]);
+			addShortcut: (BlShortcut new
+				combination: BlKeyCombination tab;
+				action: [ self completeWithCursor: true ]);
+			addShortcut: (BlShortcut new
+				combination: BlKeyCombination escape;
+				action: [ self removePopup ]).			
+	}.
+
+	eventHandlers := {
+		BlEventHandler
+			on: BrTextEditorInsertedEvent
+			do: [ :event | self textInserted: event ].
+		BlEventHandler
+			on: BrTextEditorDeletedEvent
+			do: [ :event | self textDeleted: event ].
+		BlEventHandler
+			on: BrTextEditorCursorMovedEvent
+			do: [ :event | self cursorMoved: event ]
+	}.
+	
+	popupEventHandlers := {
+		BlEventHandler
+			on: BrSelectionChanged
+			do: [ :event | self onSelectionChanged: event ].
+		BlEventHandler
+			on: BlDoubleClickEvent
+			do: [ :event | self doubleClickList: true ]
+	}.	
+		
 	eventHandlers do: [ :each | self textEditor addEventHandler: each ].
-	eventFilters := {(BlEventHandler
-		on: BlKeystrokeEvent
-		do: [ :event | self processKeystroke: event ]).
-	(BlEventHandler
-		on: BlKeyDownEvent
-		do: [ :event | self processKeyDown: event ])}.
 	eventFilters do: [ :each | textElement addEventFilter: each ].
-	popupEventHandlers := {(BlEventHandler
-		on: BrSelectionChanged
-		do: [ :event | self onSelectionChanged: event ]).
-	(BlEventHandler
-		on: BlDoubleClickEvent
-		do: [ :event | self doubleClickList: true ])}.
-	popupEventHandlers do: [ :each | listElement addEventHandler: each ].
-	popupEventFilters := {(BlEventHandler
-		on: BlKeystrokeEvent
-		do: [ :event | self processPopupKeystroke: event ])}.
-	popupEventFilters do: [ :each | listElement addEventFilter: each ]
+	popupEventHandlers do: [ :each | listElement addEventHandler: each ]
+]
+
+{ #category : #testing }
+GtCompletionController >> isActive [
+	"Return true if completion is active. For example if a popup is shown to the user
+	or if we are in argument completion mode (Tab/shift+tab navigation between arguments)"
+	
+	^ self isShowingPopup
 ]
 
 { #category : #testing }
@@ -354,46 +383,6 @@ GtCompletionController >> position [
 ]
 
 { #category : #'event handling' }
-GtCompletionController >> processKeyDown: anEvent [
-	self isShowingPopup
-		ifFalse: [ ^ self ].
-	anEvent key isEscape
-		ifTrue: [ self removePopup.
-			anEvent consumed: true ].
-	anEvent modifiers isPrimaryModifier
-		ifTrue: [ ^ self removePopup ].
-	(anEvent key isArrowRight and: [ anEvent modifiers isPrimaryModifier ])
-		ifTrue: [ self drillDown.
-			anEvent consumed: true ].
-	(anEvent key isArrowLeft and: [ anEvent modifiers isPrimaryModifier ])
-		ifTrue: [ self undoDrillDown.
-			anEvent consumed: true ]
-]
-
-{ #category : #'event handling' }
-GtCompletionController >> processKeystroke: anEvent [
-	anEvent char = Character tab
-		ifTrue: [ ^ self processTabKey: anEvent ].
-	
-	self isShowingPopup
-		ifFalse: [ ^ self ].
-	
-	anEvent char = Character cr
-		ifTrue: [ ^ self processReturnKey: anEvent ].
-	
-	self cancelPreview.
-	
-	anEvent char = Character arrowDown
-		ifTrue: [
-			self selectNextItem.
-			anEvent consumed: true ].
-	anEvent char = Character arrowUp
-		ifTrue: [
-			self selectPreviousItem.
-			anEvent consumed: true ]
-]
-
-{ #category : #'event handling' }
 GtCompletionController >> processPopupKeystroke: anEvent [
 	self isShowingPopup
 		ifFalse: [ ^ self ].
@@ -412,9 +401,10 @@ GtCompletionController >> processReturnKey: anEvent [
 { #category : #'event handling' }
 GtCompletionController >> processTabKey: anEvent [
 	| direction |
+
 	self isShowingPopup
-		ifTrue: [ self completeWithCursor: true.
-			^ anEvent consumed: true ].
+		ifTrue: [ ^ self ].
+		
 	self isAtStartOfLine
 		ifFalse: [ direction := anEvent modifiers isShift
 				ifTrue: [ -1 ]
@@ -664,7 +654,6 @@ GtCompletionController >> undoDrillDown [
 
 { #category : #actions }
 GtCompletionController >> uninstall [
-	popupEventFilters do: [ :each | listElement removeEventFilter: each ].
 	popupEventHandlers do: [ :each | listElement removeEventHandler: each ].
 	eventFilters do: [ :each | textElement removeEventFilter: each ].
 	eventHandlers do: [ :each | self textEditor removeEventHandler: each ]
