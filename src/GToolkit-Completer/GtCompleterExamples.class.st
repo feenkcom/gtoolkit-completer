@@ -64,6 +64,7 @@ GtCompleterExamples >> completeWithCursorMove [
 { #category : #completing }
 GtCompleterExamples >> completeWithTab [
 	<gtExample>
+	<noTest>
 	| aCompleter |
 	
 	aCompleter := self openOn: '' withStrategy: self alphabetStrategy entering: #(0 'dd' #tabOn:).
@@ -269,6 +270,8 @@ GtCompleterExamples >> smalltalkCompleter [
 { #category : #smalltalk }
 GtCompleterExamples >> smalltalkCompletion [
 	<gtExample>
+	<noTest>
+
 	^ self
 		openOn: ''
 		withStrategy: self smalltalkStrategy
