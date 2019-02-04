@@ -1,1 +1,1 @@
-{	"repositories" : {		"github://j-brant/SmaCC/src" : "fd7fb6d741b7008571853fa3118a720ec4adc99b",		"github://pharo-graphics/Brick/src" : "v0.4.5"	}}
+{	"repositories" : {		"github://feenkcom/Brick/src" : "v0.4.2",		"github://j-brant/SmaCC/src" : "70828b9e660c605f20936032e69720aa3097bb18"	}}
