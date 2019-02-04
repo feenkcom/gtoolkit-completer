@@ -215,7 +215,7 @@ GtRenameAction >> locations: aCollectionOfIntervals [
 
 { #category : #'event handling' }
 GtRenameAction >> processKeyDown: anEvent [
-	(escapeCancels and: [ anEvent key = Key escape ])
+	(escapeCancels and: [ anEvent key isEscape ])
 		ifTrue: [ self cancel.
 			anEvent consumed: true ]
 ]

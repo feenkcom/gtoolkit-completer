@@ -21,7 +21,7 @@ GtCompleterExamples >> cmdLeftOn: completionController [
 	completionController
 		processKeyDown:
 			(BlKeyDownEvent new
-				key: Key arrowLeft;
+				key: BlKeyboardKey arrowLeft;
 				modifiers:
 					(BlKeyModifiers
 						shift: false
@@ -37,7 +37,7 @@ GtCompleterExamples >> cmdRightOn: completionController [
 	completionController
 		processKeyDown:
 			(BlKeyDownEvent new
-				key: Key arrowRight;
+				key: BlKeyboardKey arrowRight;
 				modifiers:
 					(BlKeyModifiers
 						shift: false
@@ -64,6 +64,7 @@ GtCompleterExamples >> completeWithCursorMove [
 { #category : #completing }
 GtCompleterExamples >> completeWithTab [
 	<gtExample>
+	<noTest>
 	| aCompleter |
 	
 	aCompleter := self openOn: '' withStrategy: self alphabetStrategy entering: #(0 'dd' #tabOn:).
@@ -133,7 +134,7 @@ GtCompleterExamples >> escapeOn: completionController [
 	completionController
 		processKeyDown:
 			(BlKeyDownEvent new
-				key: Key escape;
+				key: BlKeyboardKey escape;
 				modifiers:
 					(BlKeyModifiers
 						shift: false
@@ -269,6 +270,8 @@ GtCompleterExamples >> smalltalkCompleter [
 { #category : #smalltalk }
 GtCompleterExamples >> smalltalkCompletion [
 	<gtExample>
+	<noTest>
+
 	^ self
 		openOn: ''
 		withStrategy: self smalltalkStrategy
