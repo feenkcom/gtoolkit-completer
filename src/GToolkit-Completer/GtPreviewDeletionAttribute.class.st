@@ -16,16 +16,6 @@ GtPreviewDeletionAttribute >> drawAboveOnSpartaCanvas: aSpartaCanvas with: aSpar
 		draw
 ]
 
-{ #category : #comparing }
-GtPreviewDeletionAttribute >> equals: aTextAttribute [
-	^ self == aTextAttribute
-]
-
-{ #category : #comparing }
-GtPreviewDeletionAttribute >> hash [
-	^ self identityHash
-]
-
 { #category : #drawing }
 GtPreviewDeletionAttribute >> paint [
 	^ Color red
