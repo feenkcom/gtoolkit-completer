@@ -18,17 +18,22 @@ GtPreviewCompletionAttribute class >> for: aString [
 
 { #category : #accessing }
 GtPreviewCompletionAttribute >> affect: aBrText in: anEditorElement [
-	| text attributes |
+	| text attributes textElement |
 	text := string asRopedText.
 	attributes := (anEditorElement editor text attributesAt: aBrText end) reject: [ :each | each = self ].
 	text attributes: attributes.
-
-	^ (BlTextElement text: text)
+	textElement := (BlTextElement text: text)
 		ascentBaseline;
 		looseMesurement;
 		background: (BrGlamorousColors lightBorderColor alpha: 0.5);
-		padding: (BlInsets top: 3 left: 0 bottom: 3 right: 0);
-		yourself
+		yourself.
+	attributes 
+		detect: [:each | each isKindOf: BrTextParagraphLineSpacingAttribute]
+		ifFound: [ :lineSpacingAttribute | 
+			textElement padding: (BlInsets 
+				top: (lineSpacingAttribute lineSpacing / 2) 
+				bottom: (lineSpacingAttribute lineSpacing / 2)) ].	
+	^ textElement
 ]
 
 { #category : #'initialize-release' }

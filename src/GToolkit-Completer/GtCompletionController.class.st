@@ -320,7 +320,7 @@ GtCompletionController >> newCompletionList [
 			BlTextElement new
 				constraintsDo: [ :c | c horizontal matchParent ];
 				padding: (BlInsets all: 5);
-				text: (each displayString asRopedText thin monospace fontSize: 12) ]
+				text: (each displayString asRopedText glamorousCodeFontAndSmallSize) ]
 ]
 
 { #category : #'private - instance creation' }
