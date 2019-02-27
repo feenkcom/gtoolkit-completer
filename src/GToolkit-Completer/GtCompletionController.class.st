@@ -23,7 +23,8 @@ Class {
 		'previewAction',
 		'drillDownActions',
 		'cursorElement',
-		'ignoreTextEvents'
+		'ignoreTextEvents',
+		'announcer'
 	],
 	#classVars : [
 		'MaxPopupItems',
@@ -70,6 +71,11 @@ GtCompletionController class >> popupDelay: aDuration [
 	PopupDelay := aDuration
 ]
 
+{ #category : #'private - accessing' }
+GtCompletionController >> announcer [
+	^ announcer ifNil: [ announcer := Announcer new ]
+]
+
 { #category : #'private - preview' }
 GtCompletionController >> applyPreview [
 
@@ -112,13 +118,15 @@ GtCompletionController >> completeWithCursor: aBoolean [
 		ignoreTextEventsWhile: [ | partial |
 			partial := false.
 			previewAction notNil
-				ifTrue: [ partial := previewAction isPartial.
+				ifTrue: [ 
+					partial := previewAction isPartial.
 					previewAction finishCompletionOn: self moveCursor: aBoolean.
 					self resetActions ].
 			self deselectAll.
 			partial
 				ifTrue: [ self updatePopupItemsAt: self position autoSelect: true ]
-				ifFalse: [ self removePopup ] ]
+				ifFalse: [ self removePopup ] ].
+	self announcer announce: GtCompleterCompletionAccepted new
 ]
 
 { #category : #'private - accessing' }
