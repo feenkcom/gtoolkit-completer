@@ -65,6 +65,17 @@ GtInsertTextCompletionAction >> fromIndex [
 	^ searchStartPosition
 ]
 
+{ #category : #printing }
+GtInsertTextCompletionAction >> gtDisplayOn: aStream [
+	super printOn: aStream.
+	aStream 
+		nextPut: $(;
+		nextPutAll: self label;
+		nextPutAll: ', ';
+		nextPutAll: self text;
+		nextPut: $).
+]
+
 { #category : #comparing }
 GtInsertTextCompletionAction >> hash [
 	^ super hash bitXor: (text hash bitXor: position hash)
