@@ -24,7 +24,7 @@ GtPreviewCompletionAttribute >> affect: aBrText in: anEditorElement [
 	text attributes: attributes.
 	textElement := (BlTextElement text: text)
 		ascentBaseline;
-		looseMesurement;
+		editorMesurement;
 		background: (BrGlamorousColors lightBorderColor alpha: 0.5);
 		yourself.
 	attributes 
