@@ -139,12 +139,19 @@ GtRenameAction >> editorEventHandlers [
 
 { #category : #installation }
 GtRenameAction >> elementEventHandlers [
-	^ {(BlEventHandler
-		on: BlKeystrokeEvent
-		do: [ :event | self processKeystroke: event ]).
-	(BlEventHandler
-		on: BlKeyDownEvent
-		do: [ :event | self processKeyDown: event ])}
+	^ {(BlShortcutHandler new
+		addShortcut:
+			(BlShortcut new
+				combination: BlKeyCombination escape;
+				action: [ self cancel ]);
+		addShortcut:
+			(BlShortcut new
+				combination: BlKeyCombination tab;
+				action: [ self accept ]);
+		addShortcut:
+			(BlShortcut new
+				combination: BlKeyCombination return;
+				action: [ self accept ]))}
 ]
 
 { #category : #accessing }
@@ -211,20 +218,6 @@ GtRenameAction >> isRenameAttribute: anAttribute [
 GtRenameAction >> locations: aCollectionOfIntervals [
 	originalLocations := aCollectionOfIntervals asSortedCollection: [ :a :b | a first < b first ].
 	self validateLocations
-]
-
-{ #category : #'event handling' }
-GtRenameAction >> processKeyDown: anEvent [
-	(escapeCancels and: [ anEvent key isEscape ])
-		ifTrue: [ self cancel.
-			anEvent consumed: true ]
-]
-
-{ #category : #'event handling' }
-GtRenameAction >> processKeystroke: anEvent [
-	(anEvent char = Character tab or: [ anEvent char = Character cr ])
-		ifTrue: [ self accept.
-			anEvent consumed: true ]
 ]
 
 { #category : #private }
