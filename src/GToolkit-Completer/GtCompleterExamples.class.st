@@ -301,10 +301,5 @@ GtCompleterExamples >> smalltalkStrategy [
 
 { #category : #private }
 GtCompleterExamples >> tabOn: completionController [
-	self pauseForCompletion.
-	completionController
-		processKeystroke:
-			(BlKeystrokeEvent new
-				char: Character tab;
-				yourself)
+	self pauseForCompletion
 ]
