@@ -23,10 +23,10 @@ GtPharoErrorPatternNode >> smaccError [
 ]
 
 { #category : #generated }
-GtPharoErrorPatternNode >> smaccError: aSmaCCError [
+GtPharoErrorPatternNode >> smaccError: aSmaCCErrorNode [
 	self smaccError notNil
 		ifTrue: [ self smaccError parent: nil ].
-	smaccError := aSmaCCError.
+	smaccError := aSmaCCErrorNode.
 	self smaccError notNil
 		ifTrue: [ self smaccError parent: self ]
 ]
