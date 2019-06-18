@@ -24,7 +24,8 @@ Class {
 		'drillDownActions',
 		'cursorElement',
 		'ignoreTextEvents',
-		'announcer'
+		'announcer',
+		'lostFocusDelay'
 	],
 	#classVars : [
 		'MaxPopupItems',
@@ -205,6 +206,9 @@ GtCompletionController >> initialize [
 
 	completionDelay := BlDelayedTaskAction new.
 	completionDelay delay: self class popupDelay.
+	
+	lostFocusDelay := BlDelayedTaskAction new.
+	lostFocusDelay delay: 5 milliSeconds.
 
 	lastWasText := false.
 	ignoreTextEvents := false
@@ -235,7 +239,10 @@ GtCompletionController >> install [
 				action: [ self completeWithCursor: true ]);
 			addShortcut: (BlShortcut new
 				combination: BlKeyCombination escape;
-				action: [ self removePopup ]).			
+				action: [ self removePopup ]).
+		BlEventHandler
+			on: BlBlurEvent
+			do: [ :event | self removePopupOnLostFocus ]	
 	}.
 
 	eventHandlers := {
@@ -256,7 +263,10 @@ GtCompletionController >> install [
 			do: [ :event | self onSelectionChanged: event ].
 		BlEventHandler
 			on: BlDoubleClickEvent
-			do: [ :event | self doubleClickList: true ]
+			do: [ :event | self doubleClickList: true ].
+		BlEventHandler
+			on: BlBlurEvent
+			do: [ :event | self removePopupOnLostFocus ]	
 	}.	
 		
 	eventHandlers do: [ :each | self textEditor addEventHandler: each ].
@@ -428,6 +438,14 @@ GtCompletionController >> removePopup [
 	self terminatePopupDelay.
 	overlay detach.
 	overlay removeFromParent
+]
+
+{ #category : #'private - popup' }
+GtCompletionController >> removePopupOnLostFocus [
+	lostFocusDelay
+		action: [ (textElement hasFocus or: [ listElement hasFocus ])
+				ifFalse: [ self removePopup ] ].
+	lostFocusDelay start
 ]
 
 { #category : #private }
@@ -633,7 +651,8 @@ GtCompletionController >> textElement: anEditorElement [
 		when: BrTextEditorCursorElementRemovedEvent
 		do: [ :anEvent | self onCursorDetached: anEvent cursorElement ].
 
-	completionDelay element: textElement
+	completionDelay element: textElement.
+	lostFocusDelay element: textElement
 ]
 
 { #category : #'event handling' }
