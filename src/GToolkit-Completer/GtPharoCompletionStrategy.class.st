@@ -27,7 +27,19 @@ GtPharoCompletionStrategy class >> initialize [
 			SelectorCache
 				addAll: each selectors;
 				addAll: each class selectors ].
-	Smalltalk allTraits do: [ :each | SelectorCache addAll: each selectors ]
+	Smalltalk allTraits
+		do: [ :each | SelectorCache addAll: each selectors ].
+	self subscribeToSystem
+]
+
+{ #category : #private }
+GtPharoCompletionStrategy class >> methodAdded: anAnnouncement [
+	SelectorCache add: anAnnouncement method selector
+]
+
+{ #category : #private }
+GtPharoCompletionStrategy class >> methodRemoved: anAnnouncement [
+	SelectorCache remove: anAnnouncement method selector
 ]
 
 { #category : #'instance creation' }
@@ -50,6 +62,18 @@ GtPharoCompletionStrategy class >> newForSnippet [
 		isMethod: false;
 		hasImplicitVariables: true;
 		yourself
+]
+
+{ #category : #private }
+GtPharoCompletionStrategy class >> subscribeToSystem [
+	SystemAnnouncer uniqueInstance weak
+		when: MethodAdded send: #methodAdded: to: self;
+		when: MethodRemoved send: #methodRemoved: to: self
+]
+
+{ #category : #private }
+GtPharoCompletionStrategy class >> unsubscribeFromSystem [
+	SystemAnnouncer uniqueInstance unsubscribe: self
 ]
 
 { #category : #private }
