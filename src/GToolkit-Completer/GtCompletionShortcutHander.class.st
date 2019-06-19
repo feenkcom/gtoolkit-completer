@@ -7,7 +7,8 @@ Class {
 	#name : #GtCompletionShortcutHander,
 	#superclass : #BlShortcutHandler,
 	#instVars : [
-		'completionController'
+		'completionController',
+		'consumeEvent'
 	],
 	#category : #'GToolkit-Completer-UI'
 }
@@ -22,6 +23,24 @@ GtCompletionShortcutHander >> completionController [
 { #category : #accessing }
 GtCompletionShortcutHander >> completionController: aCompletionController [
 	completionController := aCompletionController
+]
+
+{ #category : #accessing }
+GtCompletionShortcutHander >> consumeEvent [
+	^ consumeEvent
+]
+
+{ #category : #accessing }
+GtCompletionShortcutHander >> consumeEvent: aBoolean [
+	consumeEvent := aBoolean
+]
+
+{ #category : #'api - event managing' }
+GtCompletionShortcutHander >> handleEvent: anEvent [
+	consumeEvent := true.
+	super handleEvent: anEvent.
+	consumeEvent
+		ifFalse: [ anEvent consumed: false ]
 ]
 
 { #category : #'api - event managing' }

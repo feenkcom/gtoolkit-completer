@@ -244,8 +244,9 @@ GtCompletionController >> initialize [
 
 { #category : #actions }
 GtCompletionController >> install [
-	eventFilters := {		
-		GtCompletionShortcutHander new
+	| shortcutHandler |
+	shortcutHandler := GtCompletionShortcutHander new.
+	shortcutHandler 
 			completionController: self;
 			addShortcut: (BlShortcut new
 				combination: BlKeyCombination arrowDown;
@@ -266,8 +267,15 @@ GtCompletionController >> install [
 				combination: BlKeyCombination tab;
 				action: [ self completeWithCursor: true ]);
 			addShortcut: (BlShortcut new
+				combination: self primaryLetterKeyCombinations;
+				action: [ shortcutHandler consumeEvent: false.
+					self removePopup ]);
+			addShortcut: (BlShortcut new
 				combination: BlKeyCombination escape;
 				action: [ self removePopup ]).
+				
+	eventFilters := {		
+		shortcutHandler.
 		BlEventHandler
 			on: BlBlurEvent
 			do: [ :event | self removePopupOnLostFocus ]	
@@ -426,6 +434,19 @@ GtCompletionController >> onSelectionChanged: anEvent [
 { #category : #private }
 GtCompletionController >> position [
 	^ self textEditor cursor first position
+]
+
+{ #category : #private }
+GtCompletionController >> primaryLetterKeyCombinations [
+	| letters |
+	letters := ($a asInteger to: $z asInteger)
+		collect: [ :i | 
+			BlSingleKeyCombination
+				key: (BlKeyboardKey perform: (Character value: i) asSymbol) ].
+	^ BlAlternativeCombination new
+		withAll:
+			(letters
+				collect: [ :each | BlKeyCombination builder primary build with: each ])
 ]
 
 { #category : #'event handling' }
