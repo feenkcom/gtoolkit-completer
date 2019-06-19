@@ -26,7 +26,8 @@ Class {
 		'ignoreTextEvents',
 		'announcer',
 		'lostFocusDelay',
-		'cursorMovedDelay'
+		'cursorMovedDelay',
+		'closeOnEmptyCompletion'
 	],
 	#classVars : [
 		'MaxPopupItems',
@@ -112,6 +113,16 @@ GtCompletionController >> cancelPreview [
 			
 			previewAction undoPreviewOn: self.
 			previewAction := nil ]
+]
+
+{ #category : #accessing }
+GtCompletionController >> closeOnEmptyCompletion [
+	^ closeOnEmptyCompletion
+]
+
+{ #category : #accessing }
+GtCompletionController >> closeOnEmptyCompletion: aBoolean [
+	closeOnEmptyCompletion := aBoolean
 ]
 
 { #category : #private }
@@ -210,6 +221,7 @@ GtCompletionController >> initialize [
 
 	drillDownActions := OrderedCollection new.
 	strategy := GtCompletionStrategy new.
+	closeOnEmptyCompletion := true.
 
 	cursorElement := nil.
 
@@ -711,6 +723,10 @@ GtCompletionController >> updatePopupItemsAt: anIndex autoSelect: shouldSelectFi
 	theActions := [ (self strategyAt: anIndex) completionActionsFor: self text at: anIndex max: MaxPopupItems ]
 		on: Error
 		do: [ :ex | ex return: #() ].
+		
+	closeOnEmptyCompletion
+		ifTrue: [ (theActions anySatisfy: [ :each | each isEmpty ])
+				ifTrue: [ theActions := #() ] ].
 
 	"action is deselected => preview is cancelled"
 	self deselectAll.

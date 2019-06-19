@@ -50,6 +50,11 @@ GtDeleteTextCompletionAction >> hash [
 	^ (super hash bitXor: self from hash) bitXor: self to hash
 ]
 
+{ #category : #testing }
+GtDeleteTextCompletionAction >> isEmpty [
+	^ from > to
+]
+
 { #category : #executing }
 GtDeleteTextCompletionAction >> previewOn: aCompletionController [
 	from > to
