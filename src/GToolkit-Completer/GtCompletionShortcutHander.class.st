@@ -8,7 +8,8 @@ Class {
 	#superclass : #BlShortcutHandler,
 	#instVars : [
 		'completionController',
-		'consumeEvent'
+		'consumeEvent',
+		'whenActive'
 	],
 	#category : #'GToolkit-Completer-UI'
 }
@@ -43,7 +44,24 @@ GtCompletionShortcutHander >> handleEvent: anEvent [
 		ifFalse: [ anEvent consumed: false ]
 ]
 
+{ #category : #'initialize-release' }
+GtCompletionShortcutHander >> initialize [
+	super initialize.
+	whenActive := true
+]
+
 { #category : #'api - event managing' }
 GtCompletionShortcutHander >> wantsEvent: anEvent [
-	^ self completionController isActive and: [ super wantsEvent: anEvent ]
+	^ self completionController isActive = whenActive
+		and: [ super wantsEvent: anEvent ]
+]
+
+{ #category : #'initialize-release' }
+GtCompletionShortcutHander >> whenActive [
+	whenActive := true
+]
+
+{ #category : #'initialize-release' }
+GtCompletionShortcutHander >> whenInactive [
+	whenActive := false
 ]

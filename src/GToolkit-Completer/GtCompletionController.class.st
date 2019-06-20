@@ -244,10 +244,11 @@ GtCompletionController >> initialize [
 
 { #category : #actions }
 GtCompletionController >> install [
-	| shortcutHandler |
-	shortcutHandler := GtCompletionShortcutHander new.
-	shortcutHandler 
+	| activeShortcutHandler inactiveShortcutHandler |
+	activeShortcutHandler := GtCompletionShortcutHander new.
+	activeShortcutHandler 
 			completionController: self;
+			whenActive;
 			addShortcut: (BlShortcut new
 				combination: BlKeyCombination arrowDown;
 				action: [ self selectNextItem ]);
@@ -268,14 +269,24 @@ GtCompletionController >> install [
 				action: [ self completeWithCursor: true ]);
 			addShortcut: (BlShortcut new
 				combination: self primaryLetterKeyCombinations;
-				action: [ shortcutHandler consumeEvent: false.
+				action: [ activeShortcutHandler consumeEvent: false.
 					self removePopup ]);
 			addShortcut: (BlShortcut new
 				combination: BlKeyCombination escape;
 				action: [ self removePopup ]).
 				
+	inactiveShortcutHandler := GtCompletionShortcutHander new.
+	inactiveShortcutHandler 
+			completionController: self;
+			whenInactive;
+			addShortcut: (BlShortcut new
+				repeatable: false;
+				combination: (BlKeyCombination builder secondary key: BlKeyboardKey space; build);
+				action: [ self startCompletion ]).
+				
 	eventFilters := {		
-		shortcutHandler.
+		activeShortcutHandler.
+		inactiveShortcutHandler.
 		BlEventHandler
 			on: BlBlurEvent
 			do: [ :event | self removePopupOnLostFocus ]	
@@ -617,6 +628,15 @@ GtCompletionController >> showPreview [
 
 	self cancelPreview.
 	self applyPreview
+]
+
+{ #category : #'event handling' }
+GtCompletionController >> startCompletion [
+	| location |
+	self textEditor cursor cursorsCount = 1
+		ifFalse: [ ^ self ].
+	location := self textEditor cursor first position.
+	self showPopupAt: location
 ]
 
 { #category : #'private - popup' }
