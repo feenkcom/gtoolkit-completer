@@ -81,6 +81,11 @@ GtInsertTextCompletionAction >> hash [
 	^ super hash bitXor: (text hash bitXor: position hash)
 ]
 
+{ #category : #testing }
+GtInsertTextCompletionAction >> isEmpty [
+	^ text isEmpty
+]
+
 { #category : #executing }
 GtInsertTextCompletionAction >> moveCursorOn: aCompletionController [
 	aCompletionController textEditor moveCursorTo: position + text size

@@ -26,7 +26,8 @@ Class {
 		'ignoreTextEvents',
 		'announcer',
 		'lostFocusDelay',
-		'cursorMovedDelay'
+		'cursorMovedDelay',
+		'closeOnEmptyCompletion'
 	],
 	#classVars : [
 		'MaxPopupItems',
@@ -112,6 +113,16 @@ GtCompletionController >> cancelPreview [
 			
 			previewAction undoPreviewOn: self.
 			previewAction := nil ]
+]
+
+{ #category : #accessing }
+GtCompletionController >> closeOnEmptyCompletion [
+	^ closeOnEmptyCompletion
+]
+
+{ #category : #accessing }
+GtCompletionController >> closeOnEmptyCompletion: aBoolean [
+	closeOnEmptyCompletion := aBoolean
 ]
 
 { #category : #private }
@@ -210,6 +221,7 @@ GtCompletionController >> initialize [
 
 	drillDownActions := OrderedCollection new.
 	strategy := GtCompletionStrategy new.
+	closeOnEmptyCompletion := true.
 
 	cursorElement := nil.
 
@@ -232,9 +244,11 @@ GtCompletionController >> initialize [
 
 { #category : #actions }
 GtCompletionController >> install [
-	eventFilters := {		
-		GtCompletionShortcutHander new
+	| activeShortcutHandler inactiveShortcutHandler |
+	activeShortcutHandler := GtCompletionShortcutHander new.
+	activeShortcutHandler 
 			completionController: self;
+			whenActive;
 			addShortcut: (BlShortcut new
 				combination: BlKeyCombination arrowDown;
 				action: [ self selectNextItem ]);
@@ -254,8 +268,25 @@ GtCompletionController >> install [
 				combination: BlKeyCombination tab;
 				action: [ self completeWithCursor: true ]);
 			addShortcut: (BlShortcut new
+				combination: self primaryLetterKeyCombinations;
+				action: [ activeShortcutHandler consumeEvent: false.
+					self removePopup ]);
+			addShortcut: (BlShortcut new
 				combination: BlKeyCombination escape;
 				action: [ self removePopup ]).
+				
+	inactiveShortcutHandler := GtCompletionShortcutHander new.
+	inactiveShortcutHandler 
+			completionController: self;
+			whenInactive;
+			addShortcut: (BlShortcut new
+				repeatable: false;
+				combination: (BlKeyCombination builder secondary key: BlKeyboardKey space; build);
+				action: [ self startCompletion ]).
+				
+	eventFilters := {		
+		activeShortcutHandler.
+		inactiveShortcutHandler.
 		BlEventHandler
 			on: BlBlurEvent
 			do: [ :event | self removePopupOnLostFocus ]	
@@ -414,6 +445,19 @@ GtCompletionController >> onSelectionChanged: anEvent [
 { #category : #private }
 GtCompletionController >> position [
 	^ self textEditor cursor first position
+]
+
+{ #category : #private }
+GtCompletionController >> primaryLetterKeyCombinations [
+	| letters |
+	letters := ($a asInteger to: $z asInteger)
+		collect: [ :i | 
+			BlSingleKeyCombination
+				key: (BlKeyboardKey perform: (Character value: i) asSymbol) ].
+	^ BlAlternativeCombination new
+		withAll:
+			(letters
+				collect: [ :each | BlKeyCombination builder primary build with: each ])
 ]
 
 { #category : #'event handling' }
@@ -586,6 +630,15 @@ GtCompletionController >> showPreview [
 	self applyPreview
 ]
 
+{ #category : #'event handling' }
+GtCompletionController >> startCompletion [
+	| location |
+	self textEditor cursor cursorsCount = 1
+		ifFalse: [ ^ self ].
+	location := self textEditor cursor first position.
+	self showPopupAt: location
+]
+
 { #category : #'private - popup' }
 GtCompletionController >> startCompletionAt: aTextIndex [
 	self terminatePopupDelay.
@@ -711,6 +764,10 @@ GtCompletionController >> updatePopupItemsAt: anIndex autoSelect: shouldSelectFi
 	theActions := [ (self strategyAt: anIndex) completionActionsFor: self text at: anIndex max: MaxPopupItems ]
 		on: Error
 		do: [ :ex | ex return: #() ].
+		
+	closeOnEmptyCompletion
+		ifTrue: [ (theActions anySatisfy: [ :each | each isEmpty ])
+				ifTrue: [ theActions := #() ] ].
 
 	"action is deselected => preview is cancelled"
 	self deselectAll.

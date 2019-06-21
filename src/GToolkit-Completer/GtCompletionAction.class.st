@@ -68,6 +68,11 @@ GtCompletionAction >> insert: aString at: anInteger on: aCompletionController [
 ]
 
 { #category : #testing }
+GtCompletionAction >> isEmpty [
+	^ false
+]
+
+{ #category : #testing }
 GtCompletionAction >> isPartial [
 	^ partial
 ]

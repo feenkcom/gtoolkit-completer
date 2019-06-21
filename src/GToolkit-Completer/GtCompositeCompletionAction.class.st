@@ -48,6 +48,11 @@ GtCompositeCompletionAction >> initialize [
 	actions := OrderedCollection new
 ]
 
+{ #category : #testing }
+GtCompositeCompletionAction >> isEmpty [
+	^ actions allSatisfy: [ :each | each isEmpty ]
+]
+
 { #category : #executing }
 GtCompositeCompletionAction >> previewOn: aCompletionController [
 	actions do: [ :each | each previewOn: aCompletionController ]
