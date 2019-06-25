@@ -27,7 +27,8 @@ Class {
 		'announcer',
 		'lostFocusDelay',
 		'cursorMovedDelay',
-		'closeOnEmptyCompletion'
+		'closeOnEmptyCompletion',
+		'showRequested'
 	],
 	#classVars : [
 		'MaxPopupItems',
@@ -222,6 +223,7 @@ GtCompletionController >> initialize [
 	drillDownActions := OrderedCollection new.
 	strategy := GtCompletionStrategy new.
 	closeOnEmptyCompletion := true.
+	showRequested := false.
 
 	cursorElement := nil.
 
@@ -496,6 +498,7 @@ GtCompletionController >> processTabKey: anEvent [
 GtCompletionController >> removePopup [
 	self cancelPreview.
 	self terminatePopupDelay.
+	showRequested := false.
 	overlay detach.
 	overlay removeFromParent
 ]
@@ -607,7 +610,9 @@ GtCompletionController >> showPopupAt: anIndex [
 	self updatePopupItemsAt: anIndex autoSelect: true.
 
 	(self isShowingPopup or: [ self hasCompletionActions not ])
-		ifTrue: [ ^ self ].
+		ifTrue: [ 
+			showRequested := false.
+			^ self ].
 
 	self
 		assert: [ overlay isAttachedToSceneGraph not ]
@@ -635,6 +640,7 @@ GtCompletionController >> startCompletion [
 	| location |
 	self textEditor cursor cursorsCount = 1
 		ifFalse: [ ^ self ].
+	showRequested := true.
 	location := self textEditor cursor first position.
 	self showPopupAt: location
 ]
@@ -765,7 +771,7 @@ GtCompletionController >> updatePopupItemsAt: anIndex autoSelect: shouldSelectFi
 		on: Error
 		do: [ :ex | ex return: #() ].
 		
-	closeOnEmptyCompletion
+	(closeOnEmptyCompletion and: [ showRequested not ])
 		ifTrue: [ (theActions anySatisfy: [ :each | each isEmpty ])
 				ifTrue: [ theActions := #() ] ].
 
