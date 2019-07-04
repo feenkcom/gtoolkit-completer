@@ -124,6 +124,12 @@ GtRenameAction >> cursorEvent: anEvent [
 	self uninstall
 ]
 
+{ #category : #'event handling' }
+GtRenameAction >> cursorMovedEvent: anEvent [
+	(self isRenamingAt: anEvent newIndex)
+		ifFalse: [ self accept ]
+]
+
 { #category : #installation }
 GtRenameAction >> editorEventHandlers [
 	^ {(BlEventHandler
@@ -132,6 +138,9 @@ GtRenameAction >> editorEventHandlers [
 	(BlEventHandler
 		on: BrTextEditorCursorRemovedEvent
 		do: [ :event | self cursorEvent: event ]).
+	(BlEventHandler
+		on: BrTextEditorCursorMovedEvent
+		do: [ :event | self cursorMovedEvent: event ]).
 	(BlEventHandler
 		on: BrTextEditorInsertedEvent
 		do: [ :event | self textInserted: event ])}
@@ -162,6 +171,18 @@ GtRenameAction >> escapeCancels [
 { #category : #accessing }
 GtRenameAction >> escapeCancels: aBoolean [
 	escapeCancels := aBoolean
+]
+
+{ #category : #testing }
+GtRenameAction >> hasRenamingAttributeAt: anIndex [
+	| text |
+	text := self textEditor text.
+	anIndex > text size
+		ifTrue: [ ^ false ].
+	anIndex <= 0
+		ifTrue: [ ^ false ].
+	^ (text attributesAt: anIndex)
+		anySatisfy: [ :each | self isRenameAttribute: each ]
 ]
 
 { #category : #'initialize-release' }
@@ -212,6 +233,12 @@ GtRenameAction >> isInstalled [
 { #category : #testing }
 GtRenameAction >> isRenameAttribute: anAttribute [
 	^ anAttribute isKindOf: GtRenameAttribute
+]
+
+{ #category : #testing }
+GtRenameAction >> isRenamingAt: anIndex [
+	^ (self hasRenamingAttributeAt: anIndex)
+		or: [ self hasRenamingAttributeAt: anIndex + 1 ]
 ]
 
 { #category : #accessing }
@@ -296,9 +323,10 @@ GtRenameAction >> textInserted: anEvent [
 	| from to |
 	from := anEvent index + 1.
 	to := anEvent index + anEvent text size.
-	((self textEditor text attributesAt: from) anySatisfy: [ :each | each isKindOf: GtRenameAttribute ])
+	(self hasRenamingAttributeAt: from)
 		ifTrue: [ ^ self ].
-	(self textEditor text from: from to: to) attributes: {GtRenameAttribute new}.
+	(self textEditor text from: from to: to)
+		attributes: {GtRenameAttribute new}.
 	self textEditor invalidate: from to: to.
 	self textEditor update: from to: to
 ]
