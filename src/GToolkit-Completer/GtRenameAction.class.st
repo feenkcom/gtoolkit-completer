@@ -11,7 +11,8 @@ Class {
 		'originalIndex',
 		'shouldSelectNames',
 		'isInstalled',
-		'escapeCancels'
+		'escapeCancels',
+		'cursorMovedDelay'
 	],
 	#category : #'GToolkit-Completer-Actions'
 }
@@ -126,8 +127,10 @@ GtRenameAction >> cursorEvent: anEvent [
 
 { #category : #'event handling' }
 GtRenameAction >> cursorMovedEvent: anEvent [
-	(self isRenamingAt: anEvent newIndex)
-		ifFalse: [ self accept ]
+	cursorMovedDelay
+		action: [ (self isRenamingAt: anEvent newIndex)
+				ifFalse: [ self accept ] ].
+	cursorMovedDelay start
 ]
 
 { #category : #installation }
@@ -193,7 +196,9 @@ GtRenameAction >> initialize [
 	elementFilters := #().
 	shouldSelectNames := false.
 	isInstalled := false.
-	escapeCancels := true
+	escapeCancels := true.
+	cursorMovedDelay := BlDelayedTaskAction new.
+	cursorMovedDelay delay: 5 milliSeconds
 ]
 
 { #category : #installation }
@@ -213,7 +218,8 @@ GtRenameAction >> installEventHandlers [
 	editorHandlers := self editorEventHandlers.
 	editorHandlers do: [ :each | self textEditor addEventHandler: each ].
 	elementFilters := self elementEventHandlers.
-	elementFilters do: [ :each | self textElement addEventFilter: each ]
+	elementFilters do: [ :each | self textElement addEventFilter: each ].
+	cursorMovedDelay element: self textElement
 ]
 
 { #category : #private }
@@ -346,8 +352,12 @@ GtRenameAction >> uninstall [
 
 { #category : #installation }
 GtRenameAction >> uninstallEventHandlers [
-	elementFilters do: [ :each | self textElement removeEventFilter: each ].
-	editorHandlers do: [ :each | self textEditor removeEventHandler: each ]
+	cursorMovedDelay stop.
+	cursorMovedDelay element: nil.
+	elementFilters
+		do: [ :each | self textElement removeEventFilter: each ].
+	editorHandlers
+		do: [ :each | self textEditor removeEventHandler: each ]
 ]
 
 { #category : #private }
