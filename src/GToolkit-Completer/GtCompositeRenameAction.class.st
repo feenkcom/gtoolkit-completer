@@ -39,15 +39,21 @@ GtCompositeRenameAction class >> coderRenameLocalsOnSource: aTextEditorElement p
 	editor cursor cursorsCount = 1
 		ifFalse: [ ^ nil ].
 	text := editor text.
-	ast := GtPharoParser parseWithErrors: text asString startingAt: GtPharoParser startingStateForMethodSequence.
+	ast := GtPharoParser
+		parseWithErrors: text asString
+		startingAt: GtPharoParser startingStateForMethodSequence.
 	items := OrderedCollection new.
-	(self findVariableNodeIn: ast at: editor cursor first position)
+	(ast findVariableNodeAt: editor cursor first position)
 		ifNotNil: [ :node | 
 			| definer |
 			definer := node whoDefines.
 			definer isNil
-				ifTrue: [ patternAST := GtPharoParser parseWithErrors: patternEditor text asString startingAt: GtPharoParser startingStateForMethodPattern.
-					parameter := patternAST variables detect: [ :each | each = node ] ifNone: [ ^ nil ].
+				ifTrue: [ patternAST := GtPharoParser
+						parseWithErrors: patternEditor text asString
+						startingAt: GtPharoParser startingStateForMethodPattern.
+					parameter := patternAST variables
+						detect: [ :each | each = node ]
+						ifNone: [ ^ nil ].
 					definer := ast ].
 			definer
 				withAllNodesDo: [ :each | 

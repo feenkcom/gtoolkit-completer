@@ -17,17 +17,6 @@ Class {
 	#category : #'GToolkit-Completer-Actions'
 }
 
-{ #category : #pharo }
-GtRenameAction class >> findVariableNodeIn: astNode at: anInteger [
-	astNode
-		withAllNodesDo: [ :node | 
-			((node isKindOf: GtPharoVariableNode) and: [ anInteger between: node startPosition and: node stopPosition ])
-				ifTrue: [ ^ node ] ]
-		andTokensDo: [ :each |  ]
-		includesErrors: true.
-	^ nil
-]
-
 { #category : #'instance creation' }
 GtRenameAction class >> locations: aCollectionOfIntervals element: aTextEditorElement [
 	^ self new
@@ -45,7 +34,7 @@ GtRenameAction class >> pharoRenameLocalsOn: aTextEditorElement [
 	text := editor text.
 	ast := GtPharoParser parseWithErrors: text asString.
 	items := OrderedCollection new.
-	(self findVariableNodeIn: ast at: editor cursor first position)
+	(ast findVariableNodeAt: editor cursor first position)
 		ifNotNil: [ :node | 
 			node whoDefines
 				ifNotNil: [ :definer | 
@@ -68,9 +57,11 @@ GtRenameAction class >> pharoRenameSnippetLocalsOn: aTextEditorElement [
 	editor cursor cursorsCount = 1
 		ifFalse: [ ^ nil ].
 	text := editor text.
-	ast := GtPharoParser parseWithErrors: text asString startingAt: GtPharoParser startingStateForMethodSequence.
+	ast := GtPharoParser
+		parseWithErrors: text asString
+		startingAt: GtPharoParser startingStateForMethodSequence.
 	items := OrderedCollection new.
-	(self findVariableNodeIn: ast at: editor cursor first position)
+	(ast findVariableNodeAt: editor cursor first position)
 		ifNotNil: [ :node | 
 			| definer |
 			definer := node whoDefines ifNil: [ ast ].

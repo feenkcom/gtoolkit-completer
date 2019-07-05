@@ -12,6 +12,12 @@ GtPharoVariableNode >> acceptVisitor: aProgramVisitor [
 	^ aProgramVisitor visitVariable: self
 ]
 
+{ #category : #accessing }
+GtPharoVariableNode >> findVariableNodeAt: anInteger [
+	^ (anInteger between: self startPosition and: self stopPosition)
+		ifTrue: [ self ]
+]
+
 { #category : #generated }
 GtPharoVariableNode >> name [
 	^ name
