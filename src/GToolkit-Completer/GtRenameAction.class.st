@@ -11,21 +11,11 @@ Class {
 		'originalIndex',
 		'shouldSelectNames',
 		'isInstalled',
-		'escapeCancels'
+		'escapeCancels',
+		'cursorMovedDelay'
 	],
 	#category : #'GToolkit-Completer-Actions'
 }
-
-{ #category : #pharo }
-GtRenameAction class >> findVariableNodeIn: astNode at: anInteger [
-	astNode
-		withAllNodesDo: [ :node | 
-			((node isKindOf: GtPharoVariableNode) and: [ anInteger between: node startPosition and: node stopPosition ])
-				ifTrue: [ ^ node ] ]
-		andTokensDo: [ :each |  ]
-		includesErrors: true.
-	^ nil
-]
 
 { #category : #'instance creation' }
 GtRenameAction class >> locations: aCollectionOfIntervals element: aTextEditorElement [
@@ -44,7 +34,7 @@ GtRenameAction class >> pharoRenameLocalsOn: aTextEditorElement [
 	text := editor text.
 	ast := GtPharoParser parseWithErrors: text asString.
 	items := OrderedCollection new.
-	(self findVariableNodeIn: ast at: editor cursor first position)
+	(ast findVariableNodeAt: editor cursor first position)
 		ifNotNil: [ :node | 
 			node whoDefines
 				ifNotNil: [ :definer | 
@@ -67,9 +57,11 @@ GtRenameAction class >> pharoRenameSnippetLocalsOn: aTextEditorElement [
 	editor cursor cursorsCount = 1
 		ifFalse: [ ^ nil ].
 	text := editor text.
-	ast := GtPharoParser parseWithErrors: text asString startingAt: GtPharoParser startingStateForMethodSequence.
+	ast := GtPharoParser
+		parseWithErrors: text asString
+		startingAt: GtPharoParser startingStateForMethodSequence.
 	items := OrderedCollection new.
-	(self findVariableNodeIn: ast at: editor cursor first position)
+	(ast findVariableNodeAt: editor cursor first position)
 		ifNotNil: [ :node | 
 			| definer |
 			definer := node whoDefines ifNil: [ ast ].
@@ -124,6 +116,14 @@ GtRenameAction >> cursorEvent: anEvent [
 	self uninstall
 ]
 
+{ #category : #'event handling' }
+GtRenameAction >> cursorMovedEvent: anEvent [
+	cursorMovedDelay
+		action: [ (self isRenamingAt: anEvent newIndex)
+				ifFalse: [ self accept ] ].
+	cursorMovedDelay start
+]
+
 { #category : #installation }
 GtRenameAction >> editorEventHandlers [
 	^ {(BlEventHandler
@@ -132,6 +132,9 @@ GtRenameAction >> editorEventHandlers [
 	(BlEventHandler
 		on: BrTextEditorCursorRemovedEvent
 		do: [ :event | self cursorEvent: event ]).
+	(BlEventHandler
+		on: BrTextEditorCursorMovedEvent
+		do: [ :event | self cursorMovedEvent: event ]).
 	(BlEventHandler
 		on: BrTextEditorInsertedEvent
 		do: [ :event | self textInserted: event ])}
@@ -164,6 +167,18 @@ GtRenameAction >> escapeCancels: aBoolean [
 	escapeCancels := aBoolean
 ]
 
+{ #category : #testing }
+GtRenameAction >> hasRenamingAttributeAt: anIndex [
+	| text |
+	text := self textEditor text.
+	anIndex > text size
+		ifTrue: [ ^ false ].
+	anIndex <= 0
+		ifTrue: [ ^ false ].
+	^ (text attributesAt: anIndex)
+		anySatisfy: [ :each | self isRenameAttribute: each ]
+]
+
 { #category : #'initialize-release' }
 GtRenameAction >> initialize [
 	super initialize.
@@ -172,7 +187,9 @@ GtRenameAction >> initialize [
 	elementFilters := #().
 	shouldSelectNames := false.
 	isInstalled := false.
-	escapeCancels := true
+	escapeCancels := true.
+	cursorMovedDelay := BlDelayedTaskAction new.
+	cursorMovedDelay delay: 5 milliSeconds
 ]
 
 { #category : #installation }
@@ -192,7 +209,8 @@ GtRenameAction >> installEventHandlers [
 	editorHandlers := self editorEventHandlers.
 	editorHandlers do: [ :each | self textEditor addEventHandler: each ].
 	elementFilters := self elementEventHandlers.
-	elementFilters do: [ :each | self textElement addEventFilter: each ]
+	elementFilters do: [ :each | self textElement addEventFilter: each ].
+	cursorMovedDelay element: self textElement
 ]
 
 { #category : #private }
@@ -212,6 +230,12 @@ GtRenameAction >> isInstalled [
 { #category : #testing }
 GtRenameAction >> isRenameAttribute: anAttribute [
 	^ anAttribute isKindOf: GtRenameAttribute
+]
+
+{ #category : #testing }
+GtRenameAction >> isRenamingAt: anIndex [
+	^ (self hasRenamingAttributeAt: anIndex)
+		or: [ self hasRenamingAttributeAt: anIndex + 1 ]
 ]
 
 { #category : #accessing }
@@ -296,9 +320,10 @@ GtRenameAction >> textInserted: anEvent [
 	| from to |
 	from := anEvent index + 1.
 	to := anEvent index + anEvent text size.
-	((self textEditor text attributesAt: from) anySatisfy: [ :each | each isKindOf: GtRenameAttribute ])
+	(self hasRenamingAttributeAt: from)
 		ifTrue: [ ^ self ].
-	(self textEditor text from: from to: to) attributes: {GtRenameAttribute new}.
+	(self textEditor text from: from to: to)
+		attributes: {GtRenameAttribute new}.
 	self textEditor invalidate: from to: to.
 	self textEditor update: from to: to
 ]
@@ -318,8 +343,12 @@ GtRenameAction >> uninstall [
 
 { #category : #installation }
 GtRenameAction >> uninstallEventHandlers [
-	elementFilters do: [ :each | self textElement removeEventFilter: each ].
-	editorHandlers do: [ :each | self textEditor removeEventHandler: each ]
+	cursorMovedDelay stop.
+	cursorMovedDelay element: nil.
+	elementFilters
+		do: [ :each | self textElement removeEventFilter: each ].
+	editorHandlers
+		do: [ :each | self textEditor removeEventHandler: each ]
 ]
 
 { #category : #private }
