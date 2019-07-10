@@ -118,10 +118,9 @@ GtRenameAction >> cursorEvent: anEvent [
 
 { #category : #'event handling' }
 GtRenameAction >> cursorMovedEvent: anEvent [
-	cursorMovedDelay
-		action: [ (self isRenamingAt: anEvent newIndex)
-				ifFalse: [ self accept ] ].
-	cursorMovedDelay start
+	anEvent dueTo isDeleter
+		ifFalse: [ (self isRenamingAt: anEvent newIndex)
+				ifFalse: [ self accept ] ]
 ]
 
 { #category : #installation }
@@ -187,9 +186,7 @@ GtRenameAction >> initialize [
 	elementFilters := #().
 	shouldSelectNames := false.
 	isInstalled := false.
-	escapeCancels := true.
-	cursorMovedDelay := BlDelayedTaskAction new.
-	cursorMovedDelay delay: 5 milliSeconds
+	escapeCancels := true
 ]
 
 { #category : #installation }
@@ -209,8 +206,7 @@ GtRenameAction >> installEventHandlers [
 	editorHandlers := self editorEventHandlers.
 	editorHandlers do: [ :each | self textEditor addEventHandler: each ].
 	elementFilters := self elementEventHandlers.
-	elementFilters do: [ :each | self textElement addEventFilter: each ].
-	cursorMovedDelay element: self textElement
+	elementFilters do: [ :each | self textElement addEventFilter: each ]
 ]
 
 { #category : #private }
@@ -343,8 +339,6 @@ GtRenameAction >> uninstall [
 
 { #category : #installation }
 GtRenameAction >> uninstallEventHandlers [
-	cursorMovedDelay stop.
-	cursorMovedDelay element: nil.
 	elementFilters
 		do: [ :each | self textElement removeEventFilter: each ].
 	editorHandlers

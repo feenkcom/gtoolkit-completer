@@ -26,7 +26,6 @@ Class {
 		'ignoreTextEvents',
 		'announcer',
 		'lostFocusDelay',
-		'cursorMovedDelay',
 		'closeOnEmptyCompletion',
 		'showRequested'
 	],
@@ -160,20 +159,9 @@ GtCompletionController >> cursorMoved: anEvent [
 	(anEvent newIndex = anEvent oldIndex or: [ ignoreTextEvents ])
 		ifTrue: [ ^ self ].
 	lastWasText
-		ifFalse: [ anEvent newIndex + 1 = anEvent oldIndex
-				ifTrue: [ self delayPopupRemoval ]
+		ifFalse: [ anEvent dueTo isDeleter
 				ifFalse: [ self removePopup ] ].
 	lastWasText := false
-]
-
-{ #category : #private }
-GtCompletionController >> delayPopupRemoval [
-	"The cursor has moved one character to the left. This may occur when a character is deleted. 
-	Defer the popup removal so that the popup will not be removed for text deletion, but will 
-	be removed if the cursor changed from another reason."
-
-	cursorMovedDelay action: [ self removePopup ].
-	cursorMovedDelay start
 ]
 
 { #category : #'private - list selection' }
@@ -236,9 +224,6 @@ GtCompletionController >> initialize [
 	
 	lostFocusDelay := BlDelayedTaskAction new.
 	lostFocusDelay delay: 5 milliSeconds.
-	
-	cursorMovedDelay := BlDelayedTaskAction new.
-	cursorMovedDelay delay: 5 milliSeconds.
 
 	lastWasText := false.
 	ignoreTextEvents := false
@@ -704,7 +689,6 @@ GtCompletionController >> text [
 
 { #category : #'event handling' }
 GtCompletionController >> textDeleted: anEvent [
-	cursorMovedDelay stop.
 	(ignoreTextEvents not and: [ self isShowingPopup ])
 		ifTrue: [ self startCompletionAt: anEvent fromIndex - 1 ].
 	lastWasText := true
@@ -728,8 +712,7 @@ GtCompletionController >> textElement: anEditorElement [
 		do: [ :anEvent | self onCursorDetached: anEvent cursorElement ].
 
 	completionDelay element: textElement.
-	lostFocusDelay element: textElement.
-	cursorMovedDelay element: textElement
+	lostFocusDelay element: textElement
 ]
 
 { #category : #'event handling' }
