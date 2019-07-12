@@ -16,19 +16,16 @@ Class {
 		'textElement',
 		'overlay',
 		'listElement',
-		'eventFilters',
-		'eventHandlers',
-		'popupEventHandlers',
-		'lastWasText',
 		'previewAction',
 		'drillDownActions',
 		'cursorElement',
-		'ignoreTextEvents',
 		'announcer',
 		'lostFocusDelay',
-		'cursorMovedDelay',
 		'closeOnEmptyCompletion',
-		'showRequested'
+		'showRequested',
+		'textEditorHandlers',
+		'textElementFilters',
+		'popupHandlers'
 	],
 	#classVars : [
 		'MaxPopupItems',
@@ -75,6 +72,49 @@ GtCompletionController class >> popupDelay: aDuration [
 	PopupDelay := aDuration
 ]
 
+{ #category : #'private - installation' }
+GtCompletionController >> activeShortcutHandler [
+	| activeShortcutHandler |
+	activeShortcutHandler := GtCompletionShortcutHander new.
+	activeShortcutHandler
+		completionController: self;
+		whenActive;
+		addShortcut:
+			(BlShortcut new
+				combination: BlKeyCombination arrowDown;
+				action: [ self selectNextItem ]);
+		addShortcut:
+			(BlShortcut new
+				combination: BlKeyCombination arrowUp;
+				action: [ self selectPreviousItem ]);
+		addShortcut:
+			(BlShortcut new
+				combination: BlKeyCombination builder primary arrowRight build;
+				action: [ self drillDown ]);
+		addShortcut:
+			(BlShortcut new
+				combination: BlKeyCombination builder primary arrowLeft build;
+				action: [ self undoDrillDown ]);
+		addShortcut:
+			(BlShortcut new
+				combination: BlKeyCombination return;
+				action: [ self completeWithCursor: true ]);
+		addShortcut:
+			(BlShortcut new
+				combination: BlKeyCombination tab;
+				action: [ self completeWithCursor: true ]);
+		addShortcut:
+			(BlShortcut new
+				combination: self primaryLetterKeyCombinations;
+				action: [ activeShortcutHandler consumeEvent: false.
+					self removePopup ]);
+		addShortcut:
+			(BlShortcut new
+				combination: BlKeyCombination escape;
+				action: [ self removePopup ]).
+	^ activeShortcutHandler
+]
+
 { #category : #'private - accessing' }
 GtCompletionController >> announcer [
 	^ announcer ifNil: [ announcer := Announcer new ]
@@ -97,8 +137,7 @@ GtCompletionController >> applyPreview [
 					action: previewAction;
 					emit.
 
-				previewAction previewOn: self ] ].
-	lastWasText := false
+				previewAction previewOn: self ] ]
 ]
 
 { #category : #'private - preview' }
@@ -157,23 +196,10 @@ GtCompletionController >> completionActions: aCollectionOfGtCompletionAction [
 
 { #category : #'event handling' }
 GtCompletionController >> cursorMoved: anEvent [
-	(anEvent newIndex = anEvent oldIndex or: [ ignoreTextEvents ])
+	anEvent newIndex = anEvent oldIndex
 		ifTrue: [ ^ self ].
-	lastWasText
-		ifFalse: [ anEvent newIndex + 1 = anEvent oldIndex
-				ifTrue: [ self delayPopupRemoval ]
-				ifFalse: [ self removePopup ] ].
-	lastWasText := false
-]
-
-{ #category : #private }
-GtCompletionController >> delayPopupRemoval [
-	"The cursor has moved one character to the left. This may occur when a character is deleted. 
-	Defer the popup removal so that the popup will not be removed for text deletion, but will 
-	be removed if the cursor changed from another reason."
-
-	cursorMovedDelay action: [ self removePopup ].
-	cursorMovedDelay start
+	(anEvent dueTo isDeleter or: [ anEvent dueTo isInserter ])
+		ifFalse: [ self removePopup ]
 ]
 
 { #category : #'private - list selection' }
@@ -209,11 +235,27 @@ GtCompletionController >> hasCompletionActions [
 
 { #category : #private }
 GtCompletionController >> ignoreTextEventsWhile: aBlock [
-	ignoreTextEvents
-		ifTrue: [ ^ aBlock value ].
-	ignoreTextEvents := true.
+	self uninstallTextEditorHandlers.
 	aBlock
-		ensure: [ ignoreTextEvents := false ]
+		ensure: [ self installTextEditorHandlers ]
+]
+
+{ #category : #'private - installation' }
+GtCompletionController >> inactiveShortcutHandler [
+	| inactiveShortcutHandler |
+	inactiveShortcutHandler := GtCompletionShortcutHander new.
+	inactiveShortcutHandler
+		completionController: self;
+		whenInactive;
+		addShortcut:
+			(BlShortcut new
+				repeatable: false;
+				combination:
+					(BlKeyCombination builder secondary
+						key: BlKeyboardKey space;
+						build);
+				action: [ self startCompletion ]).
+	^ inactiveShortcutHandler
 ]
 
 { #category : #'initialize-release' }
@@ -235,92 +277,31 @@ GtCompletionController >> initialize [
 	completionDelay delay: self class popupDelay.
 	
 	lostFocusDelay := BlDelayedTaskAction new.
-	lostFocusDelay delay: 5 milliSeconds.
-	
-	cursorMovedDelay := BlDelayedTaskAction new.
-	cursorMovedDelay delay: 5 milliSeconds.
-
-	lastWasText := false.
-	ignoreTextEvents := false
+	lostFocusDelay delay: 5 milliSeconds
 ]
 
-{ #category : #actions }
+{ #category : #installation }
 GtCompletionController >> install [
-	| activeShortcutHandler inactiveShortcutHandler |
-	activeShortcutHandler := GtCompletionShortcutHander new.
-	activeShortcutHandler 
-			completionController: self;
-			whenActive;
-			addShortcut: (BlShortcut new
-				combination: BlKeyCombination arrowDown;
-				action: [ self selectNextItem ]);
-			addShortcut: (BlShortcut new
-				combination: BlKeyCombination arrowUp;
-				action: [ self selectPreviousItem ]);
-			addShortcut: (BlShortcut new
-				combination: BlKeyCombination builder primary arrowRight build;
-				action: [ self drillDown ]);
-			addShortcut: (BlShortcut new
-				combination: BlKeyCombination builder primary arrowLeft build;
-				action: [ self undoDrillDown ]);
-			addShortcut: (BlShortcut new
-				combination: BlKeyCombination return;
-				action: [ self completeWithCursor: true ]);
-			addShortcut: (BlShortcut new
-				combination: BlKeyCombination tab;
-				action: [ self completeWithCursor: true ]);
-			addShortcut: (BlShortcut new
-				combination: self primaryLetterKeyCombinations;
-				action: [ activeShortcutHandler consumeEvent: false.
-					self removePopup ]);
-			addShortcut: (BlShortcut new
-				combination: BlKeyCombination escape;
-				action: [ self removePopup ]).
-				
-	inactiveShortcutHandler := GtCompletionShortcutHander new.
-	inactiveShortcutHandler 
-			completionController: self;
-			whenInactive;
-			addShortcut: (BlShortcut new
-				repeatable: false;
-				combination: (BlKeyCombination builder secondary key: BlKeyboardKey space; build);
-				action: [ self startCompletion ]).
-				
-	eventFilters := {		
-		activeShortcutHandler.
-		inactiveShortcutHandler.
-		BlEventHandler
-			on: BlBlurEvent
-			do: [ :event | self removePopupOnLostFocus ]	
-	}.
+	self installTextEditorHandlers.
+	self installTextElementFilters.
+	self installPopupHandlers
+]
 
-	eventHandlers := {
-		BlEventHandler
-			on: BrTextEditorInsertedEvent
-			do: [ :event | self textInserted: event ].
-		BlEventHandler
-			on: BrTextEditorDeletedEvent
-			do: [ :event | self textDeleted: event ].
-		BlEventHandler
-			on: BrTextEditorCursorMovedEvent
-			do: [ :event | self cursorMoved: event ]
-	}.
-	
-	popupEventHandlers := {
-		BlEventHandler
-			on: BrSelectionChanged
-			do: [ :event | self onSelectionChanged: event ].
-		BlEventHandler
-			on: BlDoubleClickEvent
-			do: [ :event | self doubleClickList: true ].
-		BlEventHandler
-			on: BlBlurEvent
-			do: [ :event | self removePopupOnLostFocus ]	
-	}.	
-		
-	eventHandlers do: [ :each | self textEditor addEventHandler: each ].
-	eventFilters do: [ :each | textElement addEventFilter: each ].
-	popupEventHandlers do: [ :each | listElement addEventHandler: each ]
+{ #category : #'private - installation' }
+GtCompletionController >> installPopupHandlers [
+	self popupHandlers do: [ :each | listElement addEventHandler: each ]
+]
+
+{ #category : #'private - installation' }
+GtCompletionController >> installTextEditorHandlers [
+	self textEditorHandlers
+		do: [ :each | self textEditor addEventHandler: each ]
+]
+
+{ #category : #'private - installation' }
+GtCompletionController >> installTextElementFilters [
+	self textElementFilters
+		do: [ :each | textElement addEventFilter: each ]
 ]
 
 { #category : #testing }
@@ -442,6 +423,20 @@ GtCompletionController >> onCursorDetached: aCursorElement [
 GtCompletionController >> onSelectionChanged: anEvent [
 	self scrollToSelected.
 	self showPreview
+]
+
+{ #category : #'private - installation' }
+GtCompletionController >> popupHandlers [
+	^ popupHandlers
+		ifNil: [ popupHandlers := {(BlEventHandler
+				on: BrSelectionChanged
+				do: [ :event | self onSelectionChanged: event ]).
+			(BlEventHandler
+				on: BlDoubleClickEvent
+				do: [ :event | self doubleClickList: true ]).
+			(BlEventHandler
+				on: BlBlurEvent
+				do: [ :event | self removePopupOnLostFocus ])} ]
 ]
 
 { #category : #private }
@@ -704,10 +699,8 @@ GtCompletionController >> text [
 
 { #category : #'event handling' }
 GtCompletionController >> textDeleted: anEvent [
-	cursorMovedDelay stop.
-	(ignoreTextEvents not and: [ self isShowingPopup ])
-		ifTrue: [ self startCompletionAt: anEvent fromIndex - 1 ].
-	lastWasText := true
+	self isShowingPopup
+		ifTrue: [ self startCompletionAt: anEvent fromIndex - 1 ]
 ]
 
 { #category : #'private - accessing' }
@@ -715,6 +708,20 @@ GtCompletionController >> textEditor [
 	<return: #BrTextEditor>
 
 	^ textElement editor
+]
+
+{ #category : #'private - installation' }
+GtCompletionController >> textEditorHandlers [
+	^ textEditorHandlers
+		ifNil: [ textEditorHandlers := {(BlEventHandler
+				on: BrTextEditorInsertedEvent
+				do: [ :event | self textInserted: event ]).
+			(BlEventHandler
+				on: BrTextEditorDeletedEvent
+				do: [ :event | self textDeleted: event ]).
+			(BlEventHandler
+				on: BrTextEditorCursorMovedEvent
+				do: [ :event | self cursorMoved: event ])} ]
 ]
 
 { #category : #'initialize-release' }
@@ -728,15 +735,22 @@ GtCompletionController >> textElement: anEditorElement [
 		do: [ :anEvent | self onCursorDetached: anEvent cursorElement ].
 
 	completionDelay element: textElement.
-	lostFocusDelay element: textElement.
-	cursorMovedDelay element: textElement
+	lostFocusDelay element: textElement
+]
+
+{ #category : #'private - installation' }
+GtCompletionController >> textElementFilters [
+	^ textElementFilters
+		ifNil: [ textElementFilters := {self activeShortcutHandler.
+			self inactiveShortcutHandler.
+			(BlEventHandler
+				on: BlBlurEvent
+				do: [ :event | self removePopupOnLostFocus ])} ]
 ]
 
 { #category : #'event handling' }
 GtCompletionController >> textInserted: anEvent [
-	ignoreTextEvents
-		ifFalse: [ self startCompletionAt: anEvent index + anEvent text size ].
-	lastWasText := true
+	self startCompletionAt: anEvent index + anEvent text size
 ]
 
 { #category : #private }
@@ -756,11 +770,29 @@ GtCompletionController >> undoDrillDown [
 			self showPreview ]
 ]
 
-{ #category : #actions }
+{ #category : #installation }
 GtCompletionController >> uninstall [
-	popupEventHandlers do: [ :each | listElement removeEventHandler: each ].
-	eventFilters do: [ :each | textElement removeEventFilter: each ].
-	eventHandlers do: [ :each | self textEditor removeEventHandler: each ]
+	self uninstallPopupHandlers.
+	self uninstallTextElementFilters.
+	self uninstallTextEditorHandlers
+]
+
+{ #category : #'private - installation' }
+GtCompletionController >> uninstallPopupHandlers [
+	self popupHandlers
+		do: [ :each | listElement removeEventHandler: each ]
+]
+
+{ #category : #'private - installation' }
+GtCompletionController >> uninstallTextEditorHandlers [
+	self textEditorHandlers
+		do: [ :each | self textEditor removeEventHandler: each ]
+]
+
+{ #category : #'private - installation' }
+GtCompletionController >> uninstallTextElementFilters [
+	self textElementFilters
+		do: [ :each | textElement removeEventFilter: each ]
 ]
 
 { #category : #'private - popup' }

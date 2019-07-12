@@ -201,6 +201,13 @@ GtPharoCompletionStrategy >> isMethod: aBoolean [
 	isMethod := aBoolean
 ]
 
+{ #category : #'private-variables' }
+GtPharoCompletionStrategy >> localVariablesFor: aVariableNode [
+	^ self hasImplicitVariables
+		ifTrue: [ aVariableNode implicitLocalVariables ]
+		ifFalse: [ aVariableNode localVariables ]
+]
+
 { #category : #accessing }
 GtPharoCompletionStrategy >> maxItems [
 	^ maxItems
