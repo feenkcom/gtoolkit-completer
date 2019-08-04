@@ -19,5 +19,12 @@ GtCompletionApplyPreviewSignal >> action: anObject [
 
 { #category : #printing }
 GtCompletionApplyPreviewSignal >> printOneLineContentsOn: aStream [
+
+	self action ifNil: [ 
+		aStream
+			<< 'a ';
+			print: self class name;
+			<< ' without an action'.
+		^self ].
 	self action label printOn: aStream
 ]
