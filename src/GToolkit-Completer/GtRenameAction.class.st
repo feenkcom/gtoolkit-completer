@@ -1,7 +1,10 @@
 Class {
 	#name : #GtRenameAction,
 	#superclass : #Object,
+	#traits : 'TGtAnnouncer',
+	#classTraits : 'TGtAnnouncer classTrait',
 	#instVars : [
+		'announcer',
 		'textElement',
 		'editorHandlers',
 		'elementFilters',
@@ -80,7 +83,8 @@ GtRenameAction class >> pharoRenameSnippetLocalsOn: aTextEditorElement [
 { #category : #actions }
 GtRenameAction >> accept [
 	self uninstall.
-	self removeExtraCursors
+	self removeExtraCursors.
+	self announceEvent: #accept
 ]
 
 { #category : #private }
@@ -105,10 +109,21 @@ GtRenameAction >> addRenameAttributes [
 			self textEditor update: each first to: each last ]
 ]
 
+{ #category : #private }
+GtRenameAction >> announceEvent: aSymbol [
+	^ self announce: (GtRenameActionAnnoucement for: self type: aSymbol)
+]
+
+{ #category : #announcer }
+GtRenameAction >> announcer [
+	^ announcer ifNil: [ announcer := Announcer new ]
+]
+
 { #category : #actions }
 GtRenameAction >> cancel [
 	self uninstall.
-	self undoChanges
+	self undoChanges.
+	self announceEvent: #cancel
 ]
 
 { #category : #'event handling' }
@@ -145,14 +160,17 @@ GtRenameAction >> elementEventHandlers [
 		addShortcut:
 			(BlShortcut new
 				combination: BlKeyCombination escape;
+				repeatable: false;
 				action: [ self cancel ]);
 		addShortcut:
 			(BlShortcut new
 				combination: BlKeyCombination tab;
+				repeatable: false;
 				action: [ self accept ]);
 		addShortcut:
 			(BlShortcut new
 				combination: BlKeyCombination return;
+				repeatable: false;
 				action: [ self accept ]))}
 ]
 
@@ -198,7 +216,8 @@ GtRenameAction >> install [
 	self addCursors.
 	self installEventHandlers.
 	self selectNames.
-	isInstalled := true
+	isInstalled := true.
+	self announceEvent: #install
 ]
 
 { #category : #installation }
@@ -334,7 +353,8 @@ GtRenameAction >> undoChanges [
 GtRenameAction >> uninstall [
 	self uninstallEventHandlers.
 	self removeAttributes.
-	isInstalled := false
+	isInstalled := false.
+	self announceEvent: #uninstall
 ]
 
 { #category : #installation }
