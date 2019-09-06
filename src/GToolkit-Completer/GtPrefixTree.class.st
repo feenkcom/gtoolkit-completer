@@ -156,7 +156,9 @@ GtPrefixTree >> prefix [
 
 { #category : #private }
 GtPrefixTree >> prefix: aString [
-	prefix := aString
+	prefix := aString size <= 2
+		ifTrue: [ aString asSymbol ]
+		ifFalse: [ aString ]
 ]
 
 { #category : #private }
@@ -323,7 +325,7 @@ GtPrefixTree >> splitAt: anInteger [
 	newChild prefix: (prefix copyFrom: anInteger to: prefix size).
 	weight := 0.
 	children := nil.
-	prefix := prefix copyFrom: 1 to: anInteger - 1.
+	self prefix: (prefix copyFrom: 1 to: anInteger - 1).
 	self ensureChildren.
 	children add: newChild
 ]
@@ -343,6 +345,16 @@ GtPrefixTree >> weight [
 GtPrefixTree >> weight: aNumber [
 	weight := aNumber.
 	maxWeight := maxWeight max: weight
+]
+
+{ #category : #accessing }
+GtPrefixTree >> weightOf: aString [
+	self
+		weightedDo: [ :each :value | 
+			each = aString
+				ifTrue: [ ^ value ] ]
+		startingWith: aString.
+	^ 0
 ]
 
 { #category : #iterating }
