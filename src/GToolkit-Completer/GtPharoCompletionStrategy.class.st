@@ -7,6 +7,7 @@ Class {
 		'hasImplicitVariables',
 		'methodPattern',
 		'variables',
+		'localVariables',
 		'index',
 		'maxItems',
 		'pragmas',
@@ -14,10 +15,32 @@ Class {
 		'bindings'
 	],
 	#classVars : [
+		'GlobalCache',
 		'SelectorCache'
 	],
 	#category : #'GToolkit-Completer-Pharo'
 }
+
+{ #category : #private }
+GtPharoCompletionStrategy class >> classAdded: anAnnouncement [
+	GlobalCache add: anAnnouncement classAdded name
+]
+
+{ #category : #private }
+GtPharoCompletionStrategy class >> classRemoved: anAnnouncement [
+	GlobalCache
+		remove:
+			(anAnnouncement classRemoved name
+				copyReplaceAll: 'AnObsolete'
+				with: '')
+]
+
+{ #category : #private }
+GtPharoCompletionStrategy class >> classRenamed: anAnnouncement [
+	GlobalCache
+		remove: anAnnouncement oldName;
+		add: anAnnouncement newName
+]
 
 { #category : #'class initialization' }
 GtPharoCompletionStrategy class >> initialize [
@@ -29,6 +52,7 @@ GtPharoCompletionStrategy class >> initialize [
 				addAll: each class selectors ].
 	Smalltalk allTraits
 		do: [ :each | SelectorCache addAll: each selectors ].
+	GlobalCache := GtPrefixTree withAll: Smalltalk globals keys.
 	self subscribeToSystem
 ]
 
@@ -68,7 +92,10 @@ GtPharoCompletionStrategy class >> newForSnippet [
 GtPharoCompletionStrategy class >> subscribeToSystem [
 	SystemAnnouncer uniqueInstance weak
 		when: MethodAdded send: #methodAdded: to: self;
-		when: MethodRemoved send: #methodRemoved: to: self
+		when: MethodRemoved send: #methodRemoved: to: self;
+		when: ClassAdded send: #classAdded: to: self;
+		when: ClassRemoved send: #classRemoved: to: self;
+		when: ClassRenamed send: #classRenamed: to: self
 ]
 
 { #category : #private }
@@ -96,7 +123,7 @@ GtPharoCompletionStrategy >> blockVariables: aDictionary [
 	variableTypes := Dictionary new.
 	aDictionary
 		keysAndValuesDo: [ :name :cls | 
-			variables add: name.
+			localVariables add: name.
 			variableTypes at: name put: cls ].
 	self isMethod: false
 ]
@@ -110,12 +137,12 @@ GtPharoCompletionStrategy >> classOrMetaClass [
 GtPharoCompletionStrategy >> classOrMetaClass: aClass [
 	class := aClass.
 	class notNil
-		ifTrue: [ variables addAll: class allInstVarNames.
+		ifTrue: [ localVariables addAll: class allInstVarNames.
 			class isMeta
-				ifTrue: [ variables addAll: class instanceSide allClassVarNames ]
-				ifFalse: [ variables addAll: class allClassVarNames ].
+				ifTrue: [ localVariables addAll: class instanceSide allClassVarNames ]
+				ifFalse: [ localVariables addAll: class allClassVarNames ].
 			class superclass notNil
-				ifTrue: [ variables add: 'super' ] ]
+				ifTrue: [ localVariables add: 'super' ] ]
 ]
 
 { #category : #accessing }
@@ -192,8 +219,12 @@ GtPharoCompletionStrategy >> initialize [
 	super initialize.
 	isMethod := true.
 	hasImplicitVariables := false.
-	variables := GtPrefixTree withAll: Smalltalk globals keys.
-	variables addAll: #('self' 'true' 'false' 'nil' 'thisContext')
+	localVariables := GtPrefixTree withAll: Smalltalk globals keys.
+	localVariables addAll: #('self' 'true' 'false' 'nil' 'thisContext').
+	variables := GtCompositePrefixTree
+		trees:
+			{GlobalCache.
+			localVariables}
 ]
 
 { #category : #'initialize-release' }
@@ -217,7 +248,8 @@ GtPharoCompletionStrategy >> maxItems [
 GtPharoCompletionStrategy >> methodPattern: aMethodPattern [
 	methodPattern := aMethodPattern.
 	methodPattern notNil
-		ifTrue: [ methodPattern variables do: [ :each | variables add: each name value ] ].
+		ifTrue: [ methodPattern variables
+				do: [ :each | localVariables add: each name value ] ].
 	self isMethod: false
 ]
 
