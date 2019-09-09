@@ -1,7 +1,10 @@
 Class {
 	#name : #GtCompleterExamples,
 	#superclass : #Object,
-	#category : 'GToolkit-Completer-Examples'
+	#instVars : [
+		'space'
+	],
+	#category : #'GToolkit-Completer-Examples'
 }
 
 { #category : #strategies }
@@ -15,36 +18,62 @@ GtCompleterExamples >> alphabetStrategy [
 	^ strategy
 ]
 
-{ #category : #private }
-GtCompleterExamples >> cmdLeftOn: completionController [
-	self pauseForCompletion.
-	completionController
-		processKeyDown:
-			(BlKeyDownEvent new
-				key: BlKeyboardKey arrowLeft;
-				modifiers:
-					(BlKeyModifiers
-						shift: false
-						ctrl: false
-						alt: false
-						cmd: true);
-				yourself)
+{ #category : #smalltalk }
+GtCompleterExamples >> completeInstanceVariableReceiver [
+	<gtExample>
+	| completer |
+	completer := self completePrintOnMethodSelector.
+	self
+		enter:
+			{Character cr.
+			Character tab} , #('is' #tabComplete:)
+		into: completer.
+	self
+		assert: completer textEditor text asString
+		equals: self instanceVariableReceiverSource.
+	^ completer
 ]
 
-{ #category : #private }
-GtCompleterExamples >> cmdRightOn: completionController [
-	self pauseForCompletion.
-	completionController
-		processKeyDown:
-			(BlKeyDownEvent new
-				key: BlKeyboardKey arrowRight;
-				modifiers:
-					(BlKeyModifiers
-						shift: false
-						ctrl: false
-						alt: false
-						cmd: true);
-				yourself)
+{ #category : #smalltalk }
+GtCompleterExamples >> completeMultipleKeywordMessageSend [
+	<gtExample>
+	| completer |
+	completer := self completeInstanceVariableReceiver.
+	self
+		enter:
+			#(' prin')
+				,
+					{[ :controller | self selectPreviewMatching: 'print:on:' in: controller ].
+					#tabComplete:}
+				, #(#tabNext: 'va' #tabComplete: #tabNext: 'ma' #tabComplete:)
+		into: completer.
+	self
+		assert: completer textEditor text asString
+		equals:
+			self instanceVariableReceiverSource
+				, ' print: maxItems on: variableTypes'.
+	self
+		assert: (completer textEditor cursor allCursors collect: #position)
+		equals: #(42).
+	^ completer
+]
+
+{ #category : #smalltalk }
+GtCompleterExamples >> completePrintOnMethodSelector [
+	<gtExample>
+	| completer |
+	completer := self openOn: '' withStrategy: self smalltalkStrategy.
+	self
+		enter:
+			#(0 'prin')
+				,
+					{[ :controller | self selectPreviewMatching: 'printOn:' in: controller ].
+					#tabComplete:}
+		into: completer.
+	self
+		assert: completer textEditor text asString
+		equals: self printOnMethodSelectorSource.
+	^ completer
 ]
 
 { #category : #completing }
@@ -52,7 +81,8 @@ GtCompleterExamples >> completeWithCursorMove [
 	<gtExample>
 	| aCompleter |
 
-	aCompleter := self openOn: '12345' withStrategy: self alphabetStrategy entering: #(0 $b 4).
+	aCompleter := self openOn: '12345' withStrategy: self alphabetStrategy.
+	self enter: #(0 $b 4) into: aCompleter.
 
 	self assert: aCompleter textEditor text asString equals: 'b12345'.
 	self assert: (aCompleter textEditor cursor allCursors collect: #position) equals: #(4).
@@ -64,13 +94,13 @@ GtCompleterExamples >> completeWithCursorMove [
 { #category : #completing }
 GtCompleterExamples >> completeWithTab [
 	<gtExample>
-	<noTest>
 	| aCompleter |
 	
-	aCompleter := self openOn: '' withStrategy: self alphabetStrategy entering: #(0 'dd' #tabOn:).
+	aCompleter := self openOn: '' withStrategy: self alphabetStrategy.
+	self enter: #(0 'dd' #tabComplete:) into: aCompleter.
 
-	self assert: aCompleter textEditor text asString equals: 'dd'.
-	self assert: (aCompleter textEditor cursor allCursors collect: #position) equals: #(2).
+	self assert: aCompleter textEditor text asString equals: 'dddd'.
+	self assert: (aCompleter textEditor cursor allCursors collect: #position) equals: #(4).
 	self assert: aCompleter textEditor selection isEmpty.
 
 	^ aCompleter
@@ -81,21 +111,14 @@ GtCompleterExamples >> completionPreview [
 	<gtExample>
 	| aCompleter |
 	
-	aCompleter := self openOn: '' withStrategy: self alphabetStrategy entering: #(0 $c).
+	aCompleter := self openOn: '' withStrategy: self alphabetStrategy.
+	self enter: #(0 $c) into: aCompleter.
 
 	self assert: aCompleter textEditor text asString equals: 'c'.
 	self assert: (aCompleter textEditor cursor allCursors collect: #position) equals: #(1).
 	self assert: aCompleter textEditor selection isEmpty.
 
 	^ aCompleter
-]
-
-{ #category : #private }
-GtCompleterExamples >> deleteSelectedTextOn: completionController [
-
-	completionController textEditor deleter
-		selected;
-		delete
 ]
 
 { #category : #private }
@@ -125,23 +148,8 @@ GtCompleterExamples >> enter: anArray into: completionController [
 			each isCharacter
 				ifTrue: [ self insertString: (String with: each) on: completionController ].
 			each isBlock
-				ifTrue: [ each value: completionController ] ]
-]
-
-{ #category : #private }
-GtCompleterExamples >> escapeOn: completionController [
-	self pauseForCompletion.
-	completionController
-		processKeyDown:
-			(BlKeyDownEvent new
-				key: BlKeyboardKey escape;
-				modifiers:
-					(BlKeyModifiers
-						shift: false
-						ctrl: false
-						alt: false
-						cmd: false);
-				yourself)
+				ifTrue: [ self pauseForCompletion.
+					each value: completionController ] ]
 ]
 
 { #category : #private }
@@ -152,6 +160,14 @@ GtCompleterExamples >> insertString: aString on: completionController [
 		atCursor;
 		string: aString;
 		insert
+]
+
+{ #category : #'private-source' }
+GtCompleterExamples >> instanceVariableReceiverSource [
+	^ self printOnMethodSelectorSource
+		,
+			'
+	isMethod'
 ]
 
 { #category : #smalltalk }
@@ -192,8 +208,8 @@ GtCompleterExamples >> moveCursorTo: anInteger on: aCompletionController [
 ]
 
 { #category : #private }
-GtCompleterExamples >> openOn: aString withStrategy: aCompletionStrategy entering: anArray [
-	| editorElement completionController aSpace |
+GtCompleterExamples >> openOn: aString withStrategy: aCompletionStrategy [
+	| editorElement completionController |
 	
 	editorElement := self editorElementFor: aString.
 	"editor must have focus for cursor to appear"
@@ -202,43 +218,39 @@ GtCompleterExamples >> openOn: aString withStrategy: aCompletionStrategy enterin
 	completionController := GtCompletionController on: editorElement strategy: aCompletionStrategy.
 	completionController install.
 
-	aSpace := BlSpace new.
+	space := BlSpace new.
 	"simulated time allows us to instantly advance space time by a given duration without using forks"
-	aSpace time: BlTime simulated.
-	aSpace addChild: editorElement.
-
-	self enter: anArray into: completionController.
-	"we manually ask the space to step one frame"
-	aSpace pulse.
-
-	"advance time by popup delay (instantly)"
-	aSpace time wait: GtCompletionController popupDelay.
-	"perform one more frame"
-	aSpace pulse.
+	space time: BlTime simulated.
+	space addChild: editorElement.
 
 	^ completionController
 ]
 
 { #category : #private }
 GtCompleterExamples >> pauseForCompletion [
-	| semaphore |
-	semaphore := Semaphore new.
-	[ (Delay forMilliseconds: 50) wait.
-	semaphore signal ] fork.
-	semaphore wait
+	"advance time by popup delay (instantly)"
+	space time wait: GtCompletionController popupDelay.
+	"perform one more frame"
+	space pulse
+]
+
+{ #category : #'private-source' }
+GtCompleterExamples >> printOnMethodSelectorSource [
+	^ 'printOn: aStream'
 ]
 
 { #category : #private }
 GtCompleterExamples >> selectPreviewMatching: aString in: completionController [
 	self pauseForCompletion.
 	completionController completionActions isEmpty
-		ifTrue: [ ^ self ].
+		ifTrue: [ ^ self error: 'No completion actions' ].
 	100
-		timesRepeat: [		
-			completionController selectedCompletionItemDo: [ :aCompletionItem |
-				(aString match: aCompletionItem label)
-					ifTrue: [ ^ self ] ].
-			completionController selectNextItem ]
+		timesRepeat: [ completionController
+				selectedCompletionItemDo: [ :aCompletionItem | 
+					(aString match: aCompletionItem label)
+						ifTrue: [ ^ self ] ].
+			completionController selectNextItem ].
+	self error: 'Could not find completion action'
 ]
 
 { #category : #smalltalk }
@@ -267,29 +279,6 @@ GtCompleterExamples >> smalltalkCompleter [
 	^ editorElement
 ]
 
-{ #category : #smalltalk }
-GtCompleterExamples >> smalltalkCompletion [
-	<gtExample>
-	<noTest>
-
-	^ self
-		openOn: ''
-		withStrategy: self smalltalkStrategy
-		entering:
-			#(0 'prin')
-				,
-					{[ :controller | self selectPreviewMatching: 'printOn:' in: controller ].
-					#tabOn:.
-					Character cr.
-					Character tab} , #('is' #tabOn: $  'pr')
-				,
-					{[ :controller | self selectPreviewMatching: 'print:on:' in: controller ].
-					#tabOn:} , #('ma' #tabOn: #tabOn: 'va' #tabOn:)
-
-"printOn: aStream
-	isMethod print: maxItems on: variables"
-]
-
 { #category : #strategies }
 GtCompleterExamples >> smalltalkStrategy [
 	<gtExample>
@@ -300,6 +289,12 @@ GtCompleterExamples >> smalltalkStrategy [
 ]
 
 { #category : #private }
-GtCompleterExamples >> tabOn: completionController [
-	self pauseForCompletion
+GtCompleterExamples >> tabComplete: completionController [
+	self pauseForCompletion.
+	completionController completeWithCursor: true
+]
+
+{ #category : #private }
+GtCompleterExamples >> tabNext: completionController [
+	completionController processTabKey: true
 ]
