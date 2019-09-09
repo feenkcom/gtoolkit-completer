@@ -254,7 +254,19 @@ GtCompletionController >> inactiveShortcutHandler [
 					(BlKeyCombination builder secondary
 						key: BlKeyboardKey space;
 						build);
-				action: [ self startCompletion ]).
+				action: [ self startCompletion ]);
+		addShortcut:
+			(BlShortcut new
+				repeatable: false;
+				combination: BlKeyCombination tab;
+				action:
+						[ :event | inactiveShortcutHandler consumeEvent: (self processTabKey: true) ]);
+		addShortcut:
+			(BlShortcut new
+				repeatable: false;
+				combination: BlKeyCombination builder shift tab build;
+				action:
+						[ :event | inactiveShortcutHandler consumeEvent: (self processTabKey: false) ]).
 	^ inactiveShortcutHandler
 ]
 
@@ -474,19 +486,18 @@ GtCompletionController >> processReturnKey: anEvent [
 ]
 
 { #category : #'event handling' }
-GtCompletionController >> processTabKey: anEvent [
+GtCompletionController >> processTabKey: forwardBoolean [
 	| direction |
-
 	self isShowingPopup
-		ifTrue: [ ^ self ].
-		
+		ifTrue: [ ^ false ].
 	self isAtStartOfLine
-		ifFalse: [ direction := anEvent modifiers isShift
-				ifTrue: [ -1 ]
-				ifFalse: [ 1 ].
+		ifFalse: [ direction := forwardBoolean
+				ifTrue: [ 1 ]
+				ifFalse: [ -1 ].
 			((self moveCursorToNextUncompletedItem: direction)
 				or: [ self startCompletionAt: self textEditor cursor first position ])
-				ifTrue: [ anEvent consumed: true ] ]
+				ifTrue: [ ^ true ] ].
+	^ false
 ]
 
 { #category : #'private - popup' }
