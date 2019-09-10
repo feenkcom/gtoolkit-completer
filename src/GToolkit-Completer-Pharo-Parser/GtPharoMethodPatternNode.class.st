@@ -30,6 +30,14 @@ GtPharoMethodPatternNode >> initialize [
 	variables := OrderedCollection new: 2.
 ]
 
+{ #category : #accessing }
+GtPharoMethodPatternNode >> selector [
+	^ (String
+		streamContents:
+			[ :stream | self selectorParts do: [ :each | stream nextPutAll: each value ] ])
+		asSymbol
+]
+
 { #category : #generated }
 GtPharoMethodPatternNode >> selectorParts [
 	^ selectorParts
