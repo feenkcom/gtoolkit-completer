@@ -1,7 +1,7 @@
 Class {
 	#name : #BaselineOfGToolkitCompleter,
 	#superclass : #BaselineOf,
-	#category : 'BaselineOfGToolkitCompleter'
+	#category : #BaselineOfGToolkitCompleter
 }
 
 { #category : #baseline }
@@ -10,9 +10,9 @@ BaselineOfGToolkitCompleter >> baseline: spec [
 	spec for: #'common' do: [
 		spec 
 			baseline: 'SmaCC' with: [
-				spec repository: 'github://j-brant/SmaCC:d5938dbd424bba257b1ffc17ee7b77796ecc4edc/src' ];
+				spec repository: 'github://j-brant/SmaCC:5683b1cd1534cd13134c5d26e7850c7199678be2/src' ];
 			baseline: 'Brick' with: [
-				spec repository: 'github://feenkcom/Brick:v0.7.97/src' ];
+				spec repository: 'github://feenkcom/Brick:v0.7.98/src' ];
 			baseline: 'GToolkitUtility' with: [
 				spec repository: 'github://feenkcom/gtoolkit-utility:v0.7.2/src' ].
 		spec 
