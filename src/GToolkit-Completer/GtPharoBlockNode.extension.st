@@ -1,6 +1,13 @@
 Extension { #name : #GtPharoBlockNode }
 
 { #category : #'*GToolkit-Completer' }
+GtPharoBlockNode >> completionActionsFor: aStrategy [
+	(aStrategy index between: body startPosition and: body stopPosition)
+		ifTrue: [ ^ body completionActionsFor: aStrategy ].
+	^ #()
+]
+
+{ #category : #'*GToolkit-Completer' }
 GtPharoBlockNode >> defines: aString [
 	^ variables anySatisfy: [ :each | each name value = aString ]
 ]

@@ -7,14 +7,18 @@ GtPharoUnaryMessageNode >> completionActionsFor: strategy [
 	selectorPart stopPosition = index
 		ifFalse: [ ^ #() ].
 	startingText := selectorPart value.
-	^ (strategy selectorsForReceiver: (parent receiver guessType: strategy) matching: startingText)
-		collect: [ :each | self actionForSelector: each startingWith: startingText at: index ]
+	^ (strategy
+		selectorsForReceiver: (parent receiver guessType: strategy)
+		matching: startingText)
+		collect: [ :each | 
+			parent
+				actionForSelector: each
+				startingWith: startingText
+				at: index
+				needsParensKeywords: parent parent needsParenthesisForKeyword ]
 ]
 
 { #category : #'*GToolkit-Completer' }
-GtPharoUnaryMessageNode >> needsParenthesisForKeyword [
-	| messageSendParent |
-	messageSendParent := parent parent.
-	^ (messageSendParent isKindOf: GtPharoMessageNode)
-		or: [ (messageSendParent isKindOf: GtPharoMessageSendNode) or: [ messageSendParent isKindOf: GtPharoCascadeNode ] ]
+GtPharoUnaryMessageNode >> messageReceiver [
+	^ parent
 ]

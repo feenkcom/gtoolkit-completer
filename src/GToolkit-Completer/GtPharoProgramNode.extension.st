@@ -14,7 +14,30 @@ GtPharoProgramNode >> actionForSelector: aSymbol startingWith: aString at: anInt
 ]
 
 { #category : #'*GToolkit-Completer' }
-GtPharoProgramNode >> completionActionsFor: aGtPharoCompletionStrategy [
+GtPharoProgramNode >> actionForSelector: aSymbol startingWith: aString at: anInteger needsParensKeywords: aBoolean [
+	| isKeyword actionClass action |
+	isKeyword := aSymbol last = $:.
+	actionClass := isKeyword
+		ifTrue: [ GtKeywordCompletionAction ]
+		ifFalse: [ GtInsertTextCompletionAction ].
+	action := actionClass
+		labeled: aSymbol
+		completion: (aSymbol allButFirst: aString size)
+		position: anInteger.
+	(isKeyword and: [ aBoolean ])
+		ifTrue: [ action addParenthesesBefore: self startPosition ].
+	^ action
+]
+
+{ #category : #'*GToolkit-Completer' }
+GtPharoProgramNode >> completionActionsFor: aStrategy [
+	((self comments ifNil: [ #() ])
+		anySatisfy: [ :each | aStrategy index between: each first and: each last ])
+		ifTrue: [ ^ #() ].
+	self
+		nodesDo: [ :each | 
+			(aStrategy index between: each startPosition and: each stopPosition)
+				ifTrue: [ ^ each completionActionsFor: aStrategy ] ].
 	^ #()
 ]
 
@@ -47,6 +70,11 @@ GtPharoProgramNode >> localVariables [
 GtPharoProgramNode >> localVariablesInto: aCollection [
 	parent notNil
 		ifTrue: [ parent localVariablesInto: aCollection ]
+]
+
+{ #category : #'*GToolkit-Completer' }
+GtPharoProgramNode >> messageReceiver [
+	^ self
 ]
 
 { #category : #'*GToolkit-Completer' }

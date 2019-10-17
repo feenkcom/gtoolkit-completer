@@ -135,6 +135,64 @@ GtCompleterExamples >> editorElementFor: aString [
 	^ editorElement
 ]
 
+{ #category : #smalltalk }
+GtCompleterExamples >> emptyExplicitlyRequestedCompletions [
+	<gtExample>
+	| text strategy index |
+	text := '  "<"method:  "<"arg  "<"
+		| var1 |
+		var1  "<":= #().
+		self inform: var1 size.
+		^var1 size * 3'.
+	strategy := self smalltalkStrategy.
+	index := 1.
+	[ (index := (text indexOfSubCollection: '"<"' startingAt: index) + 1)
+		> 1 ]
+		whileTrue: [ self
+				assert:
+					(strategy
+						completionActionsFor: text asRopedText
+						at: index - 2
+						max: 10
+						requested: true) isEmpty ].
+	^ strategy
+]
+
+{ #category : #smalltalk }
+GtCompleterExamples >> endingStatementRequestedCompletions [
+	<gtExample>
+	| text strategy index |
+	text := 'method: arg 
+		| var1 |
+		var1  := #()  "<".
+		self inform: var1 size  "<".
+		^var1 size * 3  "<"'.
+	strategy := self smalltalkStrategy.
+	index := 1.
+	[ (index := (text indexOfSubCollection: '"<"' startingAt: index) + 1)
+		> 1 ]
+		whileTrue: [ | actions |
+			actions := strategy
+				completionActionsFor: text asRopedText
+				at: index - 2
+				max: 10
+				requested: true.
+			self assert: actions notEmpty.
+			self
+				assert:
+					(actions
+						anySatisfy:
+							[ :each | (each label includes: $:) or: [ each label asSymbol isBinary ] ]).
+			self
+				assert:
+					(strategy
+						completionActionsFor: text asRopedText
+						at: index - 2
+						max: 10
+						requested: false) isEmpty ].
+	^ strategy
+]
+
 { #category : #private }
 GtCompleterExamples >> enter: anArray into: completionController [
 	anArray
@@ -286,6 +344,39 @@ GtCompleterExamples >> smalltalkStrategy [
 	completionStrategy := GtPharoCompletionStrategy newForMethod.
 	completionStrategy classOrMetaClass: GtPharoCompletionStrategy.
 	^ completionStrategy
+]
+
+{ #category : #smalltalk }
+GtCompleterExamples >> startingStatementRequestedCompletions [
+	<gtExample>
+	| text strategy index |
+	text := 'method: arg 
+		| var1 |
+		 "<"
+		var1  := #().  "<"
+		self inform: var1 size.  "<"
+		^var1 size * 3'.
+	strategy := self smalltalkStrategy.
+	index := 1.
+	[ (index := (text indexOfSubCollection: '"<"' startingAt: index) + 1)
+		> 1 ]
+		whileTrue: [ | actions |
+			actions := strategy
+				completionActionsFor: text asRopedText
+				at: index - 2
+				max: 10
+				requested: true.
+			self assert: actions notEmpty.
+			self
+				assert: (actions noneSatisfy: [ :each | each label includes: $: ]).
+			self
+				assert:
+					(strategy
+						completionActionsFor: text asRopedText
+						at: index - 2
+						max: 10
+						requested: false) isEmpty ].
+	^ strategy
 ]
 
 { #category : #private }
