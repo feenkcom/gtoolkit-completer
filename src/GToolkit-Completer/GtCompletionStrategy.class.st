@@ -1,7 +1,7 @@
 Class {
 	#name : #GtCompletionStrategy,
 	#superclass : #Object,
-	#category : 'GToolkit-Completer'
+	#category : #'GToolkit-Completer'
 }
 
 { #category : #accessing }
@@ -15,6 +15,11 @@ GtCompletionStrategy >> completionActionsFor: aText at: positionInteger max: max
 	^ (self first: maxSize startingWith: prefix)
 		collect:
 			[ :each | GtInsertTextCompletionAction labeled: each completion: (each allButFirst: prefix size) position: positionInteger ]
+]
+
+{ #category : #accessing }
+GtCompletionStrategy >> completionActionsFor: aText at: positionInteger max: maxSize requested: aBoolean [
+	^ self completionActionsFor: aText at: positionInteger max: maxSize
 ]
 
 { #category : #accessing }

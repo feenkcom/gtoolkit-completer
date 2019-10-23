@@ -4,6 +4,7 @@ Class {
 	#instVars : [
 		'class',
 		'isMethod',
+		'wasRequested',
 		'hasImplicitVariables',
 		'methodPattern',
 		'variables',
@@ -103,11 +104,6 @@ GtPharoCompletionStrategy class >> unsubscribeFromSystem [
 	SystemAnnouncer uniqueInstance unsubscribe: self
 ]
 
-{ #category : #private }
-GtPharoCompletionStrategy >> actionsFor: anAST at: anInteger [
-	^ (self nodeFor: anInteger in: anAST) ifNil: [ #() ] ifNotNil: [ :node | node completionActionsFor: self ]
-]
-
 { #category : #accessing }
 GtPharoCompletionStrategy >> bindings [
 	^ bindings
@@ -146,10 +142,13 @@ GtPharoCompletionStrategy >> classOrMetaClass: aClass [
 ]
 
 { #category : #accessing }
-GtPharoCompletionStrategy >> completionActionsFor: aText at: positionInteger max: maxInteger [
+GtPharoCompletionStrategy >> completionActionsFor: aText at: positionInteger max: maxInteger requested: aBoolean [
 	maxItems := maxInteger.
 	index := positionInteger.
-	^ (self parseSource: aText asString) ifNil: [ #() ] ifNotNil: [ :tree | self actionsFor: tree at: positionInteger ]
+	wasRequested := aBoolean.
+	^ (self parseSource: aText asString)
+		ifNil: [ #() ]
+		ifNotNil: [ :tree | tree completionActionsFor: self ]
 ]
 
 { #category : #accessing }
@@ -219,8 +218,8 @@ GtPharoCompletionStrategy >> initialize [
 	super initialize.
 	isMethod := true.
 	hasImplicitVariables := false.
-	localVariables := GtPrefixTree withAll: Smalltalk globals keys.
-	localVariables addAll: #('self' 'true' 'false' 'nil' 'thisContext').
+	localVariables := GtPrefixTree
+		withAll: #('self' 'true' 'false' 'nil' 'thisContext').
 	variables := GtCompositePrefixTree
 		trees:
 			{GlobalCache.
@@ -251,16 +250,6 @@ GtPharoCompletionStrategy >> methodPattern: aMethodPattern [
 		ifTrue: [ methodPattern variables
 				do: [ :each | localVariables add: each name value ] ].
 	self isMethod: false
-]
-
-{ #category : #private }
-GtPharoCompletionStrategy >> nodeFor: anInteger in: anAST [
-	| node |
-	anAST
-		withAllNodesDo: [ :each | 
-			(anInteger between: each startPosition and: each stopPosition)
-				ifTrue: [ node := each ] ].
-	^ node
 ]
 
 { #category : #private }
@@ -326,7 +315,27 @@ GtPharoCompletionStrategy >> typeOfVariable: aString [
 	^ nil
 ]
 
+{ #category : #private }
+GtPharoCompletionStrategy >> variableCompletionActionsFor: anAST [
+	| vars allLocalVariables |
+	allLocalVariables := self localVariablesFor: anAST.
+	vars := allLocalVariables first: self maxItems startingWith: ''.
+	vars
+		addAll: (self variables first: self maxItems - vars size startingWith: '').
+	^ vars
+		collect: [ :each | 
+			GtInsertTextCompletionAction
+				labeled: each
+				completion: each
+				position: self index ]
+]
+
 { #category : #accessing }
 GtPharoCompletionStrategy >> variables [
 	^ variables
+]
+
+{ #category : #testing }
+GtPharoCompletionStrategy >> wasRequested [
+	^ wasRequested
 ]

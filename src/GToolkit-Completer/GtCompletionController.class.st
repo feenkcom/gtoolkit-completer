@@ -810,7 +810,7 @@ GtCompletionController >> uninstallTextElementFilters [
 GtCompletionController >> updatePopupItemsAt: anIndex autoSelect: shouldSelectFirst [
 	| theActions |
 
-	theActions := [ (self strategyAt: anIndex) completionActionsFor: self text at: anIndex max: MaxPopupItems ]
+	theActions := [ (self strategyAt: anIndex) completionActionsFor: self text at: anIndex max: MaxPopupItems requested: showRequested ]
 		on: Error
 		do: [ :ex | ex return: #() ].
 		
