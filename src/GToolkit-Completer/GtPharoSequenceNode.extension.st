@@ -23,8 +23,8 @@ GtPharoSequenceNode >> completionActionsFor: aStrategy [
 		or: [ periodIndex > 1
 				and: [ statementBefore stopPosition
 						< (periods at: periodIndex - 1) startPosition ] ])
-		ifTrue: [ (periods notEmpty
-				and: [ periods last startPosition < statementBefore stopPosition ])
+		ifTrue: [ (periods isEmpty
+				or: [ periods last startPosition < statementBefore stopPosition ])
 				ifFalse: [ ^ aStrategy variableCompletionActionsFor: self ] ].
 	receiver := statementBefore messageReceiver.
 	^ (aStrategy

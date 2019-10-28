@@ -19,6 +19,22 @@ GtCompleterExamples >> alphabetStrategy [
 ]
 
 { #category : #smalltalk }
+GtCompleterExamples >> binaryCompletion [
+	<gtExample>
+	| text strategy |
+	text := 'foo ^3 <'.
+	strategy := self smalltalkStrategy.
+	self
+		assert:
+			(strategy
+				completionActionsFor: text asRopedText
+				at: text size
+				max: 10
+				requested: true) notEmpty.
+	^ strategy
+]
+
+{ #category : #smalltalk }
 GtCompleterExamples >> completeInstanceVariableReceiver [
 	<gtExample>
 	| completer |
