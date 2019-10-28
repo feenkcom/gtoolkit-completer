@@ -1,30 +1,20 @@
 Extension { #name : #GtPharoProgramNode }
 
 { #category : #'*GToolkit-Completer' }
-GtPharoProgramNode >> actionForSelector: aSymbol startingWith: aString at: anInteger [
-	| isKeyword actionClass action |
-	isKeyword := aSymbol last = $:.
-	actionClass := isKeyword
-		ifTrue: [ GtKeywordCompletionAction ]
-		ifFalse: [ GtInsertTextCompletionAction ].
-	action := actionClass labeled: aSymbol completion: (aSymbol allButFirst: aString size) position: anInteger.
-	(isKeyword and: [ self needsParenthesisForKeyword ])
-		ifTrue: [ action addParenthesesBefore: parent receiver startPosition ].
-	^ action
-]
-
-{ #category : #'*GToolkit-Completer' }
 GtPharoProgramNode >> actionForSelector: aSymbol startingWith: aString at: anInteger needsParensKeywords: aBoolean [
-	| isKeyword actionClass action |
+	| isKeyword isBinary actionClass action |
 	isKeyword := aSymbol last = $:.
+	isBinary := aSymbol asSymbol isBinary.
 	actionClass := isKeyword
 		ifTrue: [ GtKeywordCompletionAction ]
-		ifFalse: [ GtInsertTextCompletionAction ].
+		ifFalse: [ isBinary
+				ifTrue: [ GtBinaryCompletionAction ]
+				ifFalse: [ GtInsertTextCompletionAction ] ].
 	action := actionClass
 		labeled: aSymbol
 		completion: (aSymbol allButFirst: aString size)
 		position: anInteger.
-	(isKeyword and: [ aBoolean ])
+	((isKeyword or: [ isBinary ]) and: [ aBoolean ])
 		ifTrue: [ action addParenthesesBefore: self startPosition ].
 	^ action
 ]
