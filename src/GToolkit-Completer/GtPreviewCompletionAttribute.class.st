@@ -17,10 +17,10 @@ GtPreviewCompletionAttribute class >> for: aString [
 ]
 
 { #category : #accessing }
-GtPreviewCompletionAttribute >> affect: aBrText in: anEditorElement [
+GtPreviewCompletionAttribute >> affect: aTBrTextEditorTextualPiece in: anEditorElement [
 	| text attributes textElement |
 	text := string asRopedText.
-	attributes := (anEditorElement editor text attributesAt: aBrText end) reject: [ :each | each = self ].
+	attributes := (anEditorElement editor text attributesAt: aTBrTextEditorTextualPiece textEnd) reject: [ :each | each = self ].
 	text attributes: attributes.
 	textElement := (BlTextElement text: text)
 		editorMeasurement;
