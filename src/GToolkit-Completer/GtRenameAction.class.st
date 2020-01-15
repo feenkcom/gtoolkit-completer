@@ -103,10 +103,7 @@ GtRenameAction >> addRenameAttributes [
 	| text |
 	text := self text.
 	originalLocations
-		do: [ :each | 
-			(text from: each first to: each last) attributes: {GtRenameAttribute new}.
-			self textEditor invalidate: each first to: each last.
-			self textEditor update: each first to: each last ]
+		do: [ :each | (text from: each first to: each last) attributes: { GtRenameAttribute new } ]
 ]
 
 { #category : #private }
@@ -262,8 +259,7 @@ GtRenameAction >> locations: aCollectionOfIntervals [
 { #category : #private }
 GtRenameAction >> removeAttributes [
 	self text clearAttributes: [ :each | self isRenameAttribute: each ].
-	self textEditor invalidate: 1 to: self text size.
-	self textEditor update: 1 to: self text size
+	self textEditor updater all update
 ]
 
 { #category : #private }
@@ -338,9 +334,7 @@ GtRenameAction >> textInserted: anEvent [
 	(self hasRenamingAttributeAt: from)
 		ifTrue: [ ^ self ].
 	(self textEditor text from: from to: to)
-		attributes: {GtRenameAttribute new}.
-	self textEditor invalidate: from to: to.
-	self textEditor update: from to: to
+		attributes: { GtRenameAttribute new }
 ]
 
 { #category : #private }
