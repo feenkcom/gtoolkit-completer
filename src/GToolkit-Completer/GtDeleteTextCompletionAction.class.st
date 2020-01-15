@@ -59,9 +59,9 @@ GtDeleteTextCompletionAction >> isEmpty [
 GtDeleteTextCompletionAction >> previewOn: aCompletionController [
 	from > to
 		ifTrue: [ ^ self ].
-	(aCompletionController text from: from to: to) attributes: {GtPreviewDeletionAttribute new}.
-	aCompletionController textEditor invalidate: from to: to.
-	aCompletionController textEditor update: from to: to
+
+	(aCompletionController text from: from to: to)
+		attributes: { GtPreviewDeletionAttribute new }
 ]
 
 { #category : #private }
@@ -91,6 +91,7 @@ GtDeleteTextCompletionAction >> undoDrillDownOn: aCompletionController [
 { #category : #executing }
 GtDeleteTextCompletionAction >> undoPreviewOn: aCompletionController [
 	aCompletionController text clearAttributes: from to: to if: [ :each | each class = GtPreviewDeletionAttribute ].
-	aCompletionController textEditor invalidate: from to: to.
-	aCompletionController textEditor update: from to: to
+	aCompletionController textEditor updater
+		from: from to: to;
+		update
 ]

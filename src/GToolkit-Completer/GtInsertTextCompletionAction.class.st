@@ -34,9 +34,8 @@ GtInsertTextCompletionAction >> = anObject [
 
 { #category : #private }
 GtInsertTextCompletionAction >> addPreviewAttributeForText: aString at: anInteger on: aCompletionController [
-	(aCompletionController text from: anInteger to: anInteger) attributes: {(GtPreviewCompletionAttribute for: aString)}.
-	aCompletionController textEditor invalidate: anInteger to: anInteger.
-	aCompletionController textEditor update: anInteger to: anInteger
+	(aCompletionController text from: anInteger to: anInteger)
+		attributes: { (GtPreviewCompletionAttribute for: aString) }
 ]
 
 { #category : #testing }
@@ -47,8 +46,7 @@ GtInsertTextCompletionAction >> affectsText [
 { #category : #private }
 GtInsertTextCompletionAction >> clearPreviewAttributesOn: aCompletionController [
 	aCompletionController text clearAttributes: [ :attr | attr class = GtPreviewCompletionAttribute ].
-	aCompletionController textEditor invalidateAll.
-	aCompletionController textEditor updateAll
+	aCompletionController textEditor updater all update
 ]
 
 { #category : #executing }

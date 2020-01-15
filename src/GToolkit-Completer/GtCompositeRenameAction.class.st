@@ -84,9 +84,7 @@ GtCompositeRenameAction >> addRenameAttributesToOtherEditors [
 	otherEditors
 		keysAndValuesDo: [ :editor :positions | 
 			positions do: [ :each | (editor text from: each to: each + newSize - 1) attributes: {GtRenameAttribute new} ].
-			editor
-				updateAll;
-				invalidateAll ]
+			editor updater all update ]
 ]
 
 { #category : #installation }
@@ -127,9 +125,7 @@ GtCompositeRenameAction >> removeOtherAttributes [
 	otherEditors
 		keysDo: [ :editor | 
 			editor text clearAttributes: [ :each | each isKindOf: GtRenameAttribute ].
-			editor
-				updateAll;
-				invalidateAll ]
+			editor updater all update ]
 ]
 
 { #category : #private }
