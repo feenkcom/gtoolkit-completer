@@ -10,7 +10,7 @@ BaselineOfGToolkitCompleter >> baseline: spec [
 	spec for: #'common' do: [
 		spec 
 			baseline: 'SmaCC' with: [
-				spec repository: 'github://j-brant/SmaCC:d0724ebd61ccedcc7efcfb5bc2a29f704f3e4630/src' ];
+				spec repository: 'github://j-brant/SmaCC:e9f68c45643342f559f511e01e1a5fbd0ce8c962/src' ];
 			baseline: 'Brick' with: [
 				spec repository: 'github://feenkcom/Brick:v0.7.392/src' ];
 			baseline: 'GToolkitUtility' with: [
