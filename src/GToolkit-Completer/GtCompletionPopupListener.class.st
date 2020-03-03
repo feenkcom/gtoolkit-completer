@@ -1,6 +1,6 @@
 Class {
 	#name : #GtCompletionPopupListener,
-	#superclass : #BlElementEventListener,
+	#superclass : #BlCustomEventHandler,
 	#instVars : [
 		'overlayElement',
 		'attachmentsCount'
@@ -23,6 +23,11 @@ GtCompletionPopupListener class >> new [
 { #category : #'element handlers' }
 GtCompletionPopupListener >> elementPositionInSpaceChangedEvent: anEvent [
 	self relocateTo: anEvent currentTarget
+]
+
+{ #category : #'api - accessing' }
+GtCompletionPopupListener >> eventsToHandle [
+	^ { BlElementPositionInSpaceChangedEvent }
 ]
 
 { #category : #initialization }
