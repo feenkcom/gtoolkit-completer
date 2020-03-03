@@ -5,7 +5,7 @@ Class {
 		'overlayElement',
 		'attachmentsCount'
 	],
-	#category : 'GToolkit-Completer-UI'
+	#category : #'GToolkit-Completer-UI'
 }
 
 { #category : #'instance creation' }
@@ -21,7 +21,7 @@ GtCompletionPopupListener class >> new [
 ]
 
 { #category : #'element handlers' }
-GtCompletionPopupListener >> elementPositionInSpaceChanged: anEvent [
+GtCompletionPopupListener >> elementPositionInSpaceChangedEvent: anEvent [
 	self relocateTo: anEvent currentTarget
 ]
 
