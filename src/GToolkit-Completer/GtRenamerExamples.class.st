@@ -20,9 +20,8 @@ GtRenamerExamples >> smalltalkRenamer [
 	editor := BrTextEditor new.
 	editor styler: styler.
 	editor text: text.
-	editor interactions
-		add:
-			(BlShortcut new
+	editor addInteraction:
+			(BrTextEditorInteraction new
 				combination:
 					(BlKeyCombination builder
 						primary;
