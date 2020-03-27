@@ -594,11 +594,9 @@ GtCompletionController >> selectUncompletedAt: position [
 { #category : #'private - list selection' }
 GtCompletionController >> selectedCompletionIndexDo: aBlock [
 	"Evaluate a given block with the current selection index if there is one"
-	| aSelection |
 	
-	aSelection := listElement selection.
-	aSelection isNotEmpty
-		ifTrue: [ aBlock value: aSelection from ]
+	listElement selectedIndices
+		ifNotEmpty: [ :theIndices | aBlock value: theIndices first ]
 ]
 
 { #category : #'private - list selection' }
