@@ -14,7 +14,6 @@ Class {
 		'originalIndex',
 		'shouldSelectNames',
 		'isInstalled',
-		'escapeCancels',
 		'cursorMovedDelay'
 	],
 	#category : #'GToolkit-Completer-Actions'
@@ -171,16 +170,6 @@ GtRenameAction >> elementEventHandlers [
 				action: [ self accept ]))}
 ]
 
-{ #category : #accessing }
-GtRenameAction >> escapeCancels [
-	^ escapeCancels
-]
-
-{ #category : #accessing }
-GtRenameAction >> escapeCancels: aBoolean [
-	escapeCancels := aBoolean
-]
-
 { #category : #testing }
 GtRenameAction >> hasRenamingAttributeAt: anIndex [
 	| text |
@@ -200,8 +189,7 @@ GtRenameAction >> initialize [
 	editorHandlers := #().
 	elementFilters := #().
 	shouldSelectNames := false.
-	isInstalled := false.
-	escapeCancels := true
+	isInstalled := false
 ]
 
 { #category : #installation }
