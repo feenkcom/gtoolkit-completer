@@ -34,7 +34,7 @@ GtInsertTextCompletionAction >> = anObject [
 
 { #category : #private }
 GtInsertTextCompletionAction >> addPreviewAttributeForText: aString at: anInteger on: aCompletionController [
-	(aCompletionController text from: anInteger to: anInteger)
+	(aCompletionController text from: (anInteger max: 1) to: anInteger)
 		attributes: { (GtPreviewCompletionAttribute for: aString) }
 ]
 
