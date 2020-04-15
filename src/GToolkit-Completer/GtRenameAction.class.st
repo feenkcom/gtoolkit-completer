@@ -6,15 +6,12 @@ Class {
 	#instVars : [
 		'announcer',
 		'textElement',
-		'editorHandlers',
-		'elementFilters',
 		'originalLocations',
 		'originalText',
 		'originalCursorPosition',
-		'originalIndex',
-		'shouldSelectNames',
 		'isInstalled',
-		'cursorMovedDelay'
+		'renameAttributes',
+		'selectAll'
 	],
 	#category : #'GToolkit-Completer-Actions'
 }
@@ -81,28 +78,35 @@ GtRenameAction class >> pharoRenameSnippetLocalsOn: aTextEditorElement [
 
 { #category : #actions }
 GtRenameAction >> accept [
+	self updateSource.
 	self uninstall.
-	self removeExtraCursors.
 	self announceEvent: #accept
 ]
 
 { #category : #private }
-GtRenameAction >> addCursors [
-	| offset navigator |
-	originalIndex := self intervalForPosition: originalCursorPosition.
-	offset := originalCursorPosition - (originalLocations at: originalIndex) first.
-	navigator := self textEditor navigator.
-	navigator removeAll.
-	originalLocations do: [ :each | navigator addAt: each first + offset ].
-	navigator apply
-]
-
-{ #category : #private }
 GtRenameAction >> addRenameAttributes [
-	| text |
+	| text cursorInLocation |
 	text := self text.
-	originalLocations
-		do: [ :each | (text from: each first to: each last) attributes: { GtRenameAttribute new } ]
+	cursorInLocation := originalLocations
+		anySatisfy:
+			[ :each | originalCursorPosition between: each first - 1 and: each last ].
+	renameAttributes := originalLocations
+		collect: [ :each | 
+			| attribute |
+			attribute := (cursorInLocation not
+				or:
+					[ originalCursorPosition between: each first - 1 and: each last ])
+				ifTrue: [ GtRenameEditorAttribute new
+						action: self;
+						selectAll: selectAll;
+						cursorLocation: originalCursorPosition - each first + 1;
+						text: (text from: each first to: each last) ]
+				ifFalse: [ GtRenamePreviewAttribute new
+						action: self;
+						text: (text from: each first to: each last) ].
+			cursorInLocation := true.
+			(text from: each first to: each last) attributes: {attribute}.
+			attribute ]
 ]
 
 { #category : #private }
@@ -122,74 +126,12 @@ GtRenameAction >> cancel [
 	self announceEvent: #cancel
 ]
 
-{ #category : #'event handling' }
-GtRenameAction >> cursorEvent: anEvent [
-	self uninstall
-]
-
-{ #category : #'event handling' }
-GtRenameAction >> cursorMovedEvent: anEvent [
-	anEvent dueTo isDeleter
-		ifFalse: [ (self isRenamingAt: anEvent newIndex)
-				ifFalse: [ self accept ] ]
-]
-
-{ #category : #installation }
-GtRenameAction >> editorEventHandlers [
-	^ {(BlEventHandler
-		on: BrTextEditorCursorAddedEvent
-		do: [ :event | self cursorEvent: event ]).
-	(BlEventHandler
-		on: BrTextEditorCursorRemovedEvent
-		do: [ :event | self cursorEvent: event ]).
-	(BlEventHandler
-		on: BrTextEditorCursorMovedEvent
-		do: [ :event | self cursorMovedEvent: event ]).
-	(BlEventHandler
-		on: BrTextEditorInsertedEvent
-		do: [ :event | self textInserted: event ])}
-]
-
-{ #category : #installation }
-GtRenameAction >> elementEventHandlers [
-	^ {(BlShortcutHandler new
-		addShortcut:
-			(BlShortcut new
-				combination: BlKeyCombination escape;
-				repeatable: false;
-				action: [ self cancel ]);
-		addShortcut:
-			(BlShortcut new
-				combination: BlKeyCombination tab;
-				repeatable: false;
-				action: [ self accept ]);
-		addShortcut:
-			(BlShortcut new
-				combination: BlKeyCombination return;
-				repeatable: false;
-				action: [ self accept ]))}
-]
-
-{ #category : #testing }
-GtRenameAction >> hasRenamingAttributeAt: anIndex [
-	| text |
-	text := self textEditor text.
-	anIndex > text size
-		ifTrue: [ ^ false ].
-	anIndex <= 0
-		ifTrue: [ ^ false ].
-	^ (text attributesAt: anIndex)
-		anySatisfy: [ :each | self isRenameAttribute: each ]
-]
-
 { #category : #'initialize-release' }
 GtRenameAction >> initialize [
 	super initialize.
 	originalLocations := #().
-	editorHandlers := #().
-	elementFilters := #().
-	shouldSelectNames := false.
-	isInstalled := false
+	isInstalled := false.
+	selectAll := false
 ]
 
 { #category : #installation }
@@ -198,28 +140,8 @@ GtRenameAction >> install [
 		ifTrue: [ ^ self ].
 	self saveOriginalState.
 	self addRenameAttributes.
-	self addCursors.
-	self installEventHandlers.
-	self selectNames.
 	isInstalled := true.
 	self announceEvent: #install
-]
-
-{ #category : #installation }
-GtRenameAction >> installEventHandlers [
-	editorHandlers := self editorEventHandlers.
-	editorHandlers do: [ :each | self textEditor addEventHandler: each ].
-	elementFilters := self elementEventHandlers.
-	elementFilters do: [ :each | self textElement addEventFilter: each ]
-]
-
-{ #category : #private }
-GtRenameAction >> intervalForPosition: aPosition [
-	originalLocations
-		keysAndValuesDo: [ :i :each | 
-			(aPosition between: each first - 1 and: each last)
-				ifTrue: [ ^ i ] ].
-	^ 0
 ]
 
 { #category : #testing }
@@ -229,13 +151,7 @@ GtRenameAction >> isInstalled [
 
 { #category : #testing }
 GtRenameAction >> isRenameAttribute: anAttribute [
-	^ anAttribute isKindOf: GtRenameAttribute
-]
-
-{ #category : #testing }
-GtRenameAction >> isRenamingAt: anIndex [
-	^ (self hasRenamingAttributeAt: anIndex)
-		or: [ self hasRenamingAttributeAt: anIndex + 1 ]
+	^ anAttribute isKindOf: GtRenamePreviewAttribute
 ]
 
 { #category : #accessing }
@@ -244,26 +160,38 @@ GtRenameAction >> locations: aCollectionOfIntervals [
 	self validateLocations
 ]
 
-{ #category : #private }
-GtRenameAction >> removeAttributes [
-	self text clearAttributes: [ :each | self isRenameAttribute: each ].
-	self textEditor updater all update
+{ #category : #actions }
+GtRenameAction >> lostFocus [
+	self accept
 ]
 
 { #category : #private }
-GtRenameAction >> removeExtraCursors [
-	| count |
-	self textEditor cursor cursorsCount = originalLocations size
-		ifFalse: [ ^ self ].
-	count := 1.
-	(self textEditor cursor allCursors asSortedCollection: [ :a :b | a position < b position ])
-		do: [ :each | 
-			count = originalIndex
-				ifTrue: [ ^ self textEditor navigator
-						removeAll;
-						addAt: each position;
-						apply ].
-			count := count + 1 ]
+GtRenameAction >> newName [
+	^ renameAttributes first text asString
+]
+
+{ #category : #private }
+GtRenameAction >> originalName [
+	^ (originalText
+		copyFrom: originalLocations first first
+		to: originalLocations first last) asString
+]
+
+{ #category : #private }
+GtRenameAction >> removeAttributeHandlers [
+	renameAttributes do: [ :each | each uninstallEventHandlers ]
+]
+
+{ #category : #private }
+GtRenameAction >> removeAttributes [
+	self text clearAttributes: [ :each | self isRenameAttribute: each ].
+	self textEditor updater all update.
+	self removeAttributeHandlers
+]
+
+{ #category : #actions }
+GtRenameAction >> returnAccept [
+	self accept
 ]
 
 { #category : #private }
@@ -274,24 +202,19 @@ GtRenameAction >> saveOriginalState [
 	originalCursorPosition := self textEditor cursor first position
 ]
 
-{ #category : #private }
-GtRenameAction >> selectNames [
-	| selecter |
-	shouldSelectNames
-		ifFalse: [ ^ self ].
-	selecter := self textEditor selecter.
-	originalLocations do: [ :each | selecter from: each first - 1 to: each last ].
-	selecter select
+{ #category : #accessing }
+GtRenameAction >> selectAll [
+	^ selectAll
 ]
 
 { #category : #accessing }
-GtRenameAction >> shouldSelectNames [
-	^ shouldSelectNames
+GtRenameAction >> selectAll: anObject [
+	selectAll := anObject
 ]
 
-{ #category : #accessing }
-GtRenameAction >> shouldSelectNames: aBoolean [
-	shouldSelectNames := aBoolean
+{ #category : #actions }
+GtRenameAction >> tabAccept [
+	self accept
 ]
 
 { #category : #accessing }
@@ -314,17 +237,6 @@ GtRenameAction >> textElement: aTextEditorElement [
 	textElement := aTextEditorElement
 ]
 
-{ #category : #'event handling' }
-GtRenameAction >> textInserted: anEvent [
-	| from to |
-	from := anEvent index + 1.
-	to := anEvent index + anEvent text size.
-	(self hasRenamingAttributeAt: from)
-		ifTrue: [ ^ self ].
-	(self textEditor text from: from to: to)
-		attributes: { GtRenameAttribute new }
-]
-
 { #category : #private }
 GtRenameAction >> undoChanges [
 	self textEditor text: originalText.
@@ -333,18 +245,63 @@ GtRenameAction >> undoChanges [
 
 { #category : #installation }
 GtRenameAction >> uninstall [
-	self uninstallEventHandlers.
 	self removeAttributes.
 	isInstalled := false.
-	self announceEvent: #uninstall
+	self announceEvent: #uninstall.
+	textElement
+		enqueueTask: (BlTaskAction new action: [ textElement requestFocus ])
 ]
 
-{ #category : #installation }
-GtRenameAction >> uninstallEventHandlers [
-	elementFilters
-		do: [ :each | self textElement removeEventFilter: each ].
-	editorHandlers
-		do: [ :each | self textEditor removeEventHandler: each ]
+{ #category : #private }
+GtRenameAction >> updateCursorLocation [
+	| sizeDifference offset |
+	sizeDifference := self newName size - self originalName size.
+	offset := 0.
+	originalLocations
+		with: renameAttributes
+		do: [ :interval :attr | 
+			attr isEditorAttribute
+				ifTrue: [ textElement editor
+						moveCursorTo:
+							(interval first + offset + attr editorCursorLocation - 1
+								min: textElement editor text size).
+					^ self ].
+			offset := offset + sizeDifference ]
+]
+
+{ #category : #actions }
+GtRenameAction >> updateName: blText [
+	renameAttributes do: [ :each | each updateText: blText ]
+]
+
+{ #category : #private }
+GtRenameAction >> updateSource [
+	self newName = self originalName
+		ifTrue: [ ^ self removeAttributes ].
+	self
+		updateSourceIn: self textEditor
+		at: originalLocations
+		attributes: renameAttributes.
+	self updateCursorLocation
+]
+
+{ #category : #private }
+GtRenameAction >> updateSourceIn: editor at: intervals attributes: attributeCollection [
+	| newText index |
+	newText := '' asRopedText.
+	index := 1.
+	intervals
+		with: attributeCollection
+		do: [ :each :attr | 
+			each first = 1
+				ifTrue: [ newText := newText , attr text ]
+				ifFalse: [ newText := newText
+						, (editor text copyFrom: index to: each first - 1) , attr text ].
+			index := each last + 1 ].
+	index > editor text size
+		ifFalse: [ newText := newText
+				, (editor text copyFrom: index to: editor text size) ].
+	editor text: newText
 ]
 
 { #category : #private }
