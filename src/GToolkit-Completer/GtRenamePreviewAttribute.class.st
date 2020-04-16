@@ -61,7 +61,11 @@ GtRenamePreviewAttribute >> text: blText [
 		ifTrue: [ originalAttributes := blText isEmpty
 				ifTrue: [ #() ]
 				ifFalse: [ blText attributesAt: 1 ] ].
-	text attributes: originalAttributes
+	text
+		attributes:
+			originalAttributes
+				,
+					{(BlTextUnderlineAttribute new paint: BrGlamorousColors textHighlightColor)}
 ]
 
 { #category : #accessing }
