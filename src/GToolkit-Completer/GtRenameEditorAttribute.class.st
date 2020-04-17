@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'cursorLocation',
 		'selectAll',
-		'eventHandlers'
+		'editorInteractions'
 	],
 	#category : #'GToolkit-Completer'
 }
@@ -12,19 +12,19 @@ Class {
 { #category : #accessing }
 GtRenameEditorAttribute >> affect: aTBrTextEditorTextualPiece in: anEditorElement [
 	| elmt |
-	elmt := super affect: aTBrTextEditorTextualPiece in: anEditorElement.
+	elmt := super affect: aTBrTextEditorTextualPiece in: anEditorElement.	
 	elmt editor
-		when: BrTextEditorInsertedEvent
-			do: [ :event | renameAction updateName: elmt editor text ];
-		when: BrTextEditorDeletedEvent
-			do: [ :event | renameAction updateName: elmt editor text ].
+		when: BrTextEditorModifiedEvent
+		do: [ :event | renameAction updateName: elmt editor text ].
 	elmt
 		addEventFilterOn: BlBaseFocusEvent
 		do: [ :event | self updateFocus: event ].
 	elmt editor moveCursorTo: cursorLocation.
 	selectAll
 		ifTrue: [ elmt editor selecter all select ].
-	self elementEventHandlers do: [ :each | elmt addEventFilter: each ].
+
+	elmt editor addInteractions: self editorInteractions.
+
 	anEditorElement
 		enqueueTask: (BlTaskAction new action: [ elmt requestFocus ]).
 	^ elmt
@@ -43,24 +43,18 @@ GtRenameEditorAttribute >> editorCursorLocation [
 ]
 
 { #category : #private }
-GtRenameEditorAttribute >> elementEventHandlers [
-	^ eventHandlers
-		ifNil: [ eventHandlers := {(BlShortcutHandler new
-				addShortcut:
-					(BlShortcut new
-						combination: BlKeyCombination escape;
-						repeatable: false;
-						action: [ renameAction cancel ]);
-				addShortcut:
-					(BlShortcut new
-						combination: BlKeyCombination tab;
-						repeatable: false;
-						action: [ renameAction tabAccept ]);
-				addShortcut:
-					(BlShortcut new
-						combination: BlKeyCombination return;
-						repeatable: false;
-						action: [ renameAction returnAccept ]))} ]
+GtRenameEditorAttribute >> editorInteractions [
+	^ editorInteractions
+		ifNil: [ editorInteractions := {
+			(BrTextEditorInteraction new
+				combination: BlKeyCombination escape;
+				action: [ renameAction cancel ]).
+			(BrTextEditorInteraction new
+				combination: BlKeyCombination tab;
+				action: [ renameAction tabAccept ]).
+			(BrTextEditorInteraction new
+				combination: BlKeyCombination return;
+				action: [ renameAction returnAccept ])} ]
 ]
 
 { #category : #initialization }
@@ -87,8 +81,7 @@ GtRenameEditorAttribute >> selectAll: aBoolean [
 { #category : #accessing }
 GtRenameEditorAttribute >> uninstallEventHandlers [
 	element notNil
-		ifTrue: [ self elementEventHandlers
-				do: [ :each | element removeEventFilter: each ] ]
+		ifTrue: [ element editor removeInteractions: self editorInteractions ]
 ]
 
 { #category : #accessing }

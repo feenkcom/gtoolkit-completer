@@ -20,14 +20,6 @@ GtRenamePreviewAttribute >> affect: aTBrTextEditorTextualPiece in: anEditorEleme
 	| editor |
 	element := BrEditorElement new.
 	element
-		margin:
-			(BlInsets
-				top: -2
-				left: 0
-				bottom: 2
-				right: 0).
-	element padding: (BlInsets top: 2 bottom: 0).
-	element
 		constraintsDo: [ :c | 
 			c horizontal fitContent.
 			c vertical fitContent ].
