@@ -16,6 +16,12 @@ GtRenamePreviewAttribute >> action: aRenameAction [
 ]
 
 { #category : #accessing }
+GtRenamePreviewAttribute >> additionalAttributes [
+	^ {(BlTextUnderlineAttribute new
+		paint: BrGlamorousColors textHighlightColor)}
+]
+
+{ #category : #accessing }
 GtRenamePreviewAttribute >> affect: aTBrTextEditorTextualPiece in: anEditorElement [
 	| editor |
 	element := BrEditorElement new.
@@ -53,11 +59,7 @@ GtRenamePreviewAttribute >> text: blText [
 		ifTrue: [ originalAttributes := blText isEmpty
 				ifTrue: [ #() ]
 				ifFalse: [ blText attributesAt: 1 ] ].
-	text
-		attributes:
-			originalAttributes
-				,
-					{(BlTextUnderlineAttribute new paint: BrGlamorousColors textHighlightColor)}
+	text attributes: originalAttributes , self additionalAttributes
 ]
 
 { #category : #accessing }
