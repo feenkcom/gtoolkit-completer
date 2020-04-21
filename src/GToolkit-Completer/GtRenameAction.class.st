@@ -11,7 +11,9 @@ Class {
 		'originalCursorPosition',
 		'isInstalled',
 		'renameAttributes',
-		'selectAll'
+		'selectAll',
+		'validationBlock',
+		'filter'
 	],
 	#category : #'GToolkit-Completer-Actions'
 }
@@ -44,6 +46,7 @@ GtRenameAction class >> pharoRenameLocalsOn: aTextEditorElement [
 						andTokensDo: nil
 						includesErrors: true ] ].
 	action := self locations: items element: aTextEditorElement.
+	action forVariableOrUnaryMessage.
 	action install ]
 		on: Error
 		do: [ :ex | ex return: nil ]
@@ -71,6 +74,7 @@ GtRenameAction class >> pharoRenameSnippetLocalsOn: aTextEditorElement [
 				andTokensDo: nil
 				includesErrors: true ].
 	action := self locations: items element: aTextEditorElement.
+	action forVariableOrUnaryMessage.
 	action install ]
 		on: Error
 		do: [ :ex | ex return: nil ]
@@ -94,11 +98,11 @@ GtRenameAction >> addRenameAttributes [
 		collect: [ :each | 
 			| attribute |
 			attribute := (cursorInLocation not
-				or:
-					[ originalCursorPosition between: each first - 1 and: each last ])
+				or: [ originalCursorPosition between: each first - 1 and: each last ])
 				ifTrue: [ GtRenameEditorAttribute new
 						action: self;
 						selectAll: selectAll;
+						filter: filter;
 						cursorLocation: originalCursorPosition - each first + 1;
 						text: (text from: each first to: each last) ]
 				ifFalse: [ GtRenamePreviewAttribute new
@@ -126,12 +130,31 @@ GtRenameAction >> cancel [
 	self announceEvent: #cancel
 ]
 
+{ #category : #private }
+GtRenameAction >> filter: aTextEditorInputFilter [
+	filter := aTextEditorInputFilter.
+	self primaryRenameAttribute
+		ifNotNil: [ :attr | attr filter: aTextEditorInputFilter ]
+]
+
+{ #category : #'initialize-release' }
+GtRenameAction >> forKeyword [
+	validationBlock := [ :str | self validateKeyword: str ]
+]
+
+{ #category : #'initialize-release' }
+GtRenameAction >> forVariableOrUnaryMessage [
+	validationBlock := [ :str | self validateVariable: str ].
+	self filter: BrTextEditorAlphaNumericInputFilter new
+]
+
 { #category : #'initialize-release' }
 GtRenameAction >> initialize [
 	super initialize.
 	originalLocations := #().
 	isInstalled := false.
-	selectAll := false
+	selectAll := false.
+	filter := BrTextEditorNoInputFilter new
 ]
 
 { #category : #installation }
@@ -154,6 +177,13 @@ GtRenameAction >> isRenameAttribute: anAttribute [
 	^ anAttribute isKindOf: GtRenamePreviewAttribute
 ]
 
+{ #category : #'private-validation' }
+GtRenameAction >> isValid [
+	validationBlock isNil
+		ifTrue: [ ^ true ].
+	^ validationBlock value: self newName
+]
+
 { #category : #accessing }
 GtRenameAction >> locations: aCollectionOfIntervals [
 	originalLocations := aCollectionOfIntervals asSortedCollection: [ :a :b | a first < b first ].
@@ -162,7 +192,9 @@ GtRenameAction >> locations: aCollectionOfIntervals [
 
 { #category : #actions }
 GtRenameAction >> lostFocus [
-	self accept
+	self isValid
+		ifTrue: [ self accept ]
+		ifFalse: [ self cancel ]
 ]
 
 { #category : #private }
@@ -175,6 +207,15 @@ GtRenameAction >> originalName [
 	^ (originalText
 		copyFrom: originalLocations first first
 		to: originalLocations first last) asString
+]
+
+{ #category : #private }
+GtRenameAction >> primaryRenameAttribute [
+	renameAttributes isNil
+		ifTrue: [ ^ nil ].
+	^ renameAttributes
+		detect: [ :each | each isEditorAttribute ]
+		ifNone: [ nil ]
 ]
 
 { #category : #private }
@@ -191,6 +232,8 @@ GtRenameAction >> removeAttributes [
 
 { #category : #actions }
 GtRenameAction >> returnAccept [
+	self isValid
+		ifFalse: [ ^ self ].
 	self accept
 ]
 
@@ -214,6 +257,8 @@ GtRenameAction >> selectAll: anObject [
 
 { #category : #actions }
 GtRenameAction >> tabAccept [
+	self isValid
+		ifFalse: [ ^ self ].
 	self accept
 ]
 
@@ -304,6 +349,16 @@ GtRenameAction >> updateSourceIn: editor at: intervals attributes: attributeColl
 	editor text: newText
 ]
 
+{ #category : #'private-validation' }
+GtRenameAction >> validateKeyword: aString [
+	aString isEmpty
+		ifTrue: [ ^ false ].
+	aString last = $:
+		ifFalse: [ ^ false ].
+	^ (RBScanner isSelector: aString)
+		and: [ aString asSymbol numArgs = 1 ]
+]
+
 { #category : #private }
 GtRenameAction >> validateLocations [
 	| lastLocation size |
@@ -318,4 +373,9 @@ GtRenameAction >> validateLocations [
 			lastLocation := each last.
 			each size ~= size
 				ifTrue: [ self error: 'Cannot rename items of different sizes' ] ]
+]
+
+{ #category : #'private-validation' }
+GtRenameAction >> validateVariable: aString [
+	^ RBScanner isVariable: aString
 ]

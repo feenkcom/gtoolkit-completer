@@ -4,30 +4,50 @@ Class {
 	#instVars : [
 		'cursorLocation',
 		'selectAll',
-		'editorInteractions'
+		'editorInteractions',
+		'filter'
 	],
 	#category : #'GToolkit-Completer'
 }
 
 { #category : #accessing }
+GtRenameEditorAttribute >> additionalAttributes [
+	^ #()
+]
+
+{ #category : #accessing }
 GtRenameEditorAttribute >> affect: aTBrTextEditorTextualPiece in: anEditorElement [
-	| elmt |
-	elmt := super affect: aTBrTextEditorTextualPiece in: anEditorElement.	
-	elmt editor
+	element := BrEditableLabel new.
+	element
+		constraintsDo: [ :c | 
+			c horizontal fitContent.
+			c vertical fitContent ].
+	element
+		look:
+			(BrGlamorousEditableLabelLook new defaultBackground: Color transparent).
+	filter notNil
+		ifTrue: [ element inputFilter: filter ].
+	element switchToEditor.
+	element editor text: text.
+	element editor
 		when: BrTextEditorModifiedEvent
-		do: [ :event | renameAction updateName: elmt editor text ].
-	elmt
+		do: [ :event | renameAction updateName: element editor text ].
+	element
 		addEventFilterOn: BlBaseFocusEvent
 		do: [ :event | self updateFocus: event ].
-	elmt editor moveCursorTo: cursorLocation.
+	element editor moveCursorTo: cursorLocation.
 	selectAll
-		ifTrue: [ elmt editor selecter all select ].
-
-	elmt editor addInteractions: self editorInteractions.
-
+		ifTrue: [ element editor selecter all select ].
+	element editor addInteractions: self editorInteractions.
 	anEditorElement
-		enqueueTask: (BlTaskAction new action: [ elmt requestFocus ]).
-	^ elmt
+		enqueueTask: (BlTaskAction new action: [ element requestFocus ]).
+	^ BlElement new
+		layout: BlLinearLayout horizontal;
+		constraintsDo: [ :c | 
+			c horizontal fitContent.
+			c vertical fitContent ];
+		addChild: element;
+		yourself
 ]
 
 { #category : #accessing }
@@ -55,6 +75,13 @@ GtRenameEditorAttribute >> editorInteractions [
 			(BrTextEditorInteraction new
 				combination: BlKeyCombination return;
 				action: [ renameAction returnAccept ])} ]
+]
+
+{ #category : #accessing }
+GtRenameEditorAttribute >> filter: aTextEditorInputFilter [
+	filter := aTextEditorInputFilter.
+	element notNil
+		ifTrue: [ element inputFilter: aTextEditorInputFilter ]
 ]
 
 { #category : #initialization }
