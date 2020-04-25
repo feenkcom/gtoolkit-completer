@@ -172,8 +172,8 @@ GtPharoCompletionStrategy >> gtItemsFor: aView [
 GtPharoCompletionStrategy >> gtViewChildrenFor: aView [
 	<gtView>
 	^ self variables 
-		ifNil:  [ ^ aView ]
-		ifNotNil: [ self variables gtViewChildrenFor: aView ]
+		ifNil:  [ ^ aView empty ]
+		ifNotNil: [ self variables gtItemsFor: aView ]
 ]
 
 { #category : #testing }
