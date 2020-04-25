@@ -37,6 +37,16 @@ GtCompositeCompletionAction >> finishCompletionOn: aCompletionController moveCur
 	actions do: [ :each | each finishCompletionOn: aCompletionController moveCursor: aBoolean ]
 ]
 
+{ #category : #accessing }
+GtCompositeCompletionAction >> gtActionsFor: aView [ 
+	<gtView>
+	self actions ifNil: [ ^ aView empty ].
+	^ aView forward 
+		title: 'Actions';
+		object: [ self actions ];
+		view: #gtItemsFor:
+]
+
 { #category : #comparing }
 GtCompositeCompletionAction >> hash [
 	^ super hash bitXor: self actions hash
