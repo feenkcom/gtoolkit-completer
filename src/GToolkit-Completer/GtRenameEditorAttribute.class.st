@@ -113,6 +113,6 @@ GtRenameEditorAttribute >> uninstallEventHandlers [
 
 { #category : #accessing }
 GtRenameEditorAttribute >> updateFocus: event [
-	(event target focused or: [ renameAction isInstalled not ])
+	(event target hasFocus or: [ renameAction isInstalled not ])
 		ifFalse: [ renameAction lostFocus ]
 ]

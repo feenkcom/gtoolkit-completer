@@ -1,5 +1,5 @@
 Class {
-	#name : #GtRenameActionAnnoucement,
+	#name : #GtRenameActionAnnouncement,
 	#superclass : #Announcement,
 	#instVars : [
 		'renameAction',
@@ -9,7 +9,7 @@ Class {
 }
 
 { #category : #'instance creation' }
-GtRenameActionAnnoucement class >> for: aRenameAction type: aSymbol [
+GtRenameActionAnnouncement class >> for: aRenameAction type: aSymbol [
 	^ self new
 		renameAction: aRenameAction;
 		eventType: aSymbol;
@@ -17,21 +17,21 @@ GtRenameActionAnnoucement class >> for: aRenameAction type: aSymbol [
 ]
 
 { #category : #accessing }
-GtRenameActionAnnoucement >> eventType [
+GtRenameActionAnnouncement >> eventType [
 	^ eventType
 ]
 
 { #category : #accessing }
-GtRenameActionAnnoucement >> eventType: aSymbol [
+GtRenameActionAnnouncement >> eventType: aSymbol [
 	eventType := aSymbol
 ]
 
 { #category : #accessing }
-GtRenameActionAnnoucement >> renameAction [
+GtRenameActionAnnouncement >> renameAction [
 	^ renameAction
 ]
 
 { #category : #accessing }
-GtRenameActionAnnoucement >> renameAction: aRenameAction [
+GtRenameActionAnnouncement >> renameAction: aRenameAction [
 	renameAction := aRenameAction
 ]
