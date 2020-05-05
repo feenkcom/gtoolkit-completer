@@ -5,7 +5,7 @@ Class {
 		'selectorPart',
 		'value'
 	],
-	#category : 'GToolkit-Completer-Pharo-Parser'
+	#category : #'GToolkit-Completer-Pharo-Parser'
 }
 
 { #category : #generated }
@@ -31,6 +31,11 @@ GtPharoBinaryMessageNode >> selectorPart [
 { #category : #generated }
 GtPharoBinaryMessageNode >> selectorPart: aSmaCCToken [
 	selectorPart := aSmaCCToken
+]
+
+{ #category : #accessing }
+GtPharoBinaryMessageNode >> selectorParts [
+	^ {selectorPart}
 ]
 
 { #category : #generated }
