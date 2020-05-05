@@ -36,6 +36,11 @@ GtRenamePreviewAttribute >> affect: aTBrTextEditorTextualPiece in: anEditorEleme
 	^ element
 ]
 
+{ #category : #accessing }
+GtRenamePreviewAttribute >> editor [
+	^ element editor
+]
+
 { #category : #initialization }
 GtRenamePreviewAttribute >> initialize [
 	super initialize.

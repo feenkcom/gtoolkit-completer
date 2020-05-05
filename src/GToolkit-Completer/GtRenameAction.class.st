@@ -115,7 +115,7 @@ GtRenameAction >> addRenameAttributes [
 
 { #category : #private }
 GtRenameAction >> announceEvent: aSymbol [
-	^ self announce: (GtRenameActionAnnoucement for: self type: aSymbol)
+	^ self announce: (GtRenameActionAnnouncement for: self type: aSymbol)
 ]
 
 { #category : #announcer }
@@ -128,6 +128,19 @@ GtRenameAction >> cancel [
 	self uninstall.
 	self undoChanges.
 	self announceEvent: #cancel
+]
+
+{ #category : #accessing }
+GtRenameAction >> editor [
+	^ self editorAttribute editor
+]
+
+{ #category : #accessing }
+GtRenameAction >> editorAttribute [
+	^ renameAttributes notNil
+		ifTrue: [ renameAttributes
+				detect: [ :attr | attr isKindOf: GtRenameEditorAttribute ]
+				ifNone: [  ] ]
 ]
 
 { #category : #private }
@@ -197,12 +210,12 @@ GtRenameAction >> lostFocus [
 		ifFalse: [ self cancel ]
 ]
 
-{ #category : #private }
+{ #category : #accessing }
 GtRenameAction >> newName [
 	^ renameAttributes first text asString
 ]
 
-{ #category : #private }
+{ #category : #accessing }
 GtRenameAction >> originalName [
 	^ (originalText
 		copyFrom: originalLocations first first
@@ -316,7 +329,8 @@ GtRenameAction >> updateCursorLocation [
 
 { #category : #actions }
 GtRenameAction >> updateName: blText [
-	renameAttributes do: [ :each | each updateText: blText ]
+	renameAttributes do: [ :each | each updateText: blText ].
+	self announceEvent: #textUpdated
 ]
 
 { #category : #private }
