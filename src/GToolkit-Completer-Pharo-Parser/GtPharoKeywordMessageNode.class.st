@@ -5,7 +5,7 @@ Class {
 		'selectorParts',
 		'values'
 	],
-	#category : 'GToolkit-Completer-Pharo-Parser'
+	#category : #'GToolkit-Completer-Pharo-Parser'
 }
 
 { #category : #generated }
@@ -28,6 +28,11 @@ GtPharoKeywordMessageNode >> initialize [
 	super initialize.
 	selectorParts := OrderedCollection new: 2.
 	values := OrderedCollection new: 2.
+]
+
+{ #category : #testing }
+GtPharoKeywordMessageNode >> isKeyword [
+	^ true
 ]
 
 { #category : #accessing }

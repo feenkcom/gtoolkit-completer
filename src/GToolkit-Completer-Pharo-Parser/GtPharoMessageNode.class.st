@@ -9,6 +9,21 @@ GtPharoMessageNode >> acceptVisitor: aProgramVisitor [
 	^ aProgramVisitor visitMessage: self
 ]
 
+{ #category : #testing }
+GtPharoMessageNode >> isBinary [
+	^ false
+]
+
+{ #category : #testing }
+GtPharoMessageNode >> isKeyword [
+	^ false
+]
+
+{ #category : #testing }
+GtPharoMessageNode >> isUnary [
+	^ false
+]
+
 { #category : #accessing }
 GtPharoMessageNode >> selector [
 	^ self subclassResponsibility
