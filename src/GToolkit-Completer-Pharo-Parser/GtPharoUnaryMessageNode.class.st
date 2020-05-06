@@ -4,12 +4,17 @@ Class {
 	#instVars : [
 		'selectorPart'
 	],
-	#category : 'GToolkit-Completer-Pharo-Parser'
+	#category : #'GToolkit-Completer-Pharo-Parser'
 }
 
 { #category : #generated }
 GtPharoUnaryMessageNode >> acceptVisitor: aProgramVisitor [
 	^ aProgramVisitor visitUnaryMessage: self
+]
+
+{ #category : #testing }
+GtPharoUnaryMessageNode >> isUnary [
+	^ true
 ]
 
 { #category : #accessing }
@@ -25,6 +30,11 @@ GtPharoUnaryMessageNode >> selectorPart [
 { #category : #generated }
 GtPharoUnaryMessageNode >> selectorPart: aSmaCCToken [
 	selectorPart := aSmaCCToken
+]
+
+{ #category : #accessing }
+GtPharoUnaryMessageNode >> selectorParts [
+	^ {selectorPart}
 ]
 
 { #category : #generated }
