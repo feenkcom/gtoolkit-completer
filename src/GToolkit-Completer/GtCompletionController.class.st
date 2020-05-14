@@ -364,23 +364,24 @@ GtCompletionController >> moveCursorToNextUncompletedItem: direction [
 { #category : #'private - instance creation' }
 GtCompletionController >> newCompletionList [
 	<return: #BrSimpleList>
-
 	^ BrSimpleList new
-		lookDo: [ :aLook | aLook listElement constraintsDo: [ :c |
-			c vertical fitContent.
-			c horizontal matchParent.
-			c maxHeight: 200 ] ];
+		lookDo: [ :aLook | 
+			aLook listElement
+				constraintsDo: [ :c | 
+					c vertical fitContent.
+					c horizontal matchParent.
+					c maxHeight: 200 ] ];
 		background: Color white;
 		layout: BlLinearLayout vertical;
-		constraintsDo: [ :c |
+		constraintsDo: [ :c | 
 			c vertical fitContent.
 			c horizontal matchParent ];
-		display: #();
-		stencil: [ :each :anIndex |
+		items: #();
+		stencil: [ :each :anIndex | 
 			BlTextElement new
 				constraintsDo: [ :c | c horizontal matchParent ];
 				padding: (BlInsets all: 5);
-				text: (each displayString asRopedText glamorousCodeFontAndSmallSize) ]
+				text: each displayString asRopedText glamorousCodeFontAndSmallSize ]
 ]
 
 { #category : #'private - instance creation' }
