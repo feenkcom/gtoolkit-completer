@@ -4,8 +4,18 @@ Class {
 	#instVars : [
 		'completions'
 	],
-	#category : 'GToolkit-Completer'
+	#category : #'GToolkit-Completer'
 }
+
+{ #category : #private }
+GtStringsCompletionStrategy >> buildCompletions [
+	^ GtPrefixTree new
+]
+
+{ #category : #accessing }
+GtStringsCompletionStrategy >> completions [
+	^ completions ifNil: [ completions := self buildCompletions ]
+]
 
 { #category : #'initialize-release' }
 GtStringsCompletionStrategy >> completions: prefixTree [
@@ -14,21 +24,15 @@ GtStringsCompletionStrategy >> completions: prefixTree [
 
 { #category : #accessing }
 GtStringsCompletionStrategy >> first: anInteger startingWith: aString [
-	^ completions first: anInteger startingWith: aString
+	^ self completions first: anInteger startingWith: aString
 ]
 
 { #category : #testing }
 GtStringsCompletionStrategy >> hasCompletionEntryFor: aString [
-	completions
+	self completions
 		do: [ :each | 
 			each ~= aString
 				ifTrue: [ ^ true ] ]
 		startingWith: aString.
 	^ false
-]
-
-{ #category : #'initialize-release' }
-GtStringsCompletionStrategy >> initialize [
-	super initialize.
-	completions := GtPrefixTree new
 ]
