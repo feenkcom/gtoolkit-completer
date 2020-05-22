@@ -73,6 +73,13 @@ GtCompositeCompletionAction >> removeAction: aCompletionAction [
 	actions remove: aCompletionAction ifAbsent: [  ]
 ]
 
+{ #category : #accessing }
+GtCompositeCompletionAction >> searchStartPosition [
+	actions
+		do: [ :each | each searchStartPosition ifNotNil: [ :pos | ^ pos ] ].
+	^ nil
+]
+
 { #category : #translating }
 GtCompositeCompletionAction >> translateBy: anIndex [
 	super translateBy: anIndex.
