@@ -14,11 +14,11 @@ Class {
 		'strategy',
 		'completionDelay',
 		'textElement',
+		'attribute',
 		'overlay',
 		'listElement',
 		'previewAction',
 		'drillDownActions',
-		'cursorElement',
 		'announcer',
 		'lostFocusDelay',
 		'closeOnEmptyCompletion',
@@ -113,6 +113,20 @@ GtCompletionController >> activeShortcutHandler [
 				combination: BlKeyCombination escape;
 				action: [ self removePopup ]).
 	^ activeShortcutHandler
+]
+
+{ #category : #'private - popup' }
+GtCompletionController >> addAttachmentAttributeAt: anIndex [
+	| position attributes |
+	position := self popupPosition ifNil: [ anIndex ].
+	self textEditor text clearAttributes: [ :each | each == attribute ].
+	attributes := OrderedCollection with: attribute.
+	(self textEditor text from: position to: position)
+		clearAttributes: [ :each | 
+			attributes add: each.
+			true ];
+		attributes: attributes.
+	self textEditor updater all update
 ]
 
 { #category : #'private - accessing' }
@@ -279,8 +293,6 @@ GtCompletionController >> initialize [
 	closeOnEmptyCompletion := true.
 	showRequested := false.
 
-	cursorElement := nil.
-
 	listElement := self newCompletionList.
 	overlay := self newPopupElement.
 	overlay addChild: listElement.
@@ -289,7 +301,9 @@ GtCompletionController >> initialize [
 	completionDelay delay: self class popupDelay.
 	
 	lostFocusDelay := BlDelayedTaskAction new.
-	lostFocusDelay delay: 5 milliSeconds
+	lostFocusDelay delay: 5 milliSeconds.
+	
+	attribute := GtCompletionAttachmentAttribute for: self
 ]
 
 { #category : #installation }
@@ -419,17 +433,9 @@ GtCompletionController >> nextUncompletedItem: direction [
 ]
 
 { #category : #'private - cursor' }
-GtCompletionController >> onCursorAttached: aCursorElement [
-	cursorElement := aCursorElement.
-	overlay attachTo: cursorElement.
+GtCompletionController >> onAttached: anElement [
+	overlay attachTo: anElement.
 	overlay visibility: BlVisibility visible
-]
-
-{ #category : #'private - cursor' }
-GtCompletionController >> onCursorDetached: aCursorElement [
-	cursorElement := nil.
-	overlay detach.
-	overlay visibility: BlVisibility hidden
 ]
 
 { #category : #'private - list selection' }
@@ -450,6 +456,13 @@ GtCompletionController >> popupHandlers [
 			(BlEventHandler
 				on: BlBlurEvent
 				do: [ :event | self removePopupOnLostFocus ])} ]
+]
+
+{ #category : #'private - popup' }
+GtCompletionController >> popupPosition [
+	self completionActions
+		do: [ :each | each searchStartPosition ifNotNil: [ :pos | ^ pos ] ].
+	^ nil
 ]
 
 { #category : #private }
@@ -502,12 +515,19 @@ GtCompletionController >> processTabKey: forwardBoolean [
 ]
 
 { #category : #'private - popup' }
+GtCompletionController >> removeAttachmentAttribute [
+	self textEditor text clearAttributes: [ :each | each == attribute ].
+	self textEditor updater all update
+]
+
+{ #category : #'private - popup' }
 GtCompletionController >> removePopup [
 	self cancelPreview.
 	self terminatePopupDelay.
 	showRequested := false.
 	overlay detach.
-	overlay removeFromParent
+	overlay removeFromParent.
+	self removeAttachmentAttribute
 ]
 
 { #category : #'private - popup' }
@@ -611,7 +631,7 @@ GtCompletionController >> selectedCompletionItemDo: aBlock [
 { #category : #'private - popup' }
 GtCompletionController >> showPopupAt: anIndex [
 	"Show the completion popup selecting the first relevant completion item"
-
+	
 	self updatePopupItemsAt: anIndex autoSelect: true.
 
 	(self isShowingPopup or: [ self hasCompletionActions not ])
@@ -627,6 +647,8 @@ GtCompletionController >> showPopupAt: anIndex [
 		assert: [ textElement isAttachedToSceneGraph ]
 		"otherwise how popup can be opened?"
 		description: [ 'Text editor must be in the scene graph' ].
+
+	self addAttachmentAttributeAt: anIndex.
 
 	textElement space root addChild: overlay
 ]
@@ -737,12 +759,6 @@ GtCompletionController >> textEditorHandlers [
 { #category : #'initialize-release' }
 GtCompletionController >> textElement: anEditorElement [
 	textElement := anEditorElement.
-	textElement
-		when: BrTextEditorCursorElementAddedEvent
-		do: [ :anEvent | self onCursorAttached: anEvent cursorElement ].
-	textElement
-		when: BrTextEditorCursorElementRemovedEvent
-		do: [ :anEvent | self onCursorDetached: anEvent cursorElement ].
 
 	completionDelay element: textElement.
 	lostFocusDelay element: textElement

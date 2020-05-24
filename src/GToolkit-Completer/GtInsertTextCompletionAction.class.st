@@ -106,6 +106,11 @@ GtInsertTextCompletionAction >> previewOn: aCompletionController [
 	self addPreviewAttributeForText: text at: position on: aCompletionController
 ]
 
+{ #category : #accessing }
+GtInsertTextCompletionAction >> searchStartPosition [
+	^ searchStartPosition
+]
+
 { #category : #'initialize-release' }
 GtInsertTextCompletionAction >> searchStartPosition: anInteger [
 	searchStartPosition := anInteger

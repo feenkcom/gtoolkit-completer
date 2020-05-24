@@ -97,6 +97,11 @@ GtCompletionAction >> previewOn: aCompletionController [
 	self subclassResponsibility
 ]
 
+{ #category : #accessing }
+GtCompletionAction >> searchStartPosition [
+	^ nil
+]
+
 { #category : #translating }
 GtCompletionAction >> translateBy: anIndex [
 ]
