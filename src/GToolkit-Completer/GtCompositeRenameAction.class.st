@@ -105,8 +105,7 @@ GtCompositeRenameAction >> addRenameAttributesToOtherEditors [
 								text: (editor text from: each first to: each last).
 							(editor text from: each first to: each last)
 								attributes: {attribute}.
-							attribute ]).
-			editor updater all update ]
+							attribute ]) ]
 ]
 
 { #category : #'initialize-release' }
@@ -127,8 +126,7 @@ GtCompositeRenameAction >> removeAttributes [
 GtCompositeRenameAction >> removeOtherAttributes [
 	otherAttributes
 		keysDo: [ :editor | 
-			editor text clearAttributes: [ :each | self isRenameAttribute: each ].
-			editor updater all update ]
+			editor text clearAttributes: [ :each | self isRenameAttribute: each ] ]
 ]
 
 { #category : #private }

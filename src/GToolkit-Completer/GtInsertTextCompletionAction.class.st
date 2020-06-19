@@ -45,8 +45,7 @@ GtInsertTextCompletionAction >> affectsText [
 
 { #category : #private }
 GtInsertTextCompletionAction >> clearPreviewAttributesOn: aCompletionController [
-	aCompletionController text clearAttributes: [ :attr | attr class = GtPreviewCompletionAttribute ].
-	aCompletionController textEditor updater all update
+	aCompletionController text clearAttributes: [ :attr | attr class = GtPreviewCompletionAttribute ]
 ]
 
 { #category : #executing }
