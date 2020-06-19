@@ -239,7 +239,6 @@ GtRenameAction >> removeAttributeHandlers [
 { #category : #private }
 GtRenameAction >> removeAttributes [
 	self text clearAttributes: [ :each | self isRenameAttribute: each ].
-	self textEditor updater all update.
 	self removeAttributeHandlers
 ]
 

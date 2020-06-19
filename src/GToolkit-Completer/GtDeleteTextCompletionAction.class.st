@@ -90,8 +90,5 @@ GtDeleteTextCompletionAction >> undoDrillDownOn: aCompletionController [
 
 { #category : #executing }
 GtDeleteTextCompletionAction >> undoPreviewOn: aCompletionController [
-	aCompletionController text clearAttributes: from to: to if: [ :each | each class = GtPreviewDeletionAttribute ].
-	aCompletionController textEditor updater
-		from: from to: to;
-		update
+	aCompletionController text clearAttributes: from to: to if: [ :each | each class = GtPreviewDeletionAttribute ]
 ]

@@ -125,8 +125,7 @@ GtCompletionController >> addAttachmentAttributeAt: anIndex [
 		clearAttributes: [ :each | 
 			attributes add: each.
 			true ];
-		attributes: attributes.
-	self textEditor updater all update
+		attributes: attributes
 ]
 
 { #category : #'private - accessing' }
@@ -516,8 +515,7 @@ GtCompletionController >> processTabKey: forwardBoolean [
 
 { #category : #'private - popup' }
 GtCompletionController >> removeAttachmentAttribute [
-	self textEditor text clearAttributes: [ :each | each == attribute ].
-	self textEditor updater all update
+	self textEditor text clearAttributes: [ :each | each == attribute ]
 ]
 
 { #category : #'private - popup' }
