@@ -293,6 +293,7 @@ GtCompleterExamples >> openOn: aString withStrategy: aCompletionStrategy [
 	completionController install.
 
 	space := BlSpace new.
+	space host: BlHeadlessHost new.
 	"simulated time allows us to instantly advance space time by a given duration without using forks"
 	space time: BlTime simulated.
 	space addChild: editorElement.
