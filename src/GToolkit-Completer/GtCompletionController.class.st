@@ -267,19 +267,26 @@ GtCompletionController >> inactiveShortcutHandler [
 					(BlKeyCombination builder secondary
 						key: BlKeyboardKey space;
 						build);
-				action: [ self startCompletion ]);
+				action: [ :event | 
+					| shouldHandle |
+					shouldHandle := event target == textElement.
+					inactiveShortcutHandler consumeEvent: shouldHandle.
+					shouldHandle
+						ifTrue: [ self startCompletion ] ]);
 		addShortcut:
 			(BlShortcut new
 				repeatable: false;
 				combination: BlKeyCombination tab;
-				action:
-						[ :event | inactiveShortcutHandler consumeEvent: (self processTabKey: true) ]);
+				action: [ :event | 
+					inactiveShortcutHandler
+						consumeEvent: (event target == textElement and: [ self processTabKey: true ]) ]);
 		addShortcut:
 			(BlShortcut new
 				repeatable: false;
 				combination: BlKeyCombination builder shift tab build;
-				action:
-						[ :event | inactiveShortcutHandler consumeEvent: (self processTabKey: false) ]).
+				action: [ :event | 
+					inactiveShortcutHandler
+						consumeEvent: (event target == textElement and: [ self processTabKey: false ]) ]).
 	^ inactiveShortcutHandler
 ]
 
