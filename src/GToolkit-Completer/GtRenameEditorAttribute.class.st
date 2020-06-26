@@ -70,8 +70,11 @@ GtRenameEditorAttribute >> editorInteractions [
 				combination: BlKeyCombination escape;
 				action: [ renameAction cancel ]).
 			(BrTextEditorInteraction new
+				combination: BlKeyCombination builder shift tab build;
+				action: [ renameAction tabAccept: false ]).
+			(BrTextEditorInteraction new
 				combination: BlKeyCombination tab;
-				action: [ renameAction tabAccept ]).
+				action: [ renameAction tabAccept: true ]).
 			(BrTextEditorInteraction new
 				combination: BlKeyCombination return;
 				action: [ renameAction returnAccept ])} ]
