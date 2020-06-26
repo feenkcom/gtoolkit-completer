@@ -151,6 +151,11 @@ GtRenameAction >> filter: aTextEditorInputFilter [
 ]
 
 { #category : #'initialize-release' }
+GtRenameAction >> forBinaryOrKeyword [
+	validationBlock := [ :str | (self validateKeyword: str) or: [ self validateBinary: str ] ]
+]
+
+{ #category : #'initialize-release' }
 GtRenameAction >> forKeyword [
 	validationBlock := [ :str | self validateKeyword: str ]
 ]
@@ -268,10 +273,15 @@ GtRenameAction >> selectAll: anObject [
 ]
 
 { #category : #actions }
-GtRenameAction >> tabAccept [
+GtRenameAction >> tabAccept: forward [
 	self isValid
 		ifFalse: [ ^ self ].
-	self accept
+	self accept.
+	self
+		announceEvent:
+			(forward
+				ifTrue: [ #tab ]
+				ifFalse: [ #shiftTab ])
 ]
 
 { #category : #accessing }
@@ -360,6 +370,13 @@ GtRenameAction >> updateSourceIn: editor at: intervals attributes: attributeColl
 		ifFalse: [ newText := newText
 				, (editor text copyFrom: index to: editor text size) ].
 	editor text: newText
+]
+
+{ #category : #'private-validation' }
+GtRenameAction >> validateBinary: aString [
+	aString isEmpty
+		ifTrue: [ ^ false ].
+	^ (RBScanner isSelector: aString) and: [ aString asSymbol isBinary ]
 ]
 
 { #category : #'private-validation' }
