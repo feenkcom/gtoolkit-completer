@@ -7,7 +7,7 @@ Class {
 		'children',
 		'maxWeight'
 	],
-	#category : 'GToolkit-Completer'
+	#category : #'GToolkit-Completer'
 }
 
 { #category : #'instance creation' }
@@ -90,9 +90,10 @@ GtPrefixTree >> first: anInteger startingWith: aString [
 { #category : #ui }
 GtPrefixTree >> gtViewChildrenFor: aView [
 	<gtView>
-	^ aView columnedList
+	^ aView columnedTree
 		title: 'Children trees' translated;
-		items: [ self children ifNil: [ #() ] ];
+		items: [ {self} ];
+		children: [ :each | each children ifNil: [ #() ] ];
 		column: 'Prefix' item: [ :aPrefixTree | aPrefixTree prefix ] width: 100;
 		column: 'Tree' item: [ :aPrefixTree | aPrefixTree ]
 ]
