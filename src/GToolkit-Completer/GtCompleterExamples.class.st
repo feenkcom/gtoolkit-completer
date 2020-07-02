@@ -281,6 +281,20 @@ GtCompleterExamples >> moveCursorTo: anInteger on: aCompletionController [
 	aCompletionController textEditor moveCursorTo: anInteger
 ]
 
+{ #category : #'examples - scripter' }
+GtCompleterExamples >> move_cursor_to_end [
+	<gtExample>
+	| aScripter |
+	
+	aScripter := self request_focus.
+	
+	aScripter substep: 'Move cursor' do: [ :aStep |
+		aStep keyClick: BlKeyboardKey arrowRight.
+		aStep keyClick: BlKeyboardKey arrowRight ].
+	
+	^ aScripter syncContinue
+]
+
 { #category : #private }
 GtCompleterExamples >> openOn: aString withStrategy: aCompletionStrategy [
 	| editorElement completionController |
@@ -312,6 +326,86 @@ GtCompleterExamples >> pauseForCompletion [
 { #category : #'private-source' }
 GtCompleterExamples >> printOnMethodSelectorSource [
 	^ 'printOn: aStream'
+]
+
+{ #category : #'examples - scripter' }
+GtCompleterExamples >> remove_last_character_while_completion_is_about_to_appear [
+	<gtExample>
+	| aScripter |
+	
+	aScripter := self move_cursor_to_end.
+	
+	aScripter substep: 'Type e to start completion' do: [ :aStep |
+		aStep
+			type: 'e';
+			onSelf ].
+	
+	aScripter
+		substep: 'Wait for completion to appear'
+		do: [ :aStep | aStep wait forEmptySpaceTaskQueue ].
+		
+	aScripter substep: 'Remove last character' do: [ :aStep |
+		aStep keyClick: BlKeyboardKey backspace ].
+	
+	aScripter substep: 'Type e to start completion' do: [ :aStep |
+		aStep
+			type: 'e';
+			onSelf ].
+
+	aScripter substep: 'Remove last character' do: [ :aStep |
+		aStep keyClick: BlKeyboardKey backspace ].
+	
+	^ aScripter syncContinue
+]
+
+{ #category : #'examples - scripter' }
+GtCompleterExamples >> request_focus [
+	<gtExample>
+	| aScripter |
+	
+	aScripter := self scripterWithCompletion.
+	
+	aScripter substep: 'Request focus' do: [ :aStep |
+		aStep
+			requestFocus;
+			onSelf ].
+	
+	^ aScripter syncContinue
+]
+
+{ #category : #'instance creation' }
+GtCompleterExamples >> scripter [
+	<gtExample>
+	
+	^ BlDevScripter new
+]
+
+{ #category : #'instance creation' }
+GtCompleterExamples >> scripterElement [
+	<gtExample>
+	| anEditor aCompletionController |
+	
+	anEditor := BrEditor new
+		look: BrGlamorousCodeEditorLook new + BrGlamorousTextAreaSpacingLook new;
+		text: 'ee'.
+	
+	aCompletionController := GtCompletionController on: anEditor strategy: self alphabetStrategy.
+	aCompletionController install.
+
+	^ anEditor
+]
+
+{ #category : #'instance creation' }
+GtCompleterExamples >> scripterWithCompletion [
+	<gtExample>
+	| aScripter anEditor |
+	
+	aScripter := self scripter.
+	anEditor := self scripterElement.
+		
+	aScripter element: anEditor.
+	
+	^ aScripter pulse
 ]
 
 { #category : #private }
