@@ -736,6 +736,7 @@ GtCompletionController >> text [
 
 { #category : #'event handling' }
 GtCompletionController >> textDeleted: anEvent [
+	self terminatePopupDelay.
 	self isShowingPopup
 		ifTrue: [ self startCompletionAt: anEvent fromIndex - 1 ]
 ]
