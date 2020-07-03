@@ -146,7 +146,7 @@ GtPharoCompletionStrategy >> completionActionsFor: aText at: positionInteger max
 	maxItems := maxInteger.
 	index := positionInteger.
 	wasRequested := aBoolean.
-	^ (self parseSource: aText asString)
+	^ (self parseSource: aText characters asString)
 		ifNil: [ #() ]
 		ifNotNil: [ :tree | tree completionActionsFor: self ]
 ]
