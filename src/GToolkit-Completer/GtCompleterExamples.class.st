@@ -137,6 +137,21 @@ GtCompleterExamples >> completionPreview [
 	^ aCompleter
 ]
 
+{ #category : #accessing }
+GtCompleterExamples >> crLfMessageCompletion [
+	<gtExample>
+	| text strategy items |
+	text := ('foo' , String crlf , '^3 ab') asRopedText.
+	strategy := self smalltalkStrategy.
+	items := strategy
+		completionActionsFor: text
+		at: 9
+		max: 10
+		requested: true.
+	self assert: (items anySatisfy: [ :each | each label = 'abs' ]).
+	^ strategy
+]
+
 { #category : #private }
 GtCompleterExamples >> editorElementFor: aString [
 	| editor editorElement text |
