@@ -25,6 +25,13 @@ GtRenameEditorAttribute >> affect: aTBrTextEditorTextualPiece in: anEditorElemen
 	element
 		look:
 			(BrGlamorousEditableLabelLook new defaultBackground: Color transparent).
+	element
+		padding:
+			(BlInsets
+				top: 0
+				left: 2
+				bottom: 0
+				right: 2).
 	filter notNil
 		ifTrue: [ element inputFilter: filter ].
 	element switchToEditor.
@@ -43,6 +50,12 @@ GtRenameEditorAttribute >> affect: aTBrTextEditorTextualPiece in: anEditorElemen
 		enqueueTask: (BlTaskAction new action: [ element requestFocus ]).
 	^ BlElement new
 		layout: BlLinearLayout horizontal;
+		margin:
+			(BlInsets
+				top: 0
+				left: -2
+				bottom: 0
+				right: -2);
 		constraintsDo: [ :c | 
 			c horizontal fitContent.
 			c vertical fitContent ];
