@@ -93,7 +93,7 @@ GtRenameEditorAttribute >> editorShortcuts [
 				options: self).
 			(BrTextEditorShortcut new
 				combination: BlKeyCombination return;
-				action: [ :aShortcutEvent :aShortcut :aTextEditor :aRenameEditorAttribute | aRenameEditorAttribute returnAccept ];
+				action: [ :aShortcutEvent :aShortcut :aTextEditor :aRenameEditorAttribute | aRenameEditorAttribute renameAction accept ];
 				options: self)} ]
 ]
 
