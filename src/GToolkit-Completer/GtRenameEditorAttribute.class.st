@@ -4,8 +4,8 @@ Class {
 	#instVars : [
 		'cursorLocation',
 		'selectAll',
-		'editorInteractions',
-		'filter'
+		'filter',
+		'editorShortcuts'
 	],
 	#category : #'GToolkit-Completer'
 }
@@ -45,7 +45,7 @@ GtRenameEditorAttribute >> affect: aTBrTextEditorTextualPiece in: anEditorElemen
 	element editor moveCursorTo: cursorLocation.
 	selectAll
 		ifTrue: [ element editor selecter all select ].
-	element editor addInteractions: self editorInteractions.
+	element editor addEditorShortcuts: self editorShortcuts.
 	anEditorElement
 		enqueueTask: (BlTaskAction new action: [ element requestFocus ]).
 	^ BlElement new
@@ -76,21 +76,25 @@ GtRenameEditorAttribute >> editorCursorLocation [
 ]
 
 { #category : #private }
-GtRenameEditorAttribute >> editorInteractions [
-	^ editorInteractions
-		ifNil: [ editorInteractions := {
-			(BrTextEditorInteraction new
+GtRenameEditorAttribute >> editorShortcuts [
+	^ editorShortcuts
+		ifNil: [ editorShortcuts := {
+			(BrTextEditorShortcut new
 				combination: BlKeyCombination escape;
-				action: [ renameAction cancel ]).
-			(BrTextEditorInteraction new
+				action: [ :aShortcutEvent :aShortcut :aTextEditor :aRenameEditorAttribute | aRenameEditorAttribute renameAction cancel ];
+				options: self).
+			(BrTextEditorShortcut new
 				combination: BlKeyCombination builder shift tab build;
-				action: [ renameAction tabAccept: false ]).
-			(BrTextEditorInteraction new
+				action: [ :aShortcutEvent :aShortcut :aTextEditor :aRenameEditorAttribute | aRenameEditorAttribute tabAccept: false ];
+				options: self).
+			(BrTextEditorShortcut new
 				combination: BlKeyCombination tab;
-				action: [ renameAction tabAccept: true ]).
-			(BrTextEditorInteraction new
+				action: [ :aShortcutEvent :aShortcut :aTextEditor :aRenameEditorAttribute | aRenameEditorAttribute tabAccept: true ];
+				options: self).
+			(BrTextEditorShortcut new
 				combination: BlKeyCombination return;
-				action: [ renameAction returnAccept ])} ]
+				action: [ :aShortcutEvent :aShortcut :aTextEditor :aRenameEditorAttribute | aRenameEditorAttribute renameAction accept ];
+				options: self)} ]
 ]
 
 { #category : #accessing }
@@ -112,6 +116,11 @@ GtRenameEditorAttribute >> isEditorAttribute [
 ]
 
 { #category : #accessing }
+GtRenameEditorAttribute >> renameAction [
+	^ renameAction
+]
+
+{ #category : #accessing }
 GtRenameEditorAttribute >> selectAll [
 	^ selectAll
 ]
@@ -124,7 +133,7 @@ GtRenameEditorAttribute >> selectAll: aBoolean [
 { #category : #accessing }
 GtRenameEditorAttribute >> uninstallEventHandlers [
 	element notNil
-		ifTrue: [ element editor removeInteractions: self editorInteractions ]
+		ifTrue: [ element editor removeEditorShortcuts: self editorShortcuts ]
 ]
 
 { #category : #accessing }

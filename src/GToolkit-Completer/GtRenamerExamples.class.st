@@ -20,14 +20,14 @@ GtRenamerExamples >> smalltalkRenamer [
 	editor := BrTextEditor new.
 	editor styler: styler.
 	editor text: text.
-	editor addInteraction:
-			(BrTextEditorInteraction new
+	editor addEditorShortcut:
+			(BrTextEditorShortcut new
 				combination:
 					(BlKeyCombination builder
 						primary;
 						r;
 						build);
-				action: [ GtRenameAction pharoRenameLocalsOn: editorElement ]).
+				action: [ :aShortcutEvent | GtRenameAction pharoRenameLocalsOn: aShortcutEvent currentTarget ]).
 	editorElement
 		constraintsDo: [ :c | 
 			c horizontal matchParent.
