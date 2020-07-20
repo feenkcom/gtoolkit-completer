@@ -272,6 +272,13 @@ GtRenameAction >> selectAll: anObject [
 	selectAll := anObject
 ]
 
+{ #category : #private }
+GtRenameAction >> setTextIn: editor to: newText [
+	editor text
+		deleteAll;
+		insertText: newText at: 0
+]
+
 { #category : #actions }
 GtRenameAction >> tabAccept: forward [
 	self isValid
@@ -306,7 +313,7 @@ GtRenameAction >> textElement: aTextEditorElement [
 
 { #category : #private }
 GtRenameAction >> undoChanges [
-	self textEditor text: originalText.
+	self setTextIn: self textEditor to: originalText.
 	self textEditor moveCursorTo: originalCursorPosition
 ]
 
@@ -369,7 +376,7 @@ GtRenameAction >> updateSourceIn: editor at: intervals attributes: attributeColl
 	index > editor text size
 		ifFalse: [ newText := newText
 				, (editor text copyFrom: index to: editor text size) ].
-	editor text: newText
+	self setTextIn: editor to: newText
 ]
 
 { #category : #'private-validation' }
