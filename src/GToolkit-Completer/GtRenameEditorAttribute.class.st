@@ -85,11 +85,11 @@ GtRenameEditorAttribute >> editorShortcuts [
 				options: self).
 			(BrTextEditorShortcut new
 				combination: BlKeyCombination builder shift tab build;
-				action: [ :aShortcutEvent :aShortcut :aTextEditor :aRenameEditorAttribute | aRenameEditorAttribute tabAccept: false ];
+				action: [ :aShortcutEvent :aShortcut :aTextEditor :aRenameEditorAttribute | aRenameEditorAttribute renameAction tabAccept: false ];
 				options: self).
 			(BrTextEditorShortcut new
 				combination: BlKeyCombination tab;
-				action: [ :aShortcutEvent :aShortcut :aTextEditor :aRenameEditorAttribute | aRenameEditorAttribute tabAccept: true ];
+				action: [ :aShortcutEvent :aShortcut :aTextEditor :aRenameEditorAttribute | aRenameEditorAttribute renameAction tabAccept: true ];
 				options: self).
 			(BrTextEditorShortcut new
 				combination: BlKeyCombination return;
