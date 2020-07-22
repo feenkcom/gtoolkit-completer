@@ -2,9 +2,8 @@ Class {
 	#name : #GtCompositeRenameAction,
 	#superclass : #GtRenameAction,
 	#instVars : [
-		'otherEditors',
-		'originalEditorsText',
-		'otherAttributes'
+		'otherTextIntervals',
+		'otherTextAttributes'
 	],
 	#category : #'GToolkit-Completer-Actions'
 }
@@ -73,10 +72,14 @@ GtCompositeRenameAction class >> coderRenameLocalsOnSource: aTextEditorElement p
 
 { #category : #private }
 GtCompositeRenameAction >> addLocations: intervals to: anEditor [
-	otherEditors
-		at: anEditor
-		put: (intervals asSortedCollection: [ :a :b | a first < b first ]).
-	originalEditorsText at: anEditor put: anEditor text copy
+	self addLocations: intervals toText: anEditor text
+]
+
+{ #category : #private }
+GtCompositeRenameAction >> addLocations: intervals toText: ropedText [
+	otherTextIntervals
+		at: ropedText
+		put: (intervals asSortedCollection: [ :a :b | a first < b first ])
 ]
 
 { #category : #private }
@@ -92,28 +95,26 @@ GtCompositeRenameAction >> addRenameAttributesToOtherEditors [
 	size < 1
 		ifTrue: [ ^ self ].
 	self removeOtherAttributes.
-	otherEditors
-		keysAndValuesDo: [ :editor :intervals | 
-			otherAttributes
-				at: editor
+	otherTextIntervals
+		keysAndValuesDo: [ :text :intervals | 
+			otherTextAttributes
+				at: text
 				put:
 					(intervals
 						collect: [ :each | 
 							| attribute |
 							attribute := GtRenamePreviewAttribute new
 								action: self;
-								text: (editor text from: each first to: each last).
-							(editor text from: each first to: each last)
-								attributes: {attribute}.
+								text: (text from: each first to: each last).
+							(text from: each first to: each last) attributes: {attribute}.
 							attribute ]) ]
 ]
 
 { #category : #'initialize-release' }
 GtCompositeRenameAction >> initialize [
 	super initialize.
-	otherEditors := IdentityDictionary new.
-	originalEditorsText := IdentityDictionary new.
-	otherAttributes := IdentityDictionary new
+	otherTextIntervals := IdentityDictionary new.
+	otherTextAttributes := IdentityDictionary new
 ]
 
 { #category : #private }
@@ -124,9 +125,9 @@ GtCompositeRenameAction >> removeAttributes [
 
 { #category : #private }
 GtCompositeRenameAction >> removeOtherAttributes [
-	otherAttributes
-		keysDo: [ :editor | 
-			editor text clearAttributes: [ :each | self isRenameAttribute: each ] ]
+	otherTextAttributes
+		keysDo:
+			[ :text | text clearAttributes: [ :each | self isRenameAttribute: each ] ]
 ]
 
 { #category : #private }
@@ -138,7 +139,7 @@ GtCompositeRenameAction >> undoChanges [
 { #category : #actions }
 GtCompositeRenameAction >> updateName: blText [
 	super updateName: blText.
-	otherAttributes
+	otherTextAttributes
 		do: [ :attrs | attrs do: [ :each | each updateText: blText ] ]
 ]
 
@@ -146,12 +147,12 @@ GtCompositeRenameAction >> updateName: blText [
 GtCompositeRenameAction >> updateOtherEditors [
 	self newName = self originalName
 		ifTrue: [ ^ self ].
-	otherEditors
-		keysAndValuesDo: [ :editor :intervals | 
+	otherTextIntervals
+		keysAndValuesDo: [ :text :intervals | 
 			self
-				updateSourceIn: editor
+				updateText: text
 				at: intervals
-				attributes: (otherAttributes at: editor) ]
+				attributes: (otherTextAttributes at: text) ]
 ]
 
 { #category : #private }
