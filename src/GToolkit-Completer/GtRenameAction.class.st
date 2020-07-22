@@ -273,8 +273,8 @@ GtRenameAction >> selectAll: anObject [
 ]
 
 { #category : #private }
-GtRenameAction >> setTextIn: editor to: newText [
-	editor text
+GtRenameAction >> setTextIn: text to: newText [
+	text
 		deleteAll;
 		insertText: newText at: 0
 ]
@@ -313,7 +313,7 @@ GtRenameAction >> textElement: aTextEditorElement [
 
 { #category : #private }
 GtRenameAction >> undoChanges [
-	self setTextIn: self textEditor to: originalText.
+	self setTextIn: self textEditor text to: originalText.
 	self textEditor moveCursorTo: originalCursorPosition
 ]
 
@@ -362,6 +362,14 @@ GtRenameAction >> updateSource [
 
 { #category : #private }
 GtRenameAction >> updateSourceIn: editor at: intervals attributes: attributeCollection [
+	self
+		updateText: editor text
+		at: intervals
+		attributes: attributeCollection
+]
+
+{ #category : #private }
+GtRenameAction >> updateText: text at: intervals attributes: attributeCollection [
 	| newText index |
 	newText := '' asRopedText.
 	index := 1.
@@ -370,13 +378,12 @@ GtRenameAction >> updateSourceIn: editor at: intervals attributes: attributeColl
 		do: [ :each :attr | 
 			each first = 1
 				ifTrue: [ newText := newText , attr text ]
-				ifFalse: [ newText := newText
-						, (editor text copyFrom: index to: each first - 1) , attr text ].
+				ifFalse: [ newText := newText , (text copyFrom: index to: each first - 1)
+						, attr text ].
 			index := each last + 1 ].
-	index > editor text size
-		ifFalse: [ newText := newText
-				, (editor text copyFrom: index to: editor text size) ].
-	self setTextIn: editor to: newText
+	index > text size
+		ifFalse: [ newText := newText , (text copyFrom: index to: text size) ].
+	self setTextIn: text to: newText
 ]
 
 { #category : #'private-validation' }
