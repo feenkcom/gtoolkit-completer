@@ -490,16 +490,6 @@ GtCompletionController >> primaryLetterKeyCombinations [
 ]
 
 { #category : #'event handling' }
-GtCompletionController >> processPopupKeystroke: anEvent [
-	self isShowingPopup
-		ifFalse: [ ^ self ].
-	anEvent char = Character tab
-		ifTrue: [ self completeWithCursor: true.
-			textElement requestFocus.
-			^ anEvent consumed: true ]
-]
-
-{ #category : #'event handling' }
 GtCompletionController >> processReturnKey: anEvent [
 	self completeWithCursor: true.
 	anEvent consumed: true
@@ -514,8 +504,7 @@ GtCompletionController >> processTabKey: forwardBoolean [
 		ifFalse: [ direction := forwardBoolean
 				ifTrue: [ 1 ]
 				ifFalse: [ -1 ].
-			((self moveCursorToNextUncompletedItem: direction)
-				or: [ self startCompletionAt: self textEditor cursor first position ])
+			(self moveCursorToNextUncompletedItem: direction)
 				ifTrue: [ ^ true ] ].
 	^ false
 ]
