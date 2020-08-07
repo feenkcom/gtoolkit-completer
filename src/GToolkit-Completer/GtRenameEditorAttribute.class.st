@@ -42,7 +42,7 @@ GtRenameEditorAttribute >> affect: aTBrTextEditorTextualPiece in: anEditorElemen
 	element
 		addEventFilterOn: BlBaseFocusEvent
 		do: [ :event | self updateFocus: event ].
-	element editor moveCursorTo: cursorLocation.
+	element editor moveCursorTo: (cursorLocation min: element editor text size).
 	selectAll
 		ifTrue: [ element editor selecter all select ].
 	element editor addEditorShortcuts: self editorShortcuts.
