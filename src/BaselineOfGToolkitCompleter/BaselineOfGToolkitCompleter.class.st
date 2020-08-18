@@ -12,9 +12,9 @@ BaselineOfGToolkitCompleter >> baseline: spec [
 			baseline: 'SmaCC' with: [
 				spec repository: 'github://j-brant/SmaCC:af5cc091a6527011cd2d4bea2a3533ef01d24bcf/src' ];
 			baseline: 'Brick' with: [
-				spec repository: 'github://feenkcom/Brick:v0.8.27/src' ];
+				spec repository: 'github://feenkcom/Brick:v0.8.28/src' ];
 			baseline: 'GToolkitUtility' with: [
-				spec repository: 'github://feenkcom/gtoolkit-utility:v0.8.2/src' ].
+				spec repository: 'github://feenkcom/gtoolkit-utility:v0.8.3/src' ].
 		spec 
 			package: 'GToolkit-Completer-Pharo-Parser' with: [
 				spec requires: #('SmaCC' ). ];
