@@ -107,8 +107,10 @@ GtRenamerExamples >> startRename [
 	scripter
 		substep: 'Start rename'
 		do: [ :aStep | 
-			aStep keyDown: BlKeyboardKey metaLeft.
+			| primary |
+			primary := OSPlatform current primaryModifier combinations first key.
+			aStep keyDown: primary.
 			aStep keyClick: BlKeyboardKey r.
-			aStep keyUp: BlKeyboardKey metaLeft ].
+			aStep keyUp: primary ].
 	^ scripter syncContinue pulse
 ]
