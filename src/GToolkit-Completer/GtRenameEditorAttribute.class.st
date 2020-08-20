@@ -40,7 +40,7 @@ GtRenameEditorAttribute >> affect: aTBrTextEditorTextualPiece in: anEditorElemen
 		when: BrTextEditorModifiedEvent
 		do: [ :event | renameAction updateName: element editor text ].
 	element
-		addEventFilterOn: BlBaseFocusEvent
+		addEventFilterOn: BlFocusOutEvent
 		do: [ :event | self updateFocus: event ].
 	element editor moveCursorTo: (cursorLocation min: element editor text size).
 	selectAll
@@ -138,6 +138,6 @@ GtRenameEditorAttribute >> uninstallEventHandlers [
 
 { #category : #accessing }
 GtRenameEditorAttribute >> updateFocus: event [
-	(event target hasFocus or: [ renameAction isInstalled not ])
-		ifFalse: [ renameAction lostFocus ]
+	renameAction isInstalled
+		ifTrue: [ renameAction lostFocus ]
 ]
