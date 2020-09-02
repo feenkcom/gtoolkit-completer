@@ -18,7 +18,7 @@ GtRenamePreviewAttribute >> action: aRenameAction [
 { #category : #accessing }
 GtRenamePreviewAttribute >> additionalAttributes [
 	^ {(BlTextUnderlineAttribute new
-		paint: BrGlamorousColors textHighlightColor)}
+		color: BrGlamorousColors textHighlightColor)}
 ]
 
 { #category : #accessing }
