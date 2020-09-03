@@ -119,6 +119,8 @@ GtCompletionController >> activeShortcutHandler [
 GtCompletionController >> addAttachmentAttributeAt: anIndex [
 	| position attributes |
 	position := self popupPosition ifNil: [ anIndex ].
+	"popupPosition may exceed the text size, see https://github.com/feenkcom/gtoolkit/issues/1227"
+	position := position min: self textEditor text size.
 	self textEditor text clearAttributes: [ :each | each == attribute ].
 	attributes := OrderedCollection with: attribute.
 	(self textEditor text from: position to: position)
