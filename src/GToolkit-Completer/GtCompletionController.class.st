@@ -119,6 +119,8 @@ GtCompletionController >> activeShortcutHandler [
 GtCompletionController >> addAttachmentAttributeAt: anIndex [
 	| position attributes |
 	position := self popupPosition ifNil: [ anIndex ].
+	"popupPosition may exceed the text size, see https://github.com/feenkcom/gtoolkit/issues/1227"
+	position := position min: self textEditor text size.
 	self textEditor text clearAttributes: [ :each | each == attribute ].
 	attributes := OrderedCollection with: attribute.
 	(self textEditor text from: position to: position)
@@ -347,11 +349,9 @@ GtCompletionController >> isActive [
 { #category : #testing }
 GtCompletionController >> isAtStartOfLine [
 	| text position char aCursor |
-
 	text := self text.
-	aCursor := self textEditor cursor first.
+	aCursor := self textEditor cursors first.
 	position := aCursor position.
-
 	[ position > 0 and: [ (char := text at: position) isSeparator ] ]
 		whileTrue: [ (char = Character cr or: [ char = Character lf ])
 				ifTrue: [ ^ true ].
@@ -418,10 +418,12 @@ GtCompletionController >> newPopupElement [
 GtCompletionController >> nextUncompletedItem: direction [
 	| text position originalPosition aCursor |
 	text := self text.
-	aCursor := self textEditor cursor first.
+	aCursor := self textEditor cursors first.
 	originalPosition := aCursor position.
 	position := originalPosition.
-	[ (position between: 1 and: text size) and: [ self isUncompletedAt: position ] ] whileTrue: [ position := position + direction ].
+	[ (position between: 1 and: text size)
+		and: [ self isUncompletedAt: position ] ]
+		whileTrue: [ position := position + direction ].
 	[ position between: 1 and: text size ]
 		whileTrue: [ (self isUncompletedAt: position)
 				ifTrue: [ self selectUncompletedAt: position.
@@ -473,7 +475,7 @@ GtCompletionController >> popupPosition [
 
 { #category : #private }
 GtCompletionController >> position [
-	^ self textEditor cursor first position
+	^ self textEditor cursors first position
 ]
 
 { #category : #private }
@@ -671,15 +673,16 @@ GtCompletionController >> startCompletionAt: aTextIndex [
 	self terminatePopupDelay.
 
 	"If we have multiple cursors, don't open the completion."
-	self textEditor cursor cursorsCount = 1
+	self textEditor cursors cursorsCount = 1
 		ifFalse: [ self removePopup.
 			^ false ].
 
 	"If there are no completions for a given index, remove the popup"
-	((self strategyAt: aTextIndex) hasCompletionsAt: aTextIndex in: self text)
+	((self strategyAt: aTextIndex)
+		hasCompletionsAt: aTextIndex
+		in: self text)
 		ifFalse: [ self removePopup.
 			^ false ].
-		
 	self isShowingPopup
 		ifTrue: [ self updatePopupItemsAt: aTextIndex autoSelect: true ]
 		ifFalse: [ self startPopupDelayAt: aTextIndex ].
