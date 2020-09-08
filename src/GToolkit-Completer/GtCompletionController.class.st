@@ -661,10 +661,10 @@ GtCompletionController >> showPreview [
 { #category : #'event handling' }
 GtCompletionController >> startCompletion [
 	| location |
-	self textEditor cursor cursorsCount = 1
+	self textEditor cursors cursorsCount = 1
 		ifFalse: [ ^ self ].
 	showRequested := true.
-	location := self textEditor cursor first position.
+	location := self textEditor cursors first position.
 	self showPopupAt: location
 ]
 
