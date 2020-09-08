@@ -69,7 +69,7 @@ GtCompleterExamples >> completeMultipleKeywordMessageSend [
 			self instanceVariableReceiverSource
 				, ' print: maxItems on: variableTypes'.
 	self
-		assert: (completer textEditor cursor allCursors collect: #position)
+		assert: (completer textEditor cursors allCursors collect: #position)
 		equals: #(42).
 	^ completer
 ]
@@ -96,14 +96,18 @@ GtCompleterExamples >> completePrintOnMethodSelector [
 GtCompleterExamples >> completeWithCursorMove [
 	<gtExample>
 	| aCompleter |
-
-	aCompleter := self openOn: '12345' withStrategy: self alphabetStrategy.
+	
+	aCompleter := self
+		openOn: '12345'
+		withStrategy: self alphabetStrategy.
 	self enter: #(0 $b 4) into: aCompleter.
-
+	
 	self assert: aCompleter textEditor text asString equals: 'b12345'.
-	self assert: (aCompleter textEditor cursor allCursors collect: #position) equals: #(4).
+	self
+		assert: (aCompleter textEditor cursors allCursors collect: #position)
+		equals: #(4).
 	self assert: aCompleter textEditor selection isEmpty.
-
+	
 	^ aCompleter
 ]
 
@@ -114,11 +118,13 @@ GtCompleterExamples >> completeWithTab [
 	
 	aCompleter := self openOn: '' withStrategy: self alphabetStrategy.
 	self enter: #(0 'dd' #tabComplete:) into: aCompleter.
-
+	
 	self assert: aCompleter textEditor text asString equals: 'dddd'.
-	self assert: (aCompleter textEditor cursor allCursors collect: #position) equals: #(4).
+	self
+		assert: (aCompleter textEditor cursors allCursors collect: #position)
+		equals: #(4).
 	self assert: aCompleter textEditor selection isEmpty.
-
+	
 	^ aCompleter
 ]
 
@@ -129,11 +135,13 @@ GtCompleterExamples >> completionPreview [
 	
 	aCompleter := self openOn: '' withStrategy: self alphabetStrategy.
 	self enter: #(0 $c) into: aCompleter.
-
+	
 	self assert: aCompleter textEditor text asString equals: 'c'.
-	self assert: (aCompleter textEditor cursor allCursors collect: #position) equals: #(1).
+	self
+		assert: (aCompleter textEditor cursors allCursors collect: #position)
+		equals: #(1).
 	self assert: aCompleter textEditor selection isEmpty.
-
+	
 	^ aCompleter
 ]
 
