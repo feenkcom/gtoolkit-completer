@@ -3,7 +3,7 @@ Extension { #name : #GtPharoVariableNode }
 { #category : #'*GToolkit-Completer' }
 GtPharoVariableNode >> completionActionsFor: aStrategy [
 	| prefix variables allLocalVariables |
-	self stopPosition = aStrategy index
+	self name stopPosition = aStrategy index
 		ifFalse: [ ^ #() ].
 	prefix := name source.
 	allLocalVariables := aStrategy localVariablesFor: self.
