@@ -30,12 +30,12 @@ GtRenameAction class >> locations: aCollectionOfIntervals element: aTextEditorEl
 GtRenameAction class >> pharoRenameLocalsOn: aTextEditorElement [
 	^ [ | editor text ast items action |
 	editor := aTextEditorElement editor.
-	editor cursor cursorsCount = 1
+	editor cursors cursorsCount = 1
 		ifFalse: [ ^ nil ].
 	text := editor text.
 	ast := GtPharoParser parseWithErrors: text asString.
 	items := OrderedCollection new.
-	(ast findVariableNodeAt: editor cursor first position)
+	(ast findVariableNodeAt: editor cursors first position)
 		ifNotNil: [ :node | 
 			node whoDefines
 				ifNotNil: [ :definer | 
@@ -259,7 +259,7 @@ GtRenameAction >> saveOriginalState [
 	| text |
 	text := self text.
 	originalText := text copy.
-	originalCursorPosition := self textEditor cursor first position
+	originalCursorPosition := self textEditor cursors first position
 ]
 
 { #category : #accessing }
