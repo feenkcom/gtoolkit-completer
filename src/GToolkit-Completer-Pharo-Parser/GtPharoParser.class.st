@@ -1,7 +1,7 @@
 Class {
 	#name : #GtPharoParser,
 	#superclass : #SmaCCGLRParser,
-	#category : 'GToolkit-Completer-Pharo-Parser'
+	#category : #'GToolkit-Completer-Pharo-Parser'
 }
 
 { #category : #generated }
@@ -15,7 +15,7 @@ GtPharoParser class >> ambiguousTransitions [
 
 { #category : #'generated-accessing' }
 GtPharoParser class >> cacheId [
-	^'2019-04-15T17:16:22.407743-05:00'
+	^'2020-09-17T12:46:51.848633-05:00'
 ]
 
 { #category : #generated }
