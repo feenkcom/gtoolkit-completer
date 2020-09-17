@@ -56,14 +56,14 @@ GtRenameAction class >> pharoRenameLocalsOn: aTextEditorElement [
 GtRenameAction class >> pharoRenameSnippetLocalsOn: aTextEditorElement [
 	^ [ | editor text ast items action |
 	editor := aTextEditorElement editor.
-	editor cursor cursorsCount = 1
+	editor cursors cursorsCount = 1
 		ifFalse: [ ^ nil ].
 	text := editor text.
 	ast := GtPharoParser
 		parseWithErrors: text asString
 		startingAt: GtPharoParser startingStateForMethodSequence.
 	items := OrderedCollection new.
-	(ast findVariableNodeAt: editor cursor first position)
+	(ast findVariableNodeAt: editor cursors first position)
 		ifNotNil: [ :node | 
 			| definer |
 			definer := node whoDefines ifNil: [ ast ].
