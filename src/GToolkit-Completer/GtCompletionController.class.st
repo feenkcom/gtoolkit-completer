@@ -531,7 +531,7 @@ GtCompletionController >> removePopupOnLostFocus [
 	lostFocusDelay
 		action: [ (textElement hasFocus or: [ listElement hasFocus ])
 				ifFalse: [ self removePopup ] ].
-	lostFocusDelay start
+	lostFocusDelay startOrRestart
 ]
 
 { #category : #private }
@@ -695,7 +695,7 @@ GtCompletionController >> startPopupDelayAt: anIndex [
 	see ${method:GtCompletionController>>#textElement:}$"
 
 	completionDelay action: [ self showPopupAt: anIndex ].
-	completionDelay start
+	completionDelay startOrRestart
 ]
 
 { #category : #'initialize-release' }
