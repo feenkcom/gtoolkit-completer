@@ -27,6 +27,14 @@ GtStringsCompletionStrategy >> first: anInteger startingWith: aString [
 	^ self completions first: anInteger startingWith: aString
 ]
 
+{ #category : #'gt-extensions' }
+GtStringsCompletionStrategy >> gtCompletionsFor: aView [
+	<gtView>
+	^ aView list
+		title: 'Completions';
+		items: [ self completions asOrderedCollection ]
+]
+
 { #category : #testing }
 GtStringsCompletionStrategy >> hasCompletionEntryFor: aString [
 	self completions
