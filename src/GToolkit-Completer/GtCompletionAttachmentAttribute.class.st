@@ -26,6 +26,7 @@ GtCompletionAttachmentAttribute >> doAffect: aTBrTextEditorTextualPiece in: anEd
 	element size: 0 @ 0.
 	element margin: (BlInsets top: 5).
 	element when: BlElementAddedToParentEvent do: [ :evt | controller onAttached: element ].
+	element when: BlElementRemovedFromSceneGraphEvent do: [ :evt | controller removePopupOnAnchorRemoved ].
 	^ {element}
 ]
 

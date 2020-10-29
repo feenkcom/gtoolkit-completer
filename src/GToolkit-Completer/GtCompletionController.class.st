@@ -25,7 +25,8 @@ Class {
 		'showRequested',
 		'textEditorHandlers',
 		'textElementFilters',
-		'popupHandlers'
+		'popupHandlers',
+		'textElementRemovedDelay'
 	],
 	#classVars : [
 		'MaxPopupItems',
@@ -311,6 +312,9 @@ GtCompletionController >> initialize [
 	lostFocusDelay := BlDelayedTaskAction new.
 	lostFocusDelay delay: 5 milliSeconds.
 	
+	textElementRemovedDelay := BlDelayedTaskAction new.
+	textElementRemovedDelay delay: 50 milliSeconds.
+	
 	attribute := GtCompletionAttachmentAttribute for: self
 ]
 
@@ -524,6 +528,16 @@ GtCompletionController >> removePopup [
 	overlay detach.
 	overlay removeFromParent.
 	self removeAttachmentAttribute
+]
+
+{ #category : #'private - popup' }
+GtCompletionController >> removePopupOnAnchorRemoved [
+	textElementRemovedDelay
+		action: [
+			(textElement isAttachedToSceneGraph)
+				ifFalse: [ self removePopup ] ].
+	textElementRemovedDelay element: overlay.
+	textElementRemovedDelay startOrRestart
 ]
 
 { #category : #'private - popup' }
@@ -759,7 +773,8 @@ GtCompletionController >> textElement: anEditorElement [
 	textElement := anEditorElement.
 
 	completionDelay element: textElement.
-	lostFocusDelay element: textElement
+	lostFocusDelay element: textElement.
+	textElementRemovedDelay element: textElement.
 ]
 
 { #category : #'private - installation' }
