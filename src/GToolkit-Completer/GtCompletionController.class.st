@@ -81,36 +81,36 @@ GtCompletionController >> activeShortcutHandler [
 		completionController: self;
 		whenActive;
 		addShortcut:
-			(BlShortcut new
+			(BlShortcutWithAction new
 				combination: BlKeyCombination arrowDown;
 				action: [ self selectNextItem ]);
 		addShortcut:
-			(BlShortcut new
+			(BlShortcutWithAction new
 				combination: BlKeyCombination arrowUp;
 				action: [ self selectPreviousItem ]);
 		addShortcut:
-			(BlShortcut new
+			(BlShortcutWithAction new
 				combination: BlKeyCombination builder primary arrowRight build;
 				action: [ self drillDown ]);
 		addShortcut:
-			(BlShortcut new
+			(BlShortcutWithAction new
 				combination: BlKeyCombination builder primary arrowLeft build;
 				action: [ self undoDrillDown ]);
 		addShortcut:
-			(BlShortcut new
+			(BlShortcutWithAction new
 				combination: BlKeyCombination return;
 				action: [ self completeWithCursor: true ]);
 		addShortcut:
-			(BlShortcut new
+			(BlShortcutWithAction new
 				combination: BlKeyCombination tab;
 				action: [ self completeWithCursor: true ]);
 		addShortcut:
-			(BlShortcut new
+			(BlShortcutWithAction new
 				combination: self primaryLetterKeyCombinations;
 				action: [ activeShortcutHandler consumeEvent: false.
 					self removePopup ]);
 		addShortcut:
-			(BlShortcut new
+			(BlShortcutWithAction new
 				combination: BlKeyCombination escape;
 				action: [ self removePopup ]).
 	^ activeShortcutHandler
@@ -264,7 +264,7 @@ GtCompletionController >> inactiveShortcutHandler [
 		completionController: self;
 		whenInactive;
 		addShortcut:
-			(BlShortcut new
+			(BlShortcutWithAction new
 				repeatable: false;
 				combination:
 					(BlKeyCombination builder secondary
@@ -277,14 +277,14 @@ GtCompletionController >> inactiveShortcutHandler [
 					shouldHandle
 						ifTrue: [ self startCompletion ] ]);
 		addShortcut:
-			(BlShortcut new
+			(BlShortcutWithAction new
 				repeatable: false;
 				combination: BlKeyCombination tab;
 				action: [ :event | 
 					inactiveShortcutHandler
 						consumeEvent: (event target == textElement and: [ self processTabKey: true ]) ]);
 		addShortcut:
-			(BlShortcut new
+			(BlShortcutWithAction new
 				repeatable: false;
 				combination: BlKeyCombination builder shift tab build;
 				action: [ :event | 
