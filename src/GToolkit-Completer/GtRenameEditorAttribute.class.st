@@ -79,22 +79,18 @@ GtRenameEditorAttribute >> editorCursorLocation [
 GtRenameEditorAttribute >> editorShortcuts [
 	^ editorShortcuts
 		ifNil: [ editorShortcuts := {
-			(BrTextEditorShortcut new
+			(BlShortcutWithAction new
 				combination: BlKeyCombination escape;
-				action: [ :aShortcutEvent :aShortcut :aTextEditor :aRenameEditorAttribute | aRenameEditorAttribute renameAction cancel ];
-				options: self).
-			(BrTextEditorShortcut new
+				action: [ :aShortcutEvent | self renameAction cancel ]).
+			(BlShortcutWithAction new
 				combination: BlKeyCombination builder shift tab build;
-				action: [ :aShortcutEvent :aShortcut :aTextEditor :aRenameEditorAttribute | aRenameEditorAttribute renameAction tabAccept: false ];
-				options: self).
-			(BrTextEditorShortcut new
+				action: [ :aShortcutEvent | self renameAction tabAccept: false ]).
+			(BlShortcutWithAction new
 				combination: BlKeyCombination tab;
-				action: [ :aShortcutEvent :aShortcut :aTextEditor :aRenameEditorAttribute | aRenameEditorAttribute renameAction tabAccept: true ];
-				options: self).
-			(BrTextEditorShortcut new
+				action: [ :aShortcutEvent | self renameAction tabAccept: true ]).
+			(BlShortcutWithAction new
 				combination: BlKeyCombination return;
-				action: [ :aShortcutEvent :aShortcut :aTextEditor :aRenameEditorAttribute | aRenameEditorAttribute renameAction accept ];
-				options: self)} ]
+				action: [ :aShortcutEvent | self renameAction accept ])} ]
 ]
 
 { #category : #accessing }
