@@ -67,10 +67,9 @@ GtRenamerExamples >> smalltalkRenamer [
 		text: text.
 	editorElement editor
 		addEditorShortcut:
-			(BrTextEditorShortcut new
+			(BlShortcutWithAction new
 				combination: BlKeyCombination primaryR;
-				action:
-						[ :aShortcutEvent | GtRenameAction pharoRenameLocalsOn: aShortcutEvent currentTarget ]).
+				action: [ :aShortcutEvent | GtRenameAction pharoRenameLocalsOn: aShortcutEvent currentTarget ]).
 	completionStrategy := GtPharoCompletionStrategy newForMethod.
 	completionStrategy classOrMetaClass: GtPharoCompletionStrategy.
 	completionController := GtCompletionController
