@@ -5,7 +5,7 @@ Class {
 		'referenceElement',
 		'overlayListener'
 	],
-	#category : 'GToolkit-Completer-UI'
+	#category : #'GToolkit-Completer-UI'
 }
 
 { #category : #'api - attaching / detaching' }
@@ -36,7 +36,6 @@ GtCompletionPopupElement >> initialize [
 	super initialize.
 
 	self constraintsDo: [ :c | c ignoreByLayout ].
-	self preventMouseEvents.
 
 	overlayListener := GtCompletionPopupListener for: self
 ]

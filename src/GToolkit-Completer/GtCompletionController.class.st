@@ -226,12 +226,6 @@ GtCompletionController >> deselectAll [
 	listElement deselectAll
 ]
 
-{ #category : #'event handling' }
-GtCompletionController >> doubleClickList: anEvent [
-	self completeWithCursor: true.
-	textElement requestFocus
-]
-
 { #category : #private }
 GtCompletionController >> drillDown [
 	previewAction
@@ -403,11 +397,11 @@ GtCompletionController >> newCompletionList [
 			c vertical fitContent.
 			c horizontal matchParent ];
 		items: #();
-		stencil: [ :each :anIndex | 
+		itemStencil: [
 			BlTextElement new
 				constraintsDo: [ :c | c horizontal matchParent ];
-				padding: (BlInsets all: 5);
-				text: each displayString asRopedText glamorousCodeFontAndSmallSize ]
+				padding: (BlInsets all: 5) ];
+		itemDataBinder: [ :eachElement :eachItem | eachElement text: eachItem displayString asRopedText glamorousCodeFontAndSmallSize ]
 ]
 
 { #category : #'private - instance creation' }
@@ -454,8 +448,17 @@ GtCompletionController >> onAttached: anElement [
 
 { #category : #'private - list selection' }
 GtCompletionController >> onSelectionChanged: anEvent [
-	self scrollToSelected.
-	self showPreview
+	anEvent sourceEvent
+		ifNil: [
+			self scrollToSelected.
+			self showPreview.
+			textElement enqueueTask: (BlTaskAction new action: [ textElement requestFocus ]). ]
+		ifNotNil: [ :aSourceEvent |
+			aSourceEvent isMouse
+				ifTrue: [
+					self showPreview.
+					self completeWithCursor: true.
+					textElement requestFocus ] ]
 ]
 
 { #category : #'private - installation' }
@@ -464,9 +467,6 @@ GtCompletionController >> popupHandlers [
 		ifNil: [ popupHandlers := {(BlEventHandler
 				on: BrSelectionChanged
 				do: [ :event | self onSelectionChanged: event ]).
-			(BlEventHandler
-				on: BlDoubleClickEvent
-				do: [ :event | self doubleClickList: true ]).
 			(BlEventHandler
 				on: BlBlurEvent
 				do: [ :event | self removePopupOnLostFocus ])} ]
