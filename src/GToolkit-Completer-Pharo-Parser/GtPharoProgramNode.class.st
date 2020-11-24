@@ -1,7 +1,7 @@
 Class {
 	#name : #GtPharoProgramNode,
 	#superclass : #SmaCCParseNode,
-	#category : 'GToolkit-Completer-Pharo-Parser'
+	#category : #'GToolkit-Completer-Pharo-Parser'
 }
 
 { #category : #generated }
@@ -17,4 +17,19 @@ GtPharoProgramNode >> findVariableNodeAt: anInteger [
 		andTokensDo: [ :each |  ]
 		includeErrors: true.
 	^ nil
+]
+
+{ #category : #testing }
+GtPharoProgramNode >> isMessage [
+	^ false
+]
+
+{ #category : #testing }
+GtPharoProgramNode >> isMethod [
+	^ false
+]
+
+{ #category : #testing }
+GtPharoProgramNode >> isVariable [
+	^ false
 ]
