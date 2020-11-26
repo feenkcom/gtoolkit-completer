@@ -5,7 +5,7 @@ Class {
 		'pattern',
 		'body'
 	],
-	#category : 'GToolkit-Completer-Pharo-Parser'
+	#category : #'GToolkit-Completer-Pharo-Parser'
 }
 
 { #category : #generated }
@@ -25,6 +25,11 @@ GtPharoMethodNode >> body: aGtPharoSequenceNode [
 	body := aGtPharoSequenceNode.
 	self body notNil
 		ifTrue: [ self body parent: self ]
+]
+
+{ #category : #testing }
+GtPharoMethodNode >> isMethod [
+	^ true
 ]
 
 { #category : #generated }

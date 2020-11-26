@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'name'
 	],
-	#category : 'GToolkit-Completer-Pharo-Parser'
+	#category : #'GToolkit-Completer-Pharo-Parser'
 }
 
 { #category : #generated }
@@ -16,6 +16,11 @@ GtPharoVariableNode >> acceptVisitor: aProgramVisitor [
 GtPharoVariableNode >> findVariableNodeAt: anInteger [
 	^ (anInteger between: self startPosition and: self stopPosition)
 		ifTrue: [ self ]
+]
+
+{ #category : #testing }
+GtPharoVariableNode >> isVariable [
+	^ true
 ]
 
 { #category : #generated }

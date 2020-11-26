@@ -20,6 +20,11 @@ GtPharoMessageNode >> isKeyword [
 ]
 
 { #category : #testing }
+GtPharoMessageNode >> isMessage [
+	^ true
+]
+
+{ #category : #testing }
 GtPharoMessageNode >> isUnary [
 	^ false
 ]
