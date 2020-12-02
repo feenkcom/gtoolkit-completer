@@ -329,7 +329,9 @@ GtCompletionController >> installPopupHandlers [
 { #category : #'private - installation' }
 GtCompletionController >> installTextEditorHandlers [
 	self textEditorHandlers
-		do: [ :each | self textEditor addEventHandler: each ]
+		do: [ :each |
+			(self textEditor hasEventHandler: each)
+				ifFalse: [ self textEditor addEventHandler: each ] ]
 ]
 
 { #category : #'private - installation' }
