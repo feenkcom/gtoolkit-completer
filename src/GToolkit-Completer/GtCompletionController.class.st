@@ -304,13 +304,13 @@ GtCompletionController >> initialize [
 
 	completionDelay := BlDelayedTaskAction new.
 	completionDelay delay: self class popupDelay.
-	
+
 	lostFocusDelay := BlDelayedTaskAction new.
 	lostFocusDelay delay: 5 milliSeconds.
-	
+
 	textElementRemovedDelay := BlDelayedTaskAction new.
 	textElementRemovedDelay delay: 50 milliSeconds.
-	
+
 	attribute := GtCompletionAttachmentAttribute for: self
 ]
 
@@ -386,24 +386,17 @@ GtCompletionController >> moveCursorToNextUncompletedItem: direction [
 { #category : #'private - instance creation' }
 GtCompletionController >> newCompletionList [
 	<return: #BrSimpleList>
+
 	^ BrSimpleList new
-		lookDo: [ :aLook | 
-			aLook listElement
-				constraintsDo: [ :c | 
-					c vertical fitContent.
-					c horizontal matchParent.
-					c maxHeight: 200 ] ];
-		background: Color white;
-		layout: BlLinearLayout vertical;
-		constraintsDo: [ :c | 
-			c vertical fitContent.
-			c horizontal matchParent ];
+		hMatchParent;
+		vFitContentLimited;
+		lookDo: [ :aListLook | aListLook listElement constraints maxHeight: 200 ];
 		items: #();
 		itemStencil: [
-			BlTextElement new
-				constraintsDo: [ :c | c horizontal matchParent ];
-				padding: (BlInsets all: 5) ];
-		itemDataBinder: [ :eachElement :eachItem | eachElement text: eachItem displayString asRopedText glamorousCodeFontAndSmallSize ]
+			BrLabel new
+				hMatchParent;
+				look: BrGlamorousListLabelLook + BrGlamorousListItemLook ];
+		itemDataBinder: [ :eachLabel :eachCompletion | eachLabel text: eachCompletion displayString ]
 ]
 
 { #category : #'private - instance creation' }
@@ -411,8 +404,9 @@ GtCompletionController >> newPopupElement [
 	^ GtCompletionPopupElement new
 		layout: BlLinearLayout vertical;
 		look: BrShadowLook new;
+		background: Color white;
 		constraintsDo: [ :c |
-			c vertical fitContent.
+			c vertical fitContentLimited.
 			c horizontal exact: 200 ]
 ]
 
