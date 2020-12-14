@@ -30,6 +30,11 @@ GtPharoProgramNode >> isMethod [
 ]
 
 { #category : #testing }
+GtPharoProgramNode >> isMethodPattern [
+	^ false
+]
+
+{ #category : #testing }
 GtPharoProgramNode >> isVariable [
 	^ false
 ]
