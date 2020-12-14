@@ -5,7 +5,7 @@ Class {
 		'selectorParts',
 		'variables'
 	],
-	#category : 'GToolkit-Completer-Pharo-Parser'
+	#category : #'GToolkit-Completer-Pharo-Parser'
 }
 
 { #category : #generated }
@@ -28,6 +28,11 @@ GtPharoMethodPatternNode >> initialize [
 	super initialize.
 	selectorParts := OrderedCollection new: 2.
 	variables := OrderedCollection new: 2.
+]
+
+{ #category : #testing }
+GtPharoMethodPatternNode >> isMethodPattern [
+	^ true
 ]
 
 { #category : #accessing }
