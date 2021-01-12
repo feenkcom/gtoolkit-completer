@@ -272,10 +272,7 @@ GtCompleterExamples >> methodSourceCompleter [
 	<gtExample>
 	| text styler editor editorElement completionStrategy completionController method ast |
 	text := '' asRopedText.
-	text
-		attributes:
-			{BlFontGenericFamilyAttribute monospace beNotOverwritableByStyler.
-			(BlFontSizeAttribute size: 14) beNotOverwritableByStyler}.
+	text attribute: (BlFontSizeAttribute size: 14) beNotOverwritableByStyler.
 	method := OrderedCollection >> #addAll:.
 	ast := GtPharoParser parse: method sourceCode.
 	styler := BrRBMethodBodyTextStyler new.
@@ -451,9 +448,7 @@ GtCompleterExamples >> smalltalkCompleter [
 	| text styler editor editorElement completionStrategy completionController |
 	text := '' asRopedText.
 	text
-		attributes:
-			{BlFontGenericFamilyAttribute monospace beNotOverwritableByStyler.
-			(BlFontSizeAttribute size: 14) beNotOverwritableByStyler}.
+		attributes: { (BlFontSizeAttribute size: 14) beNotOverwritableByStyler }.
 	styler := BrRBTextStyler new.
 	styler classOrMetaClass: GtPharoCompletionStrategy.
 	editor := BrTextEditor new.
