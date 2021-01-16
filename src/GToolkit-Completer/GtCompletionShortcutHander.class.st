@@ -5,7 +5,7 @@ I only process shortcuts if a completion popup is opened, otherwise I ignore the
 "
 Class {
 	#name : #GtCompletionShortcutHander,
-	#superclass : #BlShortcutHandler,
+	#superclass : #BlShortcutHandlerWithShortcuts,
 	#instVars : [
 		'completionController',
 		'consumeEvent',
