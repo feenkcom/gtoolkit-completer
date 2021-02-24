@@ -650,7 +650,7 @@ GtCompletionController >> showOnTextModification: aBoolean [
 GtCompletionController >> showPopupAt: anIndex [
 	"Show the completion popup selecting the first relevant completion item"
 	
-	textElement assertUIProcess.
+	textElement editor assertUIProcess.
 	
 	"if the show popup appears when editor is not in the scene graph,
 	just ignore the request"
