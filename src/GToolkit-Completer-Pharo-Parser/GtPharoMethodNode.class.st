@@ -32,6 +32,11 @@ GtPharoMethodNode >> isMethod [
 	^ true
 ]
 
+{ #category : #accessing }
+GtPharoMethodNode >> methodNode [
+	^ self
+]
+
 { #category : #generated }
 GtPharoMethodNode >> nodeVariables [
 	^ #(#pattern #body)
@@ -49,4 +54,14 @@ GtPharoMethodNode >> pattern: aGtPharoMethodPatternNode [
 	pattern := aGtPharoMethodPatternNode.
 	self pattern notNil
 		ifTrue: [ self pattern parent: self ]
+]
+
+{ #category : #accessing }
+GtPharoMethodNode >> selector [
+	^ pattern selector
+]
+
+{ #category : #accessing }
+GtPharoMethodNode >> variables [
+	^ pattern variables
 ]

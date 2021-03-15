@@ -19,6 +19,16 @@ GtPharoVariableNode >> findVariableNodeAt: anInteger [
 ]
 
 { #category : #testing }
+GtPharoVariableNode >> isSelf [
+	^ false
+]
+
+{ #category : #testing }
+GtPharoVariableNode >> isSuper [
+	^ false
+]
+
+{ #category : #testing }
 GtPharoVariableNode >> isVariable [
 	^ true
 ]

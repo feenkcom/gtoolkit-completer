@@ -24,8 +24,3 @@ GtPharoMethodNode >> localVariablesInto: aCollection [
 GtPharoMethodNode >> selectorParts [
 	^ pattern selectorParts
 ]
-
-{ #category : #'*GToolkit-Completer' }
-GtPharoMethodNode >> variables [
-	^ pattern variables
-]

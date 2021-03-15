@@ -20,6 +20,11 @@ GtPharoProgramNode >> findVariableNodeAt: anInteger [
 ]
 
 { #category : #testing }
+GtPharoProgramNode >> isLiteral [
+	^ false
+]
+
+{ #category : #testing }
 GtPharoProgramNode >> isMessage [
 	^ false
 ]
@@ -37,4 +42,9 @@ GtPharoProgramNode >> isMethodPattern [
 { #category : #testing }
 GtPharoProgramNode >> isVariable [
 	^ false
+]
+
+{ #category : #accessing }
+GtPharoProgramNode >> methodNode [
+	^ parent ifNotNil: [ parent methodNode ]
 ]
