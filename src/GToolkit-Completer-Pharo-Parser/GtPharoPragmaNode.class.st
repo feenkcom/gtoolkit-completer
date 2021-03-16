@@ -42,6 +42,11 @@ GtPharoPragmaNode >> initialize [
 	values := OrderedCollection new: 2.
 ]
 
+{ #category : #testing }
+GtPharoPragmaNode >> isPragma [
+	^ true
+]
+
 { #category : #generated }
 GtPharoPragmaNode >> lessThan [
 	^ lessThan

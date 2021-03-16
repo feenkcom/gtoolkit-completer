@@ -4,12 +4,17 @@ Class {
 	#instVars : [
 		'smaccError'
 	],
-	#category : 'GToolkit-Completer-Pharo-Parser'
+	#category : #'GToolkit-Completer-Pharo-Parser'
 }
 
 { #category : #generated }
 GtPharoErrorPatternNode >> acceptVisitor: aProgramVisitor [
 	^ aProgramVisitor visitErrorPattern: self
+]
+
+{ #category : #testing }
+GtPharoErrorPatternNode >> isErrorNode [
+	^ true
 ]
 
 { #category : #generated }

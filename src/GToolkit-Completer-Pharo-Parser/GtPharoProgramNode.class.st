@@ -132,6 +132,11 @@ GtPharoProgramNode >> isMethodPattern [
 ]
 
 { #category : #testing }
+GtPharoProgramNode >> isPragma [
+	^ false
+]
+
+{ #category : #testing }
 GtPharoProgramNode >> isSequence [
 	^ false
 ]

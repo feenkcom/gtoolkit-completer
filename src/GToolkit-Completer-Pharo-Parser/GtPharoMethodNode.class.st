@@ -57,6 +57,11 @@ GtPharoMethodNode >> pattern: aGtPharoMethodPatternNode [
 ]
 
 { #category : #accessing }
+GtPharoMethodNode >> pragmas [
+	^ self body pragmas
+]
+
+{ #category : #accessing }
 GtPharoMethodNode >> selector [
 	"Return a method selector if method pattern parsing was successful or nil otherwise.
 	Consider using #selectorDo: instead, as it does not return nil"
