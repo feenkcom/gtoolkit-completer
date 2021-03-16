@@ -56,6 +56,18 @@ GtPharoProgramNode >> findVariableNodeAt: anInteger [
 	^ nil
 ]
 
+{ #category : #accessing }
+GtPharoProgramNode >> implicitLocalVariables [
+	| variables |
+	variables := self localVariables.
+	self topParent
+		allNodesOfType: GtPharoVariableNode
+		do: [ :each | 
+			(each == self or: [ each isLocallyDefined ])
+				ifFalse: [ variables add: each name value ] ].
+	^ variables
+]
+
 { #category : #testing }
 GtPharoProgramNode >> isLiteral [
 	^ false
@@ -84,6 +96,20 @@ GtPharoProgramNode >> isMethodPattern [
 { #category : #testing }
 GtPharoProgramNode >> isVariable [
 	^ false
+]
+
+{ #category : #accessing }
+GtPharoProgramNode >> localVariables [
+	| variables |
+	variables := GtPrefixTree new.
+	self localVariablesInto: variables.
+	^ variables
+]
+
+{ #category : #accessing }
+GtPharoProgramNode >> localVariablesInto: aCollection [
+	parent notNil
+		ifTrue: [ parent localVariablesInto: aCollection ]
 ]
 
 { #category : #accessing }

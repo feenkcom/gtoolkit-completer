@@ -34,6 +34,12 @@ GtPharoVariableNode >> isThisContext [
 ]
 
 { #category : #testing }
+GtPharoVariableNode >> isUndeclared [
+	^ (self localVariables includes: self variableName) not
+		and: [ (self class environment includesKey: self variableName) not ]
+]
+
+{ #category : #testing }
 GtPharoVariableNode >> isVariable [
 	^ true
 ]
@@ -51,4 +57,12 @@ GtPharoVariableNode >> name: aSmaCCToken [
 { #category : #generated }
 GtPharoVariableNode >> tokenVariables [
 	^ #(#name)
+]
+
+{ #category : #accessing }
+GtPharoVariableNode >> variableName [
+	"Return the variable name as a symbol"
+	<return: #Symbol>
+
+	^ self name value asSymbol
 ]
