@@ -7,7 +7,7 @@ Class {
 		'greaterThan',
 		'values'
 	],
-	#category : 'GToolkit-Completer-Pharo-Parser'
+	#category : #'GToolkit-Completer-Pharo-Parser'
 }
 
 { #category : #generated }
@@ -50,6 +50,11 @@ GtPharoPragmaNode >> lessThan [
 { #category : #generated }
 GtPharoPragmaNode >> lessThan: aSmaCCToken [
 	lessThan := aSmaCCToken
+]
+
+{ #category : #accessing }
+GtPharoPragmaNode >> selector [
+	^ Symbol streamContents: [ :stream | self selectorParts do: [ :each | stream nextPutAll: each value ] ]
 ]
 
 { #category : #generated }

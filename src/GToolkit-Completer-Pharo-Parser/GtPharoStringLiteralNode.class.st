@@ -4,12 +4,17 @@ Class {
 	#instVars : [
 		'value'
 	],
-	#category : 'GToolkit-Completer-Pharo-Parser'
+	#category : #'GToolkit-Completer-Pharo-Parser'
 }
 
 { #category : #generated }
 GtPharoStringLiteralNode >> acceptVisitor: aProgramVisitor [
 	^ aProgramVisitor visitStringLiteral: self
+]
+
+{ #category : #accessing }
+GtPharoStringLiteralNode >> string [
+	^ self value value
 ]
 
 { #category : #generated }
