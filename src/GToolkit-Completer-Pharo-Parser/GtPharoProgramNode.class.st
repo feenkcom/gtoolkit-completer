@@ -47,6 +47,36 @@ GtPharoProgramNode >> acceptVisitor: aProgramVisitor [
 ]
 
 { #category : #accessing }
+GtPharoProgramNode >> bestNodeFor: anInterval ifFound: aFoundBlock ifNone: aNoneBlock [
+	| selectedChildren |
+	
+	self
+		assert: [ anInterval notNil ]
+		description: [ 'Interval must not be nil' ].
+	
+	(self intersectsInterval: anInterval)
+		ifFalse: [ ^ aNoneBlock value ].
+
+	(self containedBy: anInterval)
+		ifTrue: [ ^ aFoundBlock value: self ].
+	
+	selectedChildren := self children
+		select: [ :eachChildNode | eachChildNode intersectsInterval: anInterval ].
+
+	^ selectedChildren size = 1 
+		ifTrue: [ selectedChildren first bestNodeFor: anInterval ifFound: aFoundBlock ifNone: aNoneBlock ]
+		ifFalse: [ aFoundBlock value: self ]
+]
+
+{ #category : #testing }
+GtPharoProgramNode >> containedBy: anInterval [
+	"Return true if this node is contained within the interval (or equal to the interval)"
+	<return: #Boolean>
+
+	^ anInterval first <= self startPosition and: [ anInterval last >= self stopPosition ]
+]
+
+{ #category : #accessing }
 GtPharoProgramNode >> findVariableNodeAt: anInteger [
 	self
 		nodesDo:
@@ -66,6 +96,14 @@ GtPharoProgramNode >> implicitLocalVariables [
 			(each == self or: [ each isLocallyDefined ])
 				ifFalse: [ variables add: each name value ] ].
 	^ variables
+]
+
+{ #category : #testing }
+GtPharoProgramNode >> intersectsInterval: anInterval [
+	<return: #Boolean>
+
+	^ (anInterval first between: self startPosition and: self stopPosition) 
+		or: [ self startPosition between: anInterval first and: anInterval last ]
 ]
 
 { #category : #testing }
@@ -94,6 +132,11 @@ GtPharoProgramNode >> isMethodPattern [
 ]
 
 { #category : #testing }
+GtPharoProgramNode >> isSequence [
+	^ false
+]
+
+{ #category : #testing }
 GtPharoProgramNode >> isVariable [
 	^ false
 ]
@@ -115,4 +158,13 @@ GtPharoProgramNode >> localVariablesInto: aCollection [
 { #category : #accessing }
 GtPharoProgramNode >> methodNode [
 	^ parent ifNotNil: [ parent methodNode ]
+]
+
+{ #category : #accessing }
+GtPharoProgramNode >> whoDefines: aName [ 
+	^ (self defines: aName) 
+		ifTrue: [ self ]
+		ifFalse: [ parent
+			ifNotNil: [ parent whoDefines: aName ]
+			ifNil: [ nil ] ]
 ]
