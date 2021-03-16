@@ -4,12 +4,20 @@ Class {
 	#instVars : [
 		'value'
 	],
-	#category : 'GToolkit-Completer-Pharo-Parser'
+	#category : #'GToolkit-Completer-Pharo-Parser'
 }
 
 { #category : #generated }
 GtPharoBooleanLiteralNode >> acceptVisitor: aProgramVisitor [
 	^ aProgramVisitor visitBooleanLiteral: self
+]
+
+{ #category : #accessing }
+GtPharoBooleanLiteralNode >> literalValue [
+
+	^ self value value = 'true'
+		ifTrue: [ true ]
+		ifFalse: [ false ]
 ]
 
 { #category : #generated }

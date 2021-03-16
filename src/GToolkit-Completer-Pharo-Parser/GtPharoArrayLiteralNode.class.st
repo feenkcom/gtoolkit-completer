@@ -6,7 +6,7 @@ Class {
 		'values',
 		'arrayStop'
 	],
-	#category : 'GToolkit-Completer-Pharo-Parser'
+	#category : #'GToolkit-Completer-Pharo-Parser'
 }
 
 { #category : #generated }
@@ -43,6 +43,11 @@ GtPharoArrayLiteralNode >> compositeNodeVariables [
 GtPharoArrayLiteralNode >> initialize [
 	super initialize.
 	values := OrderedCollection new: 2.
+]
+
+{ #category : #accessing }
+GtPharoArrayLiteralNode >> literalValue [
+	^ self values collect: [ :eachValue | eachValue literalValue ] as: Array
 ]
 
 { #category : #generated }

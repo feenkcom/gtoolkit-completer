@@ -24,6 +24,11 @@ GtPharoSymbolLiteralNode >> asSymbol [
 ]
 
 { #category : #accessing }
+GtPharoSymbolLiteralNode >> literalValue [
+	^ self symbol
+]
+
+{ #category : #accessing }
 GtPharoSymbolLiteralNode >> symbol [
 	^ self asSymbol
 ]

@@ -18,7 +18,7 @@ GtPharoProgramNode class >> typeOf: aGtPharoProgramNode in: aClass [
 		ifTrue: [ ^ Context ].
 	
 	aGtPharoProgramNode isLiteral
-		ifTrue: [ ^ aGtPharoProgramNode value class ].
+		ifTrue: [ ^ aGtPharoProgramNode literalValue class ].
 
 	(aGtPharoProgramNode isKindOf: GtPharoArrayNode)
 		ifTrue: [ ^ {} class ].

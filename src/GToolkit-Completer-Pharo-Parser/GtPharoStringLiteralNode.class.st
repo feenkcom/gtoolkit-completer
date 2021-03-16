@@ -13,6 +13,11 @@ GtPharoStringLiteralNode >> acceptVisitor: aProgramVisitor [
 ]
 
 { #category : #accessing }
+GtPharoStringLiteralNode >> literalValue [
+	^ self string
+]
+
+{ #category : #accessing }
 GtPharoStringLiteralNode >> string [
 	^ self value value
 ]

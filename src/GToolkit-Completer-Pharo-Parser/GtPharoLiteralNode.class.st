@@ -13,3 +13,8 @@ GtPharoLiteralNode >> acceptVisitor: aProgramVisitor [
 GtPharoLiteralNode >> isLiteral [
 	^ true
 ]
+
+{ #category : #accessing }
+GtPharoLiteralNode >> literalValue [
+	^ self subclassResponsibility
+]
