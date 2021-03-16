@@ -8,3 +8,8 @@ Class {
 GtPharoThisContextVariableNode >> acceptVisitor: aProgramVisitor [
 	^ aProgramVisitor visitThisContextVariable: self
 ]
+
+{ #category : #testing }
+GtPharoThisContextVariableNode >> isThisContext [
+	^ true
+]

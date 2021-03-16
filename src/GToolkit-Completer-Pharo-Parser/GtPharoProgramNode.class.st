@@ -7,12 +7,15 @@ Class {
 { #category : #'api - ast' }
 GtPharoProgramNode class >> typeOf: aGtPharoProgramNode in: aClass [
 	"Given a pharo ast node and a class find the return type of the node"
-
+	
 	(aGtPharoProgramNode isVariable and: [ aGtPharoProgramNode isSelf ]) 
 		ifTrue: [ ^ aClass ].
 	
 	(aGtPharoProgramNode isVariable and: [ aGtPharoProgramNode isSuper ]) 
 		ifTrue: [ ^ aClass ifNotNil: [ :class | class superclass ] ].
+		
+	(aGtPharoProgramNode isVariable and: [ aGtPharoProgramNode isThisContext ]) 
+		ifTrue: [ ^ Context ].
 	
 	aGtPharoProgramNode isLiteral
 		ifTrue: [ ^ aGtPharoProgramNode value class ].
@@ -20,21 +23,21 @@ GtPharoProgramNode class >> typeOf: aGtPharoProgramNode in: aClass [
 	(aGtPharoProgramNode isKindOf: GtPharoArrayNode)
 		ifTrue: [ ^ {} class ].
 
-	aGtPharoProgramNode isMessage
-		ifTrue: [ aGtPharoProgramNode selector = #class
-				ifTrue: [ ^ (self typeOf: aGtPharoProgramNode messageReceiver in: aClass)
+	aGtPharoProgramNode isMessageSend
+		ifTrue: [
+			aGtPharoProgramNode selector = #class
+				ifTrue: [ ^ (self typeOf: aGtPharoProgramNode receiver in: aClass)
 						ifNotNil: [ :class | class class ] ].
 			(#(new new:) includes: aGtPharoProgramNode selector)
-				ifTrue: [ ^ (self typeOf: aGtPharoProgramNode messageReceiver in: aClass)
+				ifTrue: [ ^ (self typeOf: aGtPharoProgramNode receiver in: aClass)
 						ifNotNil: [ :class | class instanceSide ] ] ].
 
-	"aGtPharoProgramNode isVariable
-		ifTrue: [ aGtPharoProgramNode binding
-				ifNotNil: [ :binding | 
-					binding isLiteralVariable
-						ifTrue: [ binding value ifNotNil: [ :object | ^ object class ] ].
-					(binding isSpecialVariable and: [ binding isThisContext ])
-						ifTrue: [ ^ Context ] ] ]."
+	aGtPharoProgramNode isVariable
+		ifTrue: [			
+			self environment
+				at: aGtPharoProgramNode name value asSymbol
+				ifPresent: [ :anObject |
+					anObject ifNotNil: [ ^ anObject class ] ] ].
 	^ nil
 ]
 
@@ -60,6 +63,11 @@ GtPharoProgramNode >> isLiteral [
 
 { #category : #testing }
 GtPharoProgramNode >> isMessage [
+	^ false
+]
+
+{ #category : #testing }
+GtPharoProgramNode >> isMessageSend [
 	^ false
 ]
 

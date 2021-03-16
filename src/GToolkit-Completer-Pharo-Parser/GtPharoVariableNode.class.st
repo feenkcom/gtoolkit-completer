@@ -29,6 +29,11 @@ GtPharoVariableNode >> isSuper [
 ]
 
 { #category : #testing }
+GtPharoVariableNode >> isThisContext [
+	^ false
+]
+
+{ #category : #testing }
 GtPharoVariableNode >> isVariable [
 	^ true
 ]
