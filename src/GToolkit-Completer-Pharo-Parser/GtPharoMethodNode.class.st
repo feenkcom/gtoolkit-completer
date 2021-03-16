@@ -58,7 +58,19 @@ GtPharoMethodNode >> pattern: aGtPharoMethodPatternNode [
 
 { #category : #accessing }
 GtPharoMethodNode >> selector [
-	^ pattern selector
+	"Return a method selector if method pattern parsing was successful or nil otherwise.
+	Consider using #selectorDo: instead, as it does not return nil"
+
+	self selectorDo: [ :aSymbol | ^ aSymbol ].
+	^ nil
+]
+
+{ #category : #accessing }
+GtPharoMethodNode >> selectorDo: aBlock [
+	"Evaluate a block with a parsed method selector if method pattern is not erroneous"
+
+	pattern isErrorNode
+		ifFalse: [ aBlock value: pattern selector ]
 ]
 
 { #category : #accessing }
