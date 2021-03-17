@@ -14,12 +14,17 @@ GtPharoStringLiteralNode >> acceptVisitor: aProgramVisitor [
 
 { #category : #accessing }
 GtPharoStringLiteralNode >> literalValue [
-	^ self string
+	| aString |
+	aString := self value value.
+	aString first = $'
+		ifTrue: [ aString := (aString copyFrom: 2 to: aString size - 1)
+			copyReplaceAll: '''''' with: '''' ].
+	^ aString
 ]
 
 { #category : #accessing }
 GtPharoStringLiteralNode >> string [
-	^ self value value
+	^ self literalValue
 ]
 
 { #category : #generated }
