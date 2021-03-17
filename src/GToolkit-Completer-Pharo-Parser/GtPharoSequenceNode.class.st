@@ -8,7 +8,7 @@ Class {
 		'variables',
 		'rightBar'
 	],
-	#category : 'GToolkit-Completer-Pharo-Parser'
+	#category : #'GToolkit-Completer-Pharo-Parser'
 }
 
 { #category : #generated }
@@ -39,6 +39,11 @@ GtPharoSequenceNode >> initialize [
 	variables := OrderedCollection new: 2.
 ]
 
+{ #category : #testing }
+GtPharoSequenceNode >> isSequence [
+	^ true
+]
+
 { #category : #generated }
 GtPharoSequenceNode >> leftBar [
 	^ leftBar
@@ -57,6 +62,11 @@ GtPharoSequenceNode >> periods [
 { #category : #generated }
 GtPharoSequenceNode >> periods: anOrderedCollection [
 	periods := anOrderedCollection
+]
+
+{ #category : #accessing }
+GtPharoSequenceNode >> pragmas [
+	^ #()
 ]
 
 { #category : #generated }

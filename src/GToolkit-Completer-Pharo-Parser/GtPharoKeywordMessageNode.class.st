@@ -13,6 +13,11 @@ GtPharoKeywordMessageNode >> acceptVisitor: aProgramVisitor [
 	^ aProgramVisitor visitKeywordMessage: self
 ]
 
+{ #category : #accessing }
+GtPharoKeywordMessageNode >> arguments [
+	^ self values
+]
+
 { #category : #generated }
 GtPharoKeywordMessageNode >> compositeNodeVariables [
 	^ #(#values)

@@ -5,12 +5,22 @@ Class {
 		'receiver',
 		'message'
 	],
-	#category : 'GToolkit-Completer-Pharo-Parser'
+	#category : #'GToolkit-Completer-Pharo-Parser'
 }
 
 { #category : #generated }
 GtPharoMessageSendNode >> acceptVisitor: aProgramVisitor [
 	^ aProgramVisitor visitMessageSend: self
+]
+
+{ #category : #accessing }
+GtPharoMessageSendNode >> arguments [
+	^ self message arguments
+]
+
+{ #category : #testing }
+GtPharoMessageSendNode >> isMessageSend [
+	^ true
 ]
 
 { #category : #generated }
@@ -44,4 +54,14 @@ GtPharoMessageSendNode >> receiver: aGtPharoValueNode [
 	receiver := aGtPharoValueNode.
 	self receiver notNil
 		ifTrue: [ self receiver parent: self ]
+]
+
+{ #category : #accessing }
+GtPharoMessageSendNode >> selector [
+	^ self message selector
+]
+
+{ #category : #accessing }
+GtPharoMessageSendNode >> selectorParts [
+	^ self message selectorParts
 ]

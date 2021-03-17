@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'value'
 	],
-	#category : 'GToolkit-Completer-Pharo-Parser'
+	#category : #'GToolkit-Completer-Pharo-Parser'
 }
 
 { #category : #generated }
@@ -21,6 +21,16 @@ GtPharoSymbolLiteralNode >> asSymbol [
 	name first = $'
 		ifTrue: [ name := (name copyFrom: 2 to: name size - 1) copyReplaceAll: '''''' with: '''' ].
 	^ name asSymbol
+]
+
+{ #category : #accessing }
+GtPharoSymbolLiteralNode >> literalValue [
+	^ self symbol
+]
+
+{ #category : #accessing }
+GtPharoSymbolLiteralNode >> symbol [
+	^ self asSymbol
 ]
 
 { #category : #generated }

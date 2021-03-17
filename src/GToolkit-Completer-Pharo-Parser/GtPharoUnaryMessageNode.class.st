@@ -12,6 +12,11 @@ GtPharoUnaryMessageNode >> acceptVisitor: aProgramVisitor [
 	^ aProgramVisitor visitUnaryMessage: self
 ]
 
+{ #category : #accessing }
+GtPharoUnaryMessageNode >> arguments [
+	^ #()
+]
+
 { #category : #testing }
 GtPharoUnaryMessageNode >> isUnary [
 	^ true

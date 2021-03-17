@@ -101,6 +101,11 @@ TGtPharoProgramNodeVisitor >> visitMethodSequence: aMethodSequence [
 ]
 
 { #category : #generated }
+TGtPharoProgramNodeVisitor >> visitNamedVariable: aNamedVariable [
+	^ self visitVariable: aNamedVariable
+]
+
+{ #category : #generated }
 TGtPharoProgramNodeVisitor >> visitNilLiteral: aNilLiteral [
 	^ self visitLiteral: aNilLiteral
 ]
@@ -131,6 +136,11 @@ TGtPharoProgramNodeVisitor >> visitReturn: aReturn [
 ]
 
 { #category : #generated }
+TGtPharoProgramNodeVisitor >> visitSelfVariable: aSelfVariable [
+	^ self visitVariable: aSelfVariable
+]
+
+{ #category : #generated }
 TGtPharoProgramNodeVisitor >> visitSequence: aSequence [
 	^ self visitProgram: aSequence
 ]
@@ -141,8 +151,18 @@ TGtPharoProgramNodeVisitor >> visitStringLiteral: aStringLiteral [
 ]
 
 { #category : #generated }
+TGtPharoProgramNodeVisitor >> visitSuperVariable: aSuperVariable [
+	^ self visitVariable: aSuperVariable
+]
+
+{ #category : #generated }
 TGtPharoProgramNodeVisitor >> visitSymbolLiteral: aSymbolLiteral [
 	^ self visitLiteral: aSymbolLiteral
+]
+
+{ #category : #generated }
+TGtPharoProgramNodeVisitor >> visitThisContextVariable: aThisContextVariable [
+	^ self visitVariable: aThisContextVariable
 ]
 
 { #category : #generated }

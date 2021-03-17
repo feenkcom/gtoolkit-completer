@@ -13,6 +13,11 @@ GtPharoBinaryMessageNode >> acceptVisitor: aProgramVisitor [
 	^ aProgramVisitor visitBinaryMessage: self
 ]
 
+{ #category : #accessing }
+GtPharoBinaryMessageNode >> arguments [
+	^ { self value }
+]
+
 { #category : #testing }
 GtPharoBinaryMessageNode >> isBinary [
 	^ true

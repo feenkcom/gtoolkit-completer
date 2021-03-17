@@ -32,6 +32,11 @@ GtPharoMethodNode >> isMethod [
 	^ true
 ]
 
+{ #category : #accessing }
+GtPharoMethodNode >> methodNode [
+	^ self
+]
+
 { #category : #generated }
 GtPharoMethodNode >> nodeVariables [
 	^ #(#pattern #body)
@@ -49,4 +54,31 @@ GtPharoMethodNode >> pattern: aGtPharoMethodPatternNode [
 	pattern := aGtPharoMethodPatternNode.
 	self pattern notNil
 		ifTrue: [ self pattern parent: self ]
+]
+
+{ #category : #accessing }
+GtPharoMethodNode >> pragmas [
+	^ self body pragmas
+]
+
+{ #category : #accessing }
+GtPharoMethodNode >> selector [
+	"Return a method selector if method pattern parsing was successful or nil otherwise.
+	Consider using #selectorDo: instead, as it does not return nil"
+
+	self selectorDo: [ :aSymbol | ^ aSymbol ].
+	^ nil
+]
+
+{ #category : #accessing }
+GtPharoMethodNode >> selectorDo: aBlock [
+	"Evaluate a block with a parsed method selector if method pattern is not erroneous"
+
+	pattern isErrorNode
+		ifFalse: [ aBlock value: pattern selector ]
+]
+
+{ #category : #accessing }
+GtPharoMethodNode >> variables [
+	^ pattern variables
 ]

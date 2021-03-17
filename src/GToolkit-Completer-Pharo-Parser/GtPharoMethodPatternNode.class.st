@@ -37,10 +37,7 @@ GtPharoMethodPatternNode >> isMethodPattern [
 
 { #category : #accessing }
 GtPharoMethodPatternNode >> selector [
-	^ (String
-		streamContents:
-			[ :stream | self selectorParts do: [ :each | stream nextPutAll: each value ] ])
-		asSymbol
+	^ Symbol streamContents: [ :stream | self selectorParts do: [ :each | stream nextPutAll: each value ] ]
 ]
 
 { #category : #generated }

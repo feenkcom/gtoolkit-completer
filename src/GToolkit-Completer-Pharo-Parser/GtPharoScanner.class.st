@@ -7,7 +7,7 @@ Class {
 { #category : #'generated-initialization' }
 GtPharoScanner class >> initializeKeywordMap [
 	keywordMap := Dictionary new.
-	#(#(4 'false' 2) #(4 'nil' 3) #(4 'true' 1))
+	#(#(4 'false' 2) #(4 'nil' 3) #(4 'self' 33) #(4 'super' 34) #(4 'thisContext' 35) #(4 'true' 1))
 		do: [ :each | 
 			(keywordMap at: each first ifAbsentPut: [ Dictionary new ])
 				at: (each at: 2)
@@ -27,12 +27,12 @@ GtPharoScanner >> binaryId [
 
 { #category : #generated }
 GtPharoScanner >> emptySymbolTokenId [
-	^ 94
+	^ 101
 ]
 
 { #category : #generated }
 GtPharoScanner >> errorTokenId [
-	^ 95
+	^ 102
 ]
 
 { #category : #generated }
