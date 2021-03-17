@@ -64,6 +64,11 @@ GtPharoSequenceNode >> periods: anOrderedCollection [
 	periods := anOrderedCollection
 ]
 
+{ #category : #accessing }
+GtPharoSequenceNode >> pragmas [
+	^ #()
+]
+
 { #category : #generated }
 GtPharoSequenceNode >> rightBar [
 	^ rightBar
