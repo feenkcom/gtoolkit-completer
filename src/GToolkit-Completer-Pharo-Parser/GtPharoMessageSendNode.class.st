@@ -13,6 +13,11 @@ GtPharoMessageSendNode >> acceptVisitor: aProgramVisitor [
 	^ aProgramVisitor visitMessageSend: self
 ]
 
+{ #category : #accessing }
+GtPharoMessageSendNode >> arguments [
+	^ self message arguments
+]
+
 { #category : #testing }
 GtPharoMessageSendNode >> isMessageSend [
 	^ true
