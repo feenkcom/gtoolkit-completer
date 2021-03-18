@@ -153,8 +153,8 @@ GtCompleterExamples >> crLfMessageCompletion [
 	strategy := self smalltalkStrategy.
 	items := strategy
 		completionActionsFor: text
-		at: 9
-		max: 10
+		at: 10
+		max: 11
 		requested: true.
 	self assert: (items anySatisfy: [ :each | each label = 'abs' ]).
 	^ strategy
