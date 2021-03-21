@@ -156,11 +156,13 @@ GtPharoProgramNode >> localVariables [
 
 { #category : #accessing }
 GtPharoProgramNode >> localVariablesInto: aCollection [
+	parent isNil
+		ifTrue: [ ^ self ].
+
 	parent isErrorNode
 		ifTrue: [ ^ self ].
 
-	parent notNil
-		ifTrue: [ parent localVariablesInto: aCollection ]
+	parent localVariablesInto: aCollection
 ]
 
 { #category : #accessing }
