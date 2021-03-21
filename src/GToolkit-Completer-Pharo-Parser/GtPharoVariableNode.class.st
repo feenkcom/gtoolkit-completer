@@ -37,15 +37,14 @@ GtPharoVariableNode >> isThisContext [
 GtPharoVariableNode >> isUndeclared [
 	self isSelf
 		ifTrue: [ ^ false ].
-		
+
 	self isSuper
 		ifTrue: [ ^ false ].
-		
+
 	self isThisContext
 		ifTrue: [ ^ false ].
 
 	^ (self localVariables includes: self variableName) not
-		and: [ (self class environment includesKey: self variableName) not ]
 ]
 
 { #category : #testing }
