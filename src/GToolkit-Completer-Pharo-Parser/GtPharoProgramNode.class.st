@@ -178,3 +178,13 @@ GtPharoProgramNode >> whoDefines: aName [
 			ifNotNil: [ parent whoDefines: aName ]
 			ifNil: [ nil ] ]
 ]
+
+{ #category : #enumerating }
+GtPharoProgramNode >> withAllParentsDo: aBlock [
+	| node |
+	node := self.
+	[ node notNil ]
+		whileTrue: [
+			aBlock value: node.
+			node := node parent ]
+]
