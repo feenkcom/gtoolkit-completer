@@ -406,7 +406,7 @@ GtCompleterExamples >> scripterElement [
 	| anEditor aCompletionController |
 	
 	anEditor := BrEditor new
-		look: BrGlamorousCodeEditorLook new + BrGlamorousTextAreaSpacingLook new;
+		aptitude: BrGlamorousCodeEditorAptitude new + BrGlamorousTextAreaSpacingAptitude new;
 		text: 'ee'.
 	
 	aCompletionController := GtCompletionController on: anEditor strategy: self alphabetStrategy.
