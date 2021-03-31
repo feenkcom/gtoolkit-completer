@@ -390,12 +390,12 @@ GtCompletionController >> newCompletionList [
 	^ BrSimpleList new
 		hMatchParent;
 		vFitContentLimited;
-		lookDo: [ :aListLook | aListLook listElement constraints maxHeight: 200 ];
+		aptitudeDo: [ :aListLook | aListLook listElement constraints maxHeight: 200 ];
 		items: #();
 		itemStencil: [
 			BrLabel new
 				hMatchParent;
-				look: BrGlamorousListLabelLook + BrGlamorousListItemLook ];
+				aptitude: BrGlamorousListLabelAptitude + BrGlamorousListItemAptitude ];
 		itemDataBinder: [ :eachLabel :eachCompletion | eachLabel text: eachCompletion displayString ]
 ]
 
@@ -403,7 +403,7 @@ GtCompletionController >> newCompletionList [
 GtCompletionController >> newPopupElement [
 	^ GtCompletionPopupElement new
 		layout: BlLinearLayout vertical;
-		look: BrShadowLook new;
+		aptitude: BrShadowAptitude new;
 		background: Color white;
 		constraintsDo: [ :c |
 			c vertical fitContentLimited.
