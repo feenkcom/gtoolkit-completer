@@ -828,6 +828,7 @@ GtCompletionController >> undoDrillDown [
 
 { #category : #installation }
 GtCompletionController >> uninstall [
+	self cancelPreview.
 	self uninstallPopupHandlers.
 	self uninstallTextElementFilters.
 	self uninstallTextEditorHandlers
