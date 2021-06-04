@@ -2,6 +2,8 @@
 I am a custom shortcut handler to be used by completion controller.
 
 I only process shortcuts if a completion popup is opened, otherwise I ignore them
+
+
 "
 Class {
 	#name : #GtCompletionShortcutHander,
