@@ -9,7 +9,7 @@ BaselineOfGToolkitCompleter >> baseline: spec [
 	<baseline>
 	spec for: #'common' do: [
 		spec baseline: 'Brick' with: [
-				spec repository: 'github://feenkcom/Brick:main/src' ].
+				spec repository: 'github://feenkcom/Brick:v0.8.369/src' ].
 		spec package: 'GToolkit-Completer' with: [
 				spec requires: #('Brick' ). ]. ].
 
