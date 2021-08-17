@@ -1,16 +1,18 @@
 Class {
-	#name : #BaselineOfGToolkitCompleter,
-	#superclass : #BaselineOf,
-	#category : #BaselineOfGToolkitCompleter
+	#name : 'BaselineOfGToolkitCompleter',
+	#superclass : 'BaselineOf',
+	#category : 'BaselineOfGToolkitCompleter'
 }
 
-{ #category : #baseline }
+{ #category : 'baseline' }
 BaselineOfGToolkitCompleter >> baseline: spec [
 	<baseline>
 	spec for: #'common' do: [
-		spec baseline: 'Brick' with: [
-				spec repository: 'github://feenkcom/Brick:v0.8.371/src' ].
-		spec package: 'GToolkit-Completer' with: [
-				spec requires: #('Brick' ). ]. ].
+		spec
+			baseline: 'Brick' with: [
+				spec repository: 'github://feenkcom/Brick:v0.8.372/src' ].
 
+		spec package: 'GToolkit-Completer' with: [
+			spec requires: #('Brick') ].
+	]
 ]
