@@ -11,8 +11,8 @@
 
 "
 Class {
-	#name : #GtCompletionController,
-	#superclass : #Object,
+	#name : 'GtCompletionController',
+	#superclass : 'Object',
 	#instVars : [
 		'strategy',
 		'completionDelay',
@@ -36,23 +36,23 @@ Class {
 		'MaxPopupItems',
 		'PopupDelay'
 	],
-	#category : #'GToolkit-Completer-UI'
+	#category : 'GToolkit-Completer-UI'
 }
 
-{ #category : #'class initialization' }
+{ #category : 'class initialization' }
 GtCompletionController class >> initialize [
 	PopupDelay := 200 milliSeconds.
 	MaxPopupItems := 100
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 GtCompletionController class >> on: aTextElement [
 	^ self new
 		textElement: aTextElement;
 		yourself
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 GtCompletionController class >> on: aTextElement strategy: aCompletionStrategy [
 	^ self new
 		textElement: aTextElement;
@@ -60,7 +60,7 @@ GtCompletionController class >> on: aTextElement strategy: aCompletionStrategy [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtCompletionController class >> popupDelay [
 	"Return popup delay as ==Duration=="
 	<return: #Duration>
@@ -68,7 +68,7 @@ GtCompletionController class >> popupDelay [
 	^ PopupDelay
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtCompletionController class >> popupDelay: aDuration [
 	self
 		assert: [ aDuration isNumber not ]
@@ -77,7 +77,7 @@ GtCompletionController class >> popupDelay: aDuration [
 	PopupDelay := aDuration
 ]
 
-{ #category : #'private - installation' }
+{ #category : 'private - installation' }
 GtCompletionController >> activeShortcutHandler [
 	| activeShortcutHandler |
 	activeShortcutHandler := GtCompletionShortcutHander new.
@@ -120,7 +120,7 @@ GtCompletionController >> activeShortcutHandler [
 	^ activeShortcutHandler
 ]
 
-{ #category : #'private - popup' }
+{ #category : 'private - popup' }
 GtCompletionController >> addAttachmentAttributeAt: anIndex [
 	| position attributes |
 	position := self popupPosition ifNil: [ anIndex ].
@@ -135,12 +135,12 @@ GtCompletionController >> addAttachmentAttributeAt: anIndex [
 		attributes: attributes
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 GtCompletionController >> announcer [
 	^ announcer ifNil: [ announcer := Announcer new ]
 ]
 
-{ #category : #'private - preview' }
+{ #category : 'private - preview' }
 GtCompletionController >> applyPreview [
 
 	self
@@ -160,7 +160,7 @@ GtCompletionController >> applyPreview [
 				previewAction previewOn: self ] ]
 ]
 
-{ #category : #'private - preview' }
+{ #category : 'private - preview' }
 GtCompletionController >> cancelPreview [
 	previewAction
 		ifNil: [ ^ self ].
@@ -175,17 +175,17 @@ GtCompletionController >> cancelPreview [
 			previewAction := nil ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtCompletionController >> closeOnEmptyCompletion [
 	^ closeOnEmptyCompletion
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtCompletionController >> closeOnEmptyCompletion: aBoolean [
 	closeOnEmptyCompletion := aBoolean
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtCompletionController >> completeWithCursor: aBoolean [
 	self
 		ignoreTextEventsWhile: [ | partial |
@@ -202,19 +202,19 @@ GtCompletionController >> completeWithCursor: aBoolean [
 	self announcer announce: GtCompleterCompletionAccepted new
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 GtCompletionController >> completionActions [
 	<return: #Collection of: #GtCompletionAction>
 
 	^ listElement items
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 GtCompletionController >> completionActions: aCollectionOfGtCompletionAction [
 	listElement items: aCollectionOfGtCompletionAction
 ]
 
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 GtCompletionController >> cursorMoved: anEvent [
 	anEvent newIndex = anEvent oldIndex
 		ifTrue: [ ^ self ].
@@ -222,14 +222,14 @@ GtCompletionController >> cursorMoved: anEvent [
 		ifFalse: [ self removePopup ]
 ]
 
-{ #category : #'private - list selection' }
+{ #category : 'private - list selection' }
 GtCompletionController >> deselectAll [
 	"Deselect all completion actions"
 
 	listElement deselectAll
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtCompletionController >> drillDown [
 	previewAction
 		ifNil: [ ^ self ].
@@ -242,19 +242,19 @@ GtCompletionController >> drillDown [
 			self updatePopupItemsAt: self position autoSelect: true ]
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 GtCompletionController >> hasCompletionActions [
 	^ self completionActions notEmpty and: [ self completionActions size ~= 1 or: [ self completionActions first affectsText ] ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtCompletionController >> ignoreTextEventsWhile: aBlock [
 	self uninstallTextEditorHandlers.
 	aBlock
 		ensure: [ self installTextEditorHandlers ]
 ]
 
-{ #category : #'private - installation' }
+{ #category : 'private - installation' }
 GtCompletionController >> inactiveShortcutHandler [
 	| inactiveShortcutHandler |
 	inactiveShortcutHandler := GtCompletionShortcutHander new.
@@ -291,7 +291,7 @@ GtCompletionController >> inactiveShortcutHandler [
 	^ inactiveShortcutHandler
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 GtCompletionController >> initialize [
 	super initialize.
 
@@ -317,19 +317,19 @@ GtCompletionController >> initialize [
 	attribute := GtCompletionAttachmentAttribute for: self
 ]
 
-{ #category : #installation }
+{ #category : 'installation' }
 GtCompletionController >> install [
 	self installTextEditorHandlers.
 	self installTextElementFilters.
 	self installPopupHandlers
 ]
 
-{ #category : #'private - installation' }
+{ #category : 'private - installation' }
 GtCompletionController >> installPopupHandlers [
 	self popupHandlers do: [ :each | listElement addEventHandler: each ]
 ]
 
-{ #category : #'private - installation' }
+{ #category : 'private - installation' }
 GtCompletionController >> installTextEditorHandlers [
 	self textEditorHandlers
 		do: [ :each |
@@ -337,13 +337,13 @@ GtCompletionController >> installTextEditorHandlers [
 				ifFalse: [ self textEditor addEventHandler: each ] ]
 ]
 
-{ #category : #'private - installation' }
+{ #category : 'private - installation' }
 GtCompletionController >> installTextElementFilters [
 	self textElementFilters
 		do: [ :each | textElement addEventFilter: each ]
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 GtCompletionController >> isActive [
 	"Return true if completion is active. For example if a popup is shown to the user
 	or if we are in argument completion mode (Tab/shift+tab navigation between arguments)"
@@ -351,7 +351,7 @@ GtCompletionController >> isActive [
 	^ self isShowingPopup
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 GtCompletionController >> isAtStartOfLine [
 	| text position char aCursor |
 	text := self text.
@@ -364,7 +364,7 @@ GtCompletionController >> isAtStartOfLine [
 	^ position <= 0
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 GtCompletionController >> isShowingPopup [
 	"Return true if the popup is currently visible to the user (attached to the scene graph)"
 	<return: #Boolean>
@@ -372,12 +372,12 @@ GtCompletionController >> isShowingPopup [
 	^ overlay isAttachedToSceneGraph
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 GtCompletionController >> isUncompletedAt: position [
 	^ (self text attributesAt: position) anySatisfy: [ :each | each isKindOf: GtCompletionPartAttribute ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtCompletionController >> moveCursorToNextUncompletedItem: direction [
 	^ (self nextUncompletedItem: direction)
 		ifNil: [ false ]
@@ -386,7 +386,7 @@ GtCompletionController >> moveCursorToNextUncompletedItem: direction [
 			true ]
 ]
 
-{ #category : #'private - instance creation' }
+{ #category : 'private - instance creation' }
 GtCompletionController >> newCompletionList [
 	<return: #BrSimpleList>
 
@@ -402,7 +402,7 @@ GtCompletionController >> newCompletionList [
 		itemDataBinder: [ :eachLabel :eachCompletion | eachLabel text: eachCompletion displayString ]
 ]
 
-{ #category : #'private - instance creation' }
+{ #category : 'private - instance creation' }
 GtCompletionController >> newPopupElement [
 	^ GtCompletionPopupElement new
 		layout: BlLinearLayout vertical;
@@ -413,7 +413,7 @@ GtCompletionController >> newPopupElement [
 			c horizontal exact: 200 ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtCompletionController >> nextUncompletedItem: direction [
 	| text position originalPosition aCursor |
 	text := self text.
@@ -439,13 +439,13 @@ GtCompletionController >> nextUncompletedItem: direction [
 	^ nil
 ]
 
-{ #category : #'private - cursor' }
+{ #category : 'private - cursor' }
 GtCompletionController >> onAttached: anElement [
 	overlay attachTo: anElement.
 	overlay visibility: BlVisibility visible
 ]
 
-{ #category : #'private - list selection' }
+{ #category : 'private - list selection' }
 GtCompletionController >> onSelectionChanged: anEvent [
 	anEvent sourceEvent
 		ifNil: [
@@ -460,7 +460,7 @@ GtCompletionController >> onSelectionChanged: anEvent [
 					textElement requestFocus ] ]
 ]
 
-{ #category : #'private - installation' }
+{ #category : 'private - installation' }
 GtCompletionController >> popupHandlers [
 	^ popupHandlers
 		ifNil: [ popupHandlers := {(BlEventHandler
@@ -471,19 +471,19 @@ GtCompletionController >> popupHandlers [
 				do: [ :event | self removePopupOnLostFocus ])} ]
 ]
 
-{ #category : #'private - popup' }
+{ #category : 'private - popup' }
 GtCompletionController >> popupPosition [
 	self completionActions
 		do: [ :each | each searchStartPosition ifNotNil: [ :pos | ^ pos ] ].
 	^ nil
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtCompletionController >> position [
 	^ self textEditor cursors first position
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtCompletionController >> primaryLetterKeyCombinations [
 	| letters |
 	letters := ($a asInteger to: $z asInteger)
@@ -496,13 +496,13 @@ GtCompletionController >> primaryLetterKeyCombinations [
 				collect: [ :each | BlKeyCombination builder primary build with: each ])
 ]
 
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 GtCompletionController >> processReturnKey: anEvent [
 	self completeWithCursor: true.
 	anEvent consumed: true
 ]
 
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 GtCompletionController >> processTabKey: forwardBoolean [
 	| direction |
 	self isShowingPopup
@@ -516,12 +516,12 @@ GtCompletionController >> processTabKey: forwardBoolean [
 	^ false
 ]
 
-{ #category : #'private - popup' }
+{ #category : 'private - popup' }
 GtCompletionController >> removeAttachmentAttribute [
 	self textEditor text clearAttributes: [ :each | each == attribute ]
 ]
 
-{ #category : #'private - popup' }
+{ #category : 'private - popup' }
 GtCompletionController >> removePopup [
 	self cancelPreview.
 	self terminatePopupDelay.
@@ -531,7 +531,7 @@ GtCompletionController >> removePopup [
 	self removeAttachmentAttribute
 ]
 
-{ #category : #'private - popup' }
+{ #category : 'private - popup' }
 GtCompletionController >> removePopupOnAnchorRemoved [
 	textElementRemovedDelay
 		action: [
@@ -541,7 +541,7 @@ GtCompletionController >> removePopupOnAnchorRemoved [
 	textElementRemovedDelay startOrRestart
 ]
 
-{ #category : #'private - popup' }
+{ #category : 'private - popup' }
 GtCompletionController >> removePopupOnLostFocus [
 	lostFocusDelay
 		action: [ (textElement hasFocus or: [ listElement hasFocus ])
@@ -549,7 +549,7 @@ GtCompletionController >> removePopupOnLostFocus [
 	lostFocusDelay startOrRestart
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtCompletionController >> removeUncompletedAttributeAt: anInteger [
 	| text position |
 	text := self text.
@@ -558,56 +558,56 @@ GtCompletionController >> removeUncompletedAttributeAt: anInteger [
 	(text from: anInteger to: position - 1) clearAttributes: [ :each | each isKindOf: GtCompletionPartAttribute ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtCompletionController >> resetActions [
 	previewAction := nil.
 	drillDownActions := OrderedCollection new
 ]
 
-{ #category : #'private - list selection' }
+{ #category : 'private - list selection' }
 GtCompletionController >> scrollTo: anIndex [
 	self flag: 'Implement corresponding list api'.
 
 	listElement children first scrollToPosition: anIndex
 ]
 
-{ #category : #'private - list selection' }
+{ #category : 'private - list selection' }
 GtCompletionController >> scrollToSelected [
 	self selectedCompletionIndexDo: [ :anIndex | self scrollTo: anIndex ]
 ]
 
-{ #category : #'private - list selection' }
+{ #category : 'private - list selection' }
 GtCompletionController >> selectAction: aCompletionAction [
 	"Select the given completion action deselecting the other ones"
 
 	self selectAt: (self completionActions indexOf: aCompletionAction ifAbsent: [ ^ self deselectAll ])
 ]
 
-{ #category : #'private - list selection' }
+{ #category : 'private - list selection' }
 GtCompletionController >> selectAt: anIndex [
 	"Select a completion action at a given index deselecting all other ones"
 
 	listElement selectOne: anIndex
 ]
 
-{ #category : #'private - list selection' }
+{ #category : 'private - list selection' }
 GtCompletionController >> selectFirst [
 	"Select the first completion action deselecting the other ones"
 
 	self selectAt: 1
 ]
 
-{ #category : #'private - list selection' }
+{ #category : 'private - list selection' }
 GtCompletionController >> selectNextItem [
 	listElement selectNext
 ]
 
-{ #category : #'private - list selection' }
+{ #category : 'private - list selection' }
 GtCompletionController >> selectPreviousItem [
 	listElement selectPrevious
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtCompletionController >> selectUncompletedAt: position [
 	| first last size |
 	first := position - 1.
@@ -623,7 +623,7 @@ GtCompletionController >> selectUncompletedAt: position [
 		select
 ]
 
-{ #category : #'private - list selection' }
+{ #category : 'private - list selection' }
 GtCompletionController >> selectedCompletionIndexDo: aBlock [
 	"Evaluate a given block with the current selection index if there is one"
 	
@@ -631,7 +631,7 @@ GtCompletionController >> selectedCompletionIndexDo: aBlock [
 		ifNotEmpty: [ :theIndices | aBlock value: theIndices first ]
 ]
 
-{ #category : #'private - list selection' }
+{ #category : 'private - list selection' }
 GtCompletionController >> selectedCompletionItemDo: aBlock [
 	"Evaluate a given block with the currently selected completion item if there is one"
 	
@@ -639,17 +639,17 @@ GtCompletionController >> selectedCompletionItemDo: aBlock [
 		aBlock value: (self completionActions at: anIndex) ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtCompletionController >> showOnTextModification [
 	^ showOnTextModification
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtCompletionController >> showOnTextModification: aBoolean [
 	showOnTextModification := aBoolean
 ]
 
-{ #category : #'private - popup' }
+{ #category : 'private - popup' }
 GtCompletionController >> showPopupAt: anIndex [
 	"Show the completion popup selecting the first relevant completion item"
 	
@@ -680,7 +680,7 @@ GtCompletionController >> showPopupAt: anIndex [
 	textElement space root addChild: overlay
 ]
 
-{ #category : #'private - preview' }
+{ #category : 'private - preview' }
 GtCompletionController >> showPreview [
 	"Show completion preview for a currently selected action or remove
 	the existing preview if none is selected"
@@ -689,7 +689,7 @@ GtCompletionController >> showPreview [
 	self applyPreview
 ]
 
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 GtCompletionController >> startCompletion [
 	| location |
 	self textEditor cursors cursorsCount = 1
@@ -699,7 +699,7 @@ GtCompletionController >> startCompletion [
 	self showPopupAt: location
 ]
 
-{ #category : #'private - popup' }
+{ #category : 'private - popup' }
 GtCompletionController >> startCompletionAt: aTextIndex [
 	self terminatePopupDelay.
 
@@ -720,7 +720,7 @@ GtCompletionController >> startCompletionAt: aTextIndex [
 	^ true
 ]
 
-{ #category : #'private - popup' }
+{ #category : 'private - popup' }
 GtCompletionController >> startPopupDelayAt: anIndex [
 	"Completion delay must already have element: attached,
 	see ${method:GtCompletionController>>#textElement:}$"
@@ -729,12 +729,12 @@ GtCompletionController >> startPopupDelayAt: anIndex [
 	completionDelay startOrRestart
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 GtCompletionController >> strategy: aCompletionStrategy [
 	strategy := aCompletionStrategy
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtCompletionController >> strategyAt: anIndex [
 	| result |
 	result := strategy.
@@ -745,33 +745,33 @@ GtCompletionController >> strategyAt: anIndex [
 	^ result
 ]
 
-{ #category : #'private - popup' }
+{ #category : 'private - popup' }
 GtCompletionController >> terminatePopupDelay [
 	completionDelay stop
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 GtCompletionController >> text [
 	<return: #BlText>
 
 	^ self textEditor text
 ]
 
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 GtCompletionController >> textDeleted: anEvent [
 	self terminatePopupDelay.
 	self isShowingPopup
 		ifTrue: [ self startCompletionAt: anEvent fromIndex - 1 ]
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 GtCompletionController >> textEditor [
 	<return: #BrTextEditor>
 
 	^ textElement editor
 ]
 
-{ #category : #'private - installation' }
+{ #category : 'private - installation' }
 GtCompletionController >> textEditorHandlers [
 	^ textEditorHandlers
 		ifNil: [ textEditorHandlers := {(BlEventHandler
@@ -785,7 +785,7 @@ GtCompletionController >> textEditorHandlers [
 				do: [ :event | self cursorMoved: event ])} ]
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 GtCompletionController >> textElement: anEditorElement [
 	textElement := anEditorElement.
 
@@ -794,7 +794,7 @@ GtCompletionController >> textElement: anEditorElement [
 	textElementRemovedDelay element: textElement.
 ]
 
-{ #category : #'private - installation' }
+{ #category : 'private - installation' }
 GtCompletionController >> textElementFilters [
 	^ textElementFilters
 		ifNil: [ textElementFilters := {self activeShortcutHandler.
@@ -804,7 +804,7 @@ GtCompletionController >> textElementFilters [
 				do: [ :event | self removePopupOnLostFocus ])} ]
 ]
 
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 GtCompletionController >> textInserted: anEvent [
 	(self showOnTextModification or: [ self isShowingPopup ])
 		ifFalse: [ ^ self ].
@@ -812,7 +812,7 @@ GtCompletionController >> textInserted: anEvent [
 	self startCompletionAt: anEvent index + anEvent text size
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtCompletionController >> undoDrillDown [
 	drillDownActions isEmpty
 		ifTrue: [ ^ false ].
@@ -829,7 +829,7 @@ GtCompletionController >> undoDrillDown [
 			self showPreview ]
 ]
 
-{ #category : #installation }
+{ #category : 'installation' }
 GtCompletionController >> uninstall [
 	self cancelPreview.
 	self uninstallPopupHandlers.
@@ -837,31 +837,34 @@ GtCompletionController >> uninstall [
 	self uninstallTextEditorHandlers
 ]
 
-{ #category : #'private - installation' }
+{ #category : 'private - installation' }
 GtCompletionController >> uninstallPopupHandlers [
 	self popupHandlers
 		do: [ :each | listElement removeEventHandler: each ]
 ]
 
-{ #category : #'private - installation' }
+{ #category : 'private - installation' }
 GtCompletionController >> uninstallTextEditorHandlers [
 	self textEditorHandlers
 		do: [ :each | self textEditor removeEventHandler: each ]
 ]
 
-{ #category : #'private - installation' }
+{ #category : 'private - installation' }
 GtCompletionController >> uninstallTextElementFilters [
 	self textElementFilters
 		do: [ :each | textElement removeEventFilter: each ]
 ]
 
-{ #category : #'private - popup' }
+{ #category : 'private - popup' }
 GtCompletionController >> updatePopupItemsAt: anIndex autoSelect: shouldSelectFirst [
 	| theActions |
-
-	theActions := [ (self strategyAt: anIndex) completionActionsFor: self text at: anIndex max: MaxPopupItems requested: showRequested ]
-		on: Error
-		do: [ :ex | ex return: #() ].
+	
+	theActions := textElement telemetry
+		timeSync: 'Completion actions'
+		during: [
+			[ (self strategyAt: anIndex) completionActionsFor: self text at: anIndex max: MaxPopupItems requested: showRequested ]
+			on: Error
+			do: [ :ex | ex return: #() ] ].
 		
 	(closeOnEmptyCompletion and: [ showRequested not ])
 		ifTrue: [ (theActions anySatisfy: [ :each | each isEmpty ])

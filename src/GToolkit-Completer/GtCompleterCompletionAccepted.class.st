@@ -4,7 +4,7 @@ I indicate that an entry for from the completion dialog was accepted and inserte
 
 "
 Class {
-	#name : #GtCompleterCompletionAccepted,
-	#superclass : #Announcement,
-	#category : #'GToolkit-Completer-UI'
+	#name : 'GtCompleterCompletionAccepted',
+	#superclass : 'Announcement',
+	#category : 'GToolkit-Completer-UI'
 }

@@ -1,48 +1,48 @@
 Class {
-	#name : #GtPrefixTree,
-	#superclass : #Collection,
+	#name : 'GtPrefixTree',
+	#superclass : 'Collection',
 	#instVars : [
 		'prefix',
 		'weight',
 		'children',
 		'maxWeight'
 	],
-	#category : #'GToolkit-Completer'
+	#category : 'GToolkit-Completer'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 GtPrefixTree class >> new: anInteger [
 	^ self new
 ]
 
-{ #category : #adding }
+{ #category : 'adding' }
 GtPrefixTree >> add: aString [
 	self add: aString weight: 1
 ]
 
-{ #category : #adding }
+{ #category : 'adding' }
 GtPrefixTree >> add: aString weight: aNumber [
 	self privateAdd: aString weight: aNumber startIndex: 1
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> children [
 	^ children
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> children: anObject [
 	children := anObject
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> childrenDo: aBlock [
 	children isNil
 		ifTrue: [ ^ self ].
 	children do: aBlock
 ]
 
-{ #category : #enumerating }
+{ #category : 'enumerating' }
 GtPrefixTree >> collect: aBlock [
 	| result |
 	result := OrderedCollection new.
@@ -50,29 +50,29 @@ GtPrefixTree >> collect: aBlock [
 	^ result
 ]
 
-{ #category : #iterating }
+{ #category : 'iterating' }
 GtPrefixTree >> do: aBlock [
 	self privateDo: aBlock withPrefix: ''
 ]
 
-{ #category : #iterating }
+{ #category : 'iterating' }
 GtPrefixTree >> do: aBlock startingWith: aString [
 	self nodeFor: aString startingAt: 1 do: [ :node :nodePrefix | node privateDo: aBlock withPrefix: nodePrefix ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> ensureChildren [
 	children isNil
 		ifTrue: [ children := SortedCollection new: 2.
 			children sortBlock: [ :a :b | a prefix < b prefix ] ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtPrefixTree >> first: anInteger [
 	^ self first: anInteger startingWith: ''
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtPrefixTree >> first: anInteger startingWith: aString [
 	"Return the first anInteger (or less) items starting with aString"
 
@@ -87,7 +87,7 @@ GtPrefixTree >> first: anInteger startingWith: aString [
 	^ items
 ]
 
-{ #category : #ui }
+{ #category : 'ui' }
 GtPrefixTree >> gtViewChildrenFor: aView [
 	<gtView>
 	^ aView columnedTree
@@ -98,39 +98,39 @@ GtPrefixTree >> gtViewChildrenFor: aView [
 		column: 'Tree' item: [ :aPrefixTree | aPrefixTree ]
 ]
 
-{ #category : #'private-testing' }
+{ #category : 'private-testing' }
 GtPrefixTree >> hasChildren [
 	^ children notNil and: [ children notEmpty ]
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 GtPrefixTree >> includes: aString [
 	^ self privateIncludes: aString startingAt: 1
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 GtPrefixTree >> initialize [
 	super initialize.
 	prefix := ''.
 	weight := maxWeight := 0
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 GtPrefixTree >> isEmpty [
 	^ maxWeight = 0
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> maxWeight [
 	^ maxWeight
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> maxWeight: anObject [
 	^ maxWeight := anObject
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> nodeFor: aString startingAt: anIndex do: aBlock [
 	| nextIndex |
 	anIndex > aString size
@@ -150,19 +150,19 @@ GtPrefixTree >> nodeFor: aString startingAt: anIndex do: aBlock [
 	^ self
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> prefix [
 	^ prefix
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> prefix: aString [
 	prefix := aString size <= 2
 		ifTrue: [ aString asSymbol ]
 		ifFalse: [ aString ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> privateAdd: aString weight: aNumber startIndex: anInteger [
 	| aStringIndex myIndex |
 	myIndex := 1.
@@ -177,7 +177,7 @@ GtPrefixTree >> privateAdd: aString weight: aNumber startIndex: anInteger [
 	true ] whileTrue
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> privateAddChild: aString weight: aNumber startIndex: anIndex [
 	| char node |
 	anIndex > aString size
@@ -198,7 +198,7 @@ GtPrefixTree >> privateAddChild: aString weight: aNumber startIndex: anIndex [
 	maxWeight := maxWeight max: node maxWeight
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> privateDo: aBlock withPrefix: aString [
 	| label |
 	label := aString , prefix.
@@ -207,7 +207,7 @@ GtPrefixTree >> privateDo: aBlock withPrefix: aString [
 	self childrenDo: [ :each | each privateDo: aBlock withPrefix: label ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> privateIncludes: aString startingAt: anIndex [
 	| nextIndex |
 	prefix size > (aString size - anIndex + 1)
@@ -225,7 +225,7 @@ GtPrefixTree >> privateIncludes: aString startingAt: anIndex [
 	^ false
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> privateRemove: aString weight: aNumber startIndex: anInteger [
 	| nextIndex char child |
 	nextIndex := anInteger + prefix size.
@@ -247,7 +247,7 @@ GtPrefixTree >> privateRemove: aString weight: aNumber startIndex: anInteger [
 				ifTrue: [ children remove: child ] ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> privateWeightedDo: aBlock withPrefix: aString [
 	| weighted maxWeighted |
 	weighted := Heap sortBlock: [ :a :b | a first weight > b first weight or: [ a first weight = b first weight and: [ a last < b last ] ] ].
@@ -277,27 +277,27 @@ GtPrefixTree >> privateWeightedDo: aBlock withPrefix: aString [
 			aBlock cull: item last cull: item first weight ]
 ]
 
-{ #category : #removing }
+{ #category : 'removing' }
 GtPrefixTree >> remove: aString [
 	"Unlike normal collections, we don't throw an error if we remove something that isn't in the tree."
 
 	^ self remove: aString weight: 1
 ]
 
-{ #category : #removing }
+{ #category : 'removing' }
 GtPrefixTree >> remove: aString ifAbsent: aBlock [
 	^ (self includes: aString)
 		ifTrue: [ self remove: aString ]
 		ifFalse: [ aBlock value ]
 ]
 
-{ #category : #removing }
+{ #category : 'removing' }
 GtPrefixTree >> remove: aString weight: aNumber [
 	self privateRemove: aString weight: aNumber startIndex: 1.
 	^ aString
 ]
 
-{ #category : #enumerating }
+{ #category : 'enumerating' }
 GtPrefixTree >> select: aBlock [
 	| result |
 	result := self copyEmpty.
@@ -308,7 +308,7 @@ GtPrefixTree >> select: aBlock [
 	^ result
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtPrefixTree >> size [
 	| count |
 	count := 0.
@@ -316,7 +316,7 @@ GtPrefixTree >> size [
 	^ count
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> splitAt: anInteger [
 	| newChild |
 	newChild := self class new.
@@ -331,24 +331,24 @@ GtPrefixTree >> splitAt: anInteger [
 	children add: newChild
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> updateMaxWeight [
 	maxWeight := weight.
 	self childrenDo: [ :each | maxWeight := maxWeight max: each maxWeight ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> weight [
 	^ weight
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtPrefixTree >> weight: aNumber [
 	weight := aNumber.
 	maxWeight := maxWeight max: weight
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtPrefixTree >> weightOf: aString [
 	self
 		weightedDo: [ :each :value | 
@@ -358,22 +358,22 @@ GtPrefixTree >> weightOf: aString [
 	^ 0
 ]
 
-{ #category : #iterating }
+{ #category : 'iterating' }
 GtPrefixTree >> weightedDo: aBlock [
 	self privateWeightedDo: aBlock withPrefix: ''
 ]
 
-{ #category : #iterating }
+{ #category : 'iterating' }
 GtPrefixTree >> weightedDo: aBlock startingWith: aString [
 	self privateWeightedDo: aBlock withPrefix: aString
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtPrefixTree >> weightedFirst: anInteger [
 	^ self weightedFirst: anInteger startingWith: ''
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtPrefixTree >> weightedFirst: anInteger startingWith: aString [
 	"Return the first anInteger (or less) items starting with aString -- order by largest weight first"
 

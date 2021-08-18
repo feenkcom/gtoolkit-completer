@@ -1,15 +1,15 @@
 Class {
-	#name : #GtInsertTextCompletionAction,
-	#superclass : #GtCompletionAction,
+	#name : 'GtInsertTextCompletionAction',
+	#superclass : 'GtCompletionAction',
 	#instVars : [
 		'text',
 		'position',
 		'searchStartPosition'
 	],
-	#category : #'GToolkit-Completer-Actions'
+	#category : 'GToolkit-Completer-Actions'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 GtInsertTextCompletionAction class >> labeled: aString completion: completionString position: anInteger [
 	^ self
 		labeled: aString
@@ -18,7 +18,7 @@ GtInsertTextCompletionAction class >> labeled: aString completion: completionStr
 		from: anInteger - aString size + completionString size + 1
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 GtInsertTextCompletionAction class >> labeled: aString completion: completionString position: anInteger from: searchStartInteger [
 	^ (self labeled: aString)
 		text: completionString;
@@ -27,28 +27,28 @@ GtInsertTextCompletionAction class >> labeled: aString completion: completionStr
 		yourself
 ]
 
-{ #category : #comparing }
+{ #category : 'comparing' }
 GtInsertTextCompletionAction >> = anObject [
 	^ super = anObject and: [ self text = anObject text and: [ self position = anObject position ] ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtInsertTextCompletionAction >> addPreviewAttributeForText: aString at: anInteger on: aCompletionController [
 	(aCompletionController text from: (anInteger max: 1) to: anInteger)
 		attributes: { (GtPreviewCompletionAttribute for: aString) }
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 GtInsertTextCompletionAction >> affectsText [
 	^ super affectsText or: [ text notEmpty ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtInsertTextCompletionAction >> clearPreviewAttributesOn: aCompletionController [
 	aCompletionController text clearAttributes: [ :attr | attr class = GtPreviewCompletionAttribute ]
 ]
 
-{ #category : #executing }
+{ #category : 'executing' }
 GtInsertTextCompletionAction >> finishCompletionOn: aCompletionController moveCursor: aBoolean [
 	self clearPreviewAttributesOn: aCompletionController.
 	self insert: text at: position on: aCompletionController.
@@ -57,12 +57,12 @@ GtInsertTextCompletionAction >> finishCompletionOn: aCompletionController moveCu
 	self moveCursorOn: aCompletionController
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtInsertTextCompletionAction >> fromIndex [
 	^ searchStartPosition
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 GtInsertTextCompletionAction >> gtDisplayOn: aStream [
 	super printOn: aStream.
 	aStream 
@@ -73,78 +73,78 @@ GtInsertTextCompletionAction >> gtDisplayOn: aStream [
 		nextPut: $).
 ]
 
-{ #category : #comparing }
+{ #category : 'comparing' }
 GtInsertTextCompletionAction >> hash [
 	^ super hash bitXor: (text hash bitXor: position hash)
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 GtInsertTextCompletionAction >> isEmpty [
 	^ text isEmpty
 ]
 
-{ #category : #executing }
+{ #category : 'executing' }
 GtInsertTextCompletionAction >> moveCursorOn: aCompletionController [
 	aCompletionController textEditor moveCursorTo: position + text size
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtInsertTextCompletionAction >> position [
 	^ position
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 GtInsertTextCompletionAction >> position: anInteger [
 	position := anInteger
 ]
 
-{ #category : #executing }
+{ #category : 'executing' }
 GtInsertTextCompletionAction >> previewOn: aCompletionController [
 	text isEmpty
 		ifTrue: [ ^ self ].
 	self addPreviewAttributeForText: text at: position on: aCompletionController
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtInsertTextCompletionAction >> searchStartPosition [
 	^ searchStartPosition
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 GtInsertTextCompletionAction >> searchStartPosition: anInteger [
 	searchStartPosition := anInteger
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtInsertTextCompletionAction >> text [
 	^ text
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 GtInsertTextCompletionAction >> text: aString [
 	text := aString
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtInsertTextCompletionAction >> toIndex [
 	^ position + text size
 ]
 
-{ #category : #translating }
+{ #category : 'translating' }
 GtInsertTextCompletionAction >> translateBy: anIndex [
 	super translateBy: anIndex.
 	position := position + anIndex.
 	searchStartPosition := searchStartPosition + anIndex
 ]
 
-{ #category : #executing }
+{ #category : 'executing' }
 GtInsertTextCompletionAction >> undoDrillDownOn: aCompletionController [
 	text isEmpty
 		ifFalse: [ self delete: position to: position + text size on: aCompletionController ].
 	aCompletionController textEditor moveCursorTo: position
 ]
 
-{ #category : #executing }
+{ #category : 'executing' }
 GtInsertTextCompletionAction >> undoPreviewOn: aCompletionController [
 	self clearPreviewAttributesOn: aCompletionController
 ]

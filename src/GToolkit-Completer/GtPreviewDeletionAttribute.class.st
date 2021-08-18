@@ -1,10 +1,10 @@
 Class {
-	#name : #GtPreviewDeletionAttribute,
-	#superclass : #BlTextAttribute,
-	#category : #'GToolkit-Completer'
+	#name : 'GtPreviewDeletionAttribute',
+	#superclass : 'BlTextAttribute',
+	#category : 'GToolkit-Completer'
 }
 
-{ #category : #drawing }
+{ #category : 'drawing' }
 GtPreviewDeletionAttribute >> drawAboveOnSpartaCanvas: aSpartaCanvas with: aSpartaSpan [
 	aSpartaCanvas stroke
 		paint: self paint;
@@ -16,7 +16,7 @@ GtPreviewDeletionAttribute >> drawAboveOnSpartaCanvas: aSpartaCanvas with: aSpar
 		draw
 ]
 
-{ #category : #drawing }
+{ #category : 'drawing' }
 GtPreviewDeletionAttribute >> paint [
 	^ Color red
 ]
