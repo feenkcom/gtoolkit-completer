@@ -1,13 +1,13 @@
 Class {
-	#name : #GtPreviewCompletionAttribute,
-	#superclass : #BrTextAdornmentAttribute,
+	#name : 'GtPreviewCompletionAttribute',
+	#superclass : 'BrTextAdornmentAttribute',
 	#instVars : [
 		'string'
 	],
-	#category : #'GToolkit-Completer'
+	#category : 'GToolkit-Completer'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 GtPreviewCompletionAttribute class >> for: aString [
 	^ self new
 		for: aString;
@@ -16,7 +16,7 @@ GtPreviewCompletionAttribute class >> for: aString [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtPreviewCompletionAttribute >> affect: aTBrTextEditorTextualPiece in: anEditorElement [
 	| text attributes textElement |
 	text := string asRopedText.
@@ -35,7 +35,7 @@ GtPreviewCompletionAttribute >> affect: aTBrTextEditorTextualPiece in: anEditorE
 	^ textElement
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 GtPreviewCompletionAttribute >> for: aString [
 	string := aString
 ]

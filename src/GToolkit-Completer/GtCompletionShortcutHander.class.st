@@ -6,39 +6,39 @@ I only process shortcuts if a completion popup is opened, otherwise I ignore the
 
 "
 Class {
-	#name : #GtCompletionShortcutHander,
-	#superclass : #BlShortcutHandlerWithShortcuts,
+	#name : 'GtCompletionShortcutHander',
+	#superclass : 'BlShortcutHandlerWithShortcuts',
 	#instVars : [
 		'completionController',
 		'consumeEvent',
 		'whenActive'
 	],
-	#category : #'GToolkit-Completer-UI'
+	#category : 'GToolkit-Completer-UI'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtCompletionShortcutHander >> completionController [
 	<return: #GtCompletionController>
 
 	^ completionController
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtCompletionShortcutHander >> completionController: aCompletionController [
 	completionController := aCompletionController
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtCompletionShortcutHander >> consumeEvent [
 	^ consumeEvent
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtCompletionShortcutHander >> consumeEvent: aBoolean [
 	consumeEvent := aBoolean
 ]
 
-{ #category : #'api - event managing' }
+{ #category : 'api - event managing' }
 GtCompletionShortcutHander >> handleEvent: anEvent [
 	consumeEvent := true.
 	super handleEvent: anEvent.
@@ -46,24 +46,24 @@ GtCompletionShortcutHander >> handleEvent: anEvent [
 		ifFalse: [ anEvent consumed: false ]
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 GtCompletionShortcutHander >> initialize [
 	super initialize.
 	whenActive := true
 ]
 
-{ #category : #'api - event managing' }
+{ #category : 'api - event managing' }
 GtCompletionShortcutHander >> wantsEvent: anEvent [
 	^ self completionController isActive = whenActive
 		and: [ super wantsEvent: anEvent ]
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 GtCompletionShortcutHander >> whenActive [
 	whenActive := true
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 GtCompletionShortcutHander >> whenInactive [
 	whenActive := false
 ]

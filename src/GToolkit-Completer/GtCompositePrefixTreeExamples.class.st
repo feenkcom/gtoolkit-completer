@@ -1,10 +1,10 @@
 Class {
-	#name : #GtCompositePrefixTreeExamples,
-	#superclass : #Object,
-	#category : #'GToolkit-Completer-Examples'
+	#name : 'GtCompositePrefixTreeExamples',
+	#superclass : 'Object',
+	#category : 'GToolkit-Completer-Examples'
 }
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtCompositePrefixTreeExamples >> compositeTree [
 	<gtExample>
 	| composite |
@@ -16,7 +16,7 @@ GtCompositePrefixTreeExamples >> compositeTree [
 	^ composite
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtCompositePrefixTreeExamples >> firstTen [
 	<gtExample>
 	| composite |
@@ -28,7 +28,7 @@ GtCompositePrefixTreeExamples >> firstTen [
 	^ composite
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtCompositePrefixTreeExamples >> oneToFifty [
 	<gtExample>
 	| tree |
@@ -38,7 +38,7 @@ GtCompositePrefixTreeExamples >> oneToFifty [
 	^ tree
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtCompositePrefixTreeExamples >> oneToFiftyByTwo [
 	<gtExample>
 	| tree |
@@ -48,7 +48,7 @@ GtCompositePrefixTreeExamples >> oneToFiftyByTwo [
 	^ tree
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtCompositePrefixTreeExamples >> weightedFirstTen [
 	<gtExample>
 	| composite |

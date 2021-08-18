@@ -1,43 +1,43 @@
 Class {
-	#name : #GtCompletionPopupListener,
-	#superclass : #BlCustomEventHandler,
+	#name : 'GtCompletionPopupListener',
+	#superclass : 'BlCustomEventHandler',
 	#instVars : [
 		'overlayElement',
 		'attachmentsCount'
 	],
-	#category : #'GToolkit-Completer-UI'
+	#category : 'GToolkit-Completer-UI'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 GtCompletionPopupListener class >> for: anOverlayElement [
 	^ self basicNew
 		initialize;
 		overlayElement: anOverlayElement
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 GtCompletionPopupListener class >> new [
 	self error: 'Do not create an instance of ', self name, ' using new. Please use #for: instead'
 ]
 
-{ #category : #'element handlers' }
+{ #category : 'element handlers' }
 GtCompletionPopupListener >> elementPositionInSpaceChangedEvent: anEvent [
 	self relocateTo: anEvent currentTarget
 ]
 
-{ #category : #'api - accessing' }
+{ #category : 'api - accessing' }
 GtCompletionPopupListener >> eventsToHandle [
 	^ { BlElementPositionInSpaceChangedEvent }
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 GtCompletionPopupListener >> initialize [
 	super initialize.
 	
 	attachmentsCount := 0
 ]
 
-{ #category : #'api - hooks' }
+{ #category : 'api - hooks' }
 GtCompletionPopupListener >> onInstalledIn: anElement [
 	self
 		assert: [ attachmentsCount isZero ]
@@ -48,7 +48,7 @@ GtCompletionPopupListener >> onInstalledIn: anElement [
 	self relocateTo: anElement
 ]
 
-{ #category : #'api - hooks' }
+{ #category : 'api - hooks' }
 GtCompletionPopupListener >> onUninstalledIn: anObject [
 	
 	self
@@ -58,14 +58,14 @@ GtCompletionPopupListener >> onUninstalledIn: anObject [
 	attachmentsCount := attachmentsCount - 1
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtCompletionPopupListener >> overlayElement [
 	<return: #BlOverlayElement>
 
 	^ overlayElement
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtCompletionPopupListener >> overlayElement: anOverlayElement [
 
 	self
@@ -75,7 +75,7 @@ GtCompletionPopupListener >> overlayElement: anOverlayElement [
 	overlayElement := anOverlayElement
 ]
 
-{ #category : #geometry }
+{ #category : 'geometry' }
 GtCompletionPopupListener >> positionFor: anElement [
 	<return: #Point>
 	| boundsInSpace |
@@ -88,7 +88,7 @@ GtCompletionPopupListener >> positionFor: anElement [
 	^ (self overlayElement globalPointToParent: boundsInSpace position + boundsInSpace extent)
 ]
 
-{ #category : #'api - updating' }
+{ #category : 'api - updating' }
 GtCompletionPopupListener >> relocateTo: anElement [
 	self overlayElement relocate: (self positionFor: anElement)
 ]

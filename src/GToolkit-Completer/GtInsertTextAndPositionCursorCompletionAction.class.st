@@ -1,13 +1,13 @@
 Class {
-	#name : #GtInsertTextAndPositionCursorCompletionAction,
-	#superclass : #GtInsertTextCompletionAction,
+	#name : 'GtInsertTextAndPositionCursorCompletionAction',
+	#superclass : 'GtInsertTextCompletionAction',
 	#instVars : [
 		'newPosition'
 	],
-	#category : #'GToolkit-Completer-Actions'
+	#category : 'GToolkit-Completer-Actions'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 GtInsertTextAndPositionCursorCompletionAction class >> labeled: aString completion: completionString position: anInteger from: searchStartInteger newPosition: newPositionInteger [
 	^ (super
 		labeled: aString
@@ -18,17 +18,17 @@ GtInsertTextAndPositionCursorCompletionAction class >> labeled: aString completi
 		yourself
 ]
 
-{ #category : #executing }
+{ #category : 'executing' }
 GtInsertTextAndPositionCursorCompletionAction >> moveCursorOn: aCompletionController [
 	aCompletionController textEditor moveCursorTo: newPosition
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtInsertTextAndPositionCursorCompletionAction >> newPosition [
 	^ newPosition
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtInsertTextAndPositionCursorCompletionAction >> newPosition: anInteger [
 	newPosition := anInteger
 ]

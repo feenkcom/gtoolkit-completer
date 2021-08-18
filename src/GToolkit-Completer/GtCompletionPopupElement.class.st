@@ -1,14 +1,14 @@
 Class {
-	#name : #GtCompletionPopupElement,
-	#superclass : #BlElement,
+	#name : 'GtCompletionPopupElement',
+	#superclass : 'BlElement',
 	#instVars : [
 		'referenceElement',
 		'overlayListener'
 	],
-	#category : #'GToolkit-Completer-UI'
+	#category : 'GToolkit-Completer-UI'
 }
 
-{ #category : #'api - attaching / detaching' }
+{ #category : 'api - attaching / detaching' }
 GtCompletionPopupElement >> attachTo: anElement [
 	
 	referenceElement = anElement
@@ -21,7 +21,7 @@ GtCompletionPopupElement >> attachTo: anElement [
 	anElement addEventHandler: overlayListener
 ]
 
-{ #category : #'api - attaching / detaching' }
+{ #category : 'api - attaching / detaching' }
 GtCompletionPopupElement >> detach [
 	
 	self isAttached
@@ -31,7 +31,7 @@ GtCompletionPopupElement >> detach [
 	referenceElement := nil
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 GtCompletionPopupElement >> initialize [
 	super initialize.
 
@@ -40,7 +40,7 @@ GtCompletionPopupElement >> initialize [
 	overlayListener := GtCompletionPopupListener for: self
 ]
 
-{ #category : #'api - testing' }
+{ #category : 'api - testing' }
 GtCompletionPopupElement >> isAttached [
 	"Return true if I am attached to any element, false otherwise"
 	<return: #Boolean>
@@ -48,7 +48,7 @@ GtCompletionPopupElement >> isAttached [
 	^ referenceElement isNotNil
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 GtCompletionPopupElement >> measureMyBounds [
 	"I compute by position and size in relation to the reference element"
 	self
@@ -58,7 +58,7 @@ GtCompletionPopupElement >> measureMyBounds [
 	self relocate: (overlayListener positionFor: referenceElement)
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 GtCompletionPopupElement >> onMeasure: anExtentMeasurementSpec [
 
 	self isAttached

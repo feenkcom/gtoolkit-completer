@@ -1,10 +1,10 @@
 Class {
-	#name : #GtPrefixTreeExamples,
-	#superclass : #Object,
+	#name : 'GtPrefixTreeExamples',
+	#superclass : 'Object',
 	#category : 'GToolkit-Completer-Examples'
 }
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtPrefixTreeExamples >> allSymbolsTree [
 	<gtExample>
 	| symbols tree |
@@ -14,13 +14,13 @@ GtPrefixTreeExamples >> allSymbolsTree [
 	^ tree
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtPrefixTreeExamples >> emptyTree [
 	<gtExample>
 	^ GtPrefixTree new
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtPrefixTreeExamples >> oneToHundredTree [
 	<gtExample>
 	| tree |
@@ -29,7 +29,7 @@ GtPrefixTreeExamples >> oneToHundredTree [
 	^ tree
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtPrefixTreeExamples >> singleItemFirstStartingWith [
 	<gtExample>
 	| tree |
@@ -39,7 +39,7 @@ GtPrefixTreeExamples >> singleItemFirstStartingWith [
 	^ tree
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtPrefixTreeExamples >> singleItemTree [
 	<gtExample>
 	^ self emptyTree
@@ -47,7 +47,7 @@ GtPrefixTreeExamples >> singleItemTree [
 		yourself
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtPrefixTreeExamples >> teamTestTree [
 	<gtExample>
 	^ self emptyTree
@@ -55,7 +55,7 @@ GtPrefixTreeExamples >> teamTestTree [
 		yourself
 ]
 
-{ #category : #'test-enumerating' }
+{ #category : 'test-enumerating' }
 GtPrefixTreeExamples >> testCollect [
 	<gtExample>
 	| tree collected |
@@ -65,7 +65,7 @@ GtPrefixTreeExamples >> testCollect [
 	1 to: 100 do: [ :i | self assert: (collected includes: i) ]
 ]
 
-{ #category : #'test-iterating' }
+{ #category : 'test-iterating' }
 GtPrefixTreeExamples >> testDo [
 	<gtExample>
 	| count |
@@ -78,7 +78,7 @@ GtPrefixTreeExamples >> testDo [
 	self assert: count = 1
 ]
 
-{ #category : #'test-iterating' }
+{ #category : 'test-iterating' }
 GtPrefixTreeExamples >> testDoStartingWith [
 	<gtExample>
 	| count |
@@ -93,7 +93,7 @@ GtPrefixTreeExamples >> testDoStartingWith [
 	self oneToHundredTree do: [ :each | self assert: false ] startingWith: '1;'
 ]
 
-{ #category : #'test-accessing' }
+{ #category : 'test-accessing' }
 GtPrefixTreeExamples >> testFirst [
 	<gtExample>
 	self assert: (self emptyTree first: 10) isEmpty.
@@ -101,7 +101,7 @@ GtPrefixTreeExamples >> testFirst [
 	self assert: (self oneToHundredTree first: 3) asArray = #('1' '10' '100')
 ]
 
-{ #category : #'test-accessing' }
+{ #category : 'test-accessing' }
 GtPrefixTreeExamples >> testFirstStartingWith [
 	<gtExample>
 	self assert: (self emptyTree first: 10 startingWith: '') isEmpty.
@@ -115,7 +115,7 @@ GtPrefixTreeExamples >> testFirstStartingWith [
 				= #('team' 'test')
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtPrefixTreeExamples >> testIncludes [
 	<gtExample>
 	self assert: (self emptyTree includes: 'test') not.
@@ -125,14 +125,14 @@ GtPrefixTreeExamples >> testIncludes [
 	self assert: (self singleItemTree includes: 'asdf') not
 ]
 
-{ #category : #'tests-testing' }
+{ #category : 'tests-testing' }
 GtPrefixTreeExamples >> testIsEmpty [
 	<gtExample>
 	self assert: self emptyTree isEmpty.
 	self assert: self singleItemTree notEmpty
 ]
 
-{ #category : #'test-removing' }
+{ #category : 'test-removing' }
 GtPrefixTreeExamples >> testRemoving [
 	<gtExample>
 	| tree |
@@ -145,7 +145,7 @@ GtPrefixTreeExamples >> testRemoving [
 	self assert: tree isEmpty
 ]
 
-{ #category : #'test-enumerating' }
+{ #category : 'test-enumerating' }
 GtPrefixTreeExamples >> testSelect [
 	<gtExample>
 	| tree selected items |
@@ -158,7 +158,7 @@ GtPrefixTreeExamples >> testSelect [
 	selected weightedDo: [ :each | self assert: items removeFirst = each ]
 ]
 
-{ #category : #'test-iterating' }
+{ #category : 'test-iterating' }
 GtPrefixTreeExamples >> testWeightedDo [
 	<gtExample>
 	| i |
@@ -170,7 +170,7 @@ GtPrefixTreeExamples >> testWeightedDo [
 	self assert: i = 0
 ]
 
-{ #category : #'test-accessing' }
+{ #category : 'test-accessing' }
 GtPrefixTreeExamples >> testWeightedDoOrder [
 	<gtExample>
 	| tree last |
@@ -183,7 +183,7 @@ GtPrefixTreeExamples >> testWeightedDoOrder [
 	^ tree
 ]
 
-{ #category : #'test-accessing' }
+{ #category : 'test-accessing' }
 GtPrefixTreeExamples >> testWeightedFirstStartingWith [
 	<gtExample>
 	self
