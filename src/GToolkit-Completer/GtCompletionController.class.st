@@ -14,7 +14,6 @@ Class {
 	#name : 'GtCompletionController',
 	#superclass : 'Object',
 	#instVars : [
-		'strategy',
 		'completionDelay',
 		'textElement',
 		'attribute',
@@ -30,7 +29,8 @@ Class {
 		'textElementFilters',
 		'popupHandlers',
 		'textElementRemovedDelay',
-		'showOnTextModification'
+		'showOnTextModification',
+		'completer'
 	],
 	#classVars : [
 		'MaxPopupItems',
@@ -187,19 +187,25 @@ GtCompletionController >> closeOnEmptyCompletion: aBoolean [
 
 { #category : 'private' }
 GtCompletionController >> completeWithCursor: aBoolean [
-	self
-		ignoreTextEventsWhile: [ | partial |
-			partial := false.
-			previewAction notNil
-				ifTrue: [ 
-					partial := previewAction isPartial.
-					previewAction finishCompletionOn: self moveCursor: aBoolean.
-					self resetActions ].
-			self deselectAll.
-			partial
-				ifTrue: [ self updatePopupItemsAt: self position autoSelect: true ]
-				ifFalse: [ self removePopup ] ].
-	self announcer announce: GtCompleterCompletionAccepted new
+
+	self ignoreTextEventsWhile: [ 
+		| partial |
+		partial := false.
+		previewAction notNil ifTrue: [ 
+			partial := previewAction isPartial.
+			previewAction finishCompletionOn: self moveCursor: aBoolean.
+			self resetActions ].
+		self deselectAll.
+		partial
+			ifTrue: [ 
+				self
+					updatePopupItemsAt: self position
+					autoSelect: true
+					andThen: [ 
+					self announcer announce: GtCompleterCompletionAccepted new ] ]
+			ifFalse: [ 
+				self removePopup.
+				self announcer announce: GtCompleterCompletionAccepted new ] ]
 ]
 
 { #category : 'private - accessing' }
@@ -294,9 +300,11 @@ GtCompletionController >> inactiveShortcutHandler [
 { #category : 'initialize-release' }
 GtCompletionController >> initialize [
 	super initialize.
+	
+	completer := GtCompleter new.
+	completer maxCompletionItems: MaxPopupItems.
 
 	drillDownActions := OrderedCollection new.
-	strategy := GtCompletionStrategy new.
 	closeOnEmptyCompletion := true.
 	showRequested := false.
 	showOnTextModification := true.
@@ -651,33 +659,30 @@ GtCompletionController >> showOnTextModification: aBoolean [
 
 { #category : 'private - popup' }
 GtCompletionController >> showPopupAt: anIndex [
+
 	"Show the completion popup selecting the first relevant completion item"
-	
 	textElement editor assertUIProcess.
 	
 	"if the show popup appears when editor is not in the scene graph,
 	just ignore the request"
 	textElement isAttachedToSceneGraph ifFalse: [ ^ self ].
-	
-	self updatePopupItemsAt: anIndex autoSelect: true.
 
-	(self isShowingPopup or: [ self hasCompletionActions not ])
-		ifTrue: [ 
-			showRequested := false.
-			^ self ].
+	self updatePopupItemsAt: anIndex autoSelect: true andThen: [ :theActions |
+		(self isShowingPopup or: [ self hasCompletionActions not ])
+			ifTrue: [ showRequested := false ]
+			ifFalse: [ 
+				self
+					assert: [ overlay isAttachedToSceneGraph not ]
+					description: [ 'Overlay must not be already visible' ].
 
-	self
-		assert: [ overlay isAttachedToSceneGraph not ]
-		description: [ 'Overlay must not be already visible' ]. 
+				self
+					assert: [ "otherwise how popup can be opened?" 
+						textElement isAttachedToSceneGraph ]
+					description: [ 'Text editor must be in the scene graph' ].
 
-	self
-		assert: [ textElement isAttachedToSceneGraph ]
-		"otherwise how popup can be opened?"
-		description: [ 'Text editor must be in the scene graph' ].
+				self addAttachmentAttributeAt: anIndex.
 
-	self addAttachmentAttributeAt: anIndex.
-
-	textElement space root addChild: overlay
+				textElement space root addChild: overlay ] ]
 ]
 
 { #category : 'private - preview' }
@@ -701,23 +706,25 @@ GtCompletionController >> startCompletion [
 
 { #category : 'private - popup' }
 GtCompletionController >> startCompletionAt: aTextIndex [
+	| aText |
 	self terminatePopupDelay.
-
+	
 	"If we have multiple cursors, don't open the completion."
 	self textEditor cursors cursorsCount = 1
-		ifFalse: [ self removePopup.
-			^ false ].
-
+		ifFalse: [
+			self removePopup.
+			^ self ].
+			
+	aText := self textEditor textSnapshot.			
+			
 	"If there are no completions for a given index, remove the popup"
-	((self strategyAt: aTextIndex)
+	((completer strategyAt: aTextIndex in: aText)
 		hasCompletionsAt: aTextIndex
 		in: self text)
-		ifFalse: [ self removePopup.
-			^ false ].
+		ifFalse: [ ^ self removePopup ].
 	self isShowingPopup
 		ifTrue: [ self updatePopupItemsAt: aTextIndex autoSelect: true ]
 		ifFalse: [ self startPopupDelayAt: aTextIndex ].
-	^ true
 ]
 
 { #category : 'private - popup' }
@@ -731,18 +738,7 @@ GtCompletionController >> startPopupDelayAt: anIndex [
 
 { #category : 'initialize-release' }
 GtCompletionController >> strategy: aCompletionStrategy [
-	strategy := aCompletionStrategy
-]
-
-{ #category : 'private' }
-GtCompletionController >> strategyAt: anIndex [
-	| result |
-	result := strategy.
-	(self text attributesAt: anIndex)
-		do: [ :each | 
-			(each isKindOf: GtCompletionStrategyAttribute)
-				ifTrue: [ result := each strategy ] ].
-	^ result
+	completer defaultStrategy: aCompletionStrategy
 ]
 
 { #category : 'private - popup' }
@@ -814,8 +810,8 @@ GtCompletionController >> textInserted: anEvent [
 
 { #category : 'private' }
 GtCompletionController >> undoDrillDown [
-	drillDownActions isEmpty
-		ifTrue: [ ^ false ].
+	drillDownActions
+		ifEmpty: [ ^ self ].
 	self
 		ignoreTextEventsWhile: [ | action |
 			previewAction notNil
@@ -857,29 +853,38 @@ GtCompletionController >> uninstallTextElementFilters [
 
 { #category : 'private - popup' }
 GtCompletionController >> updatePopupItemsAt: anIndex autoSelect: shouldSelectFirst [
-	| theActions |
-	
-	theActions := textElement telemetry
-		timeSync: 'Completion actions'
-		during: [
-			[ (self strategyAt: anIndex) completionActionsFor: self text at: anIndex max: MaxPopupItems requested: showRequested ]
-			on: Error
-			do: [ :ex | ex return: #() ] ].
-		
-	(closeOnEmptyCompletion and: [ showRequested not ])
-		ifTrue: [ (theActions anySatisfy: [ :each | each isEmpty ])
-				ifTrue: [ theActions := #() ] ].
+	self
+		updatePopupItemsAt: anIndex
+		autoSelect: shouldSelectFirst
+		andThen: [ ]
+]
 
-	"action is deselected => preview is cancelled"
-	self deselectAll.
-	self completionActions: theActions.
+{ #category : 'private - popup' }
+GtCompletionController >> updatePopupItemsAt: anIndex autoSelect: shouldSelectFirst andThen: aBlock [
 
-	self hasCompletionActions
-		ifFalse: [ ^ self removePopup ].
+	| aText |
+	aText := textElement editor textSnapshot.
 
-	shouldSelectFirst
-		ifFalse: [ ^ self ].
+	completer
+		completeAsyncDo: [ :theActions | 		
+			textElement enqueueTask: (BlTaskAction new action: [ 
+					 | theActionsToDisplay |
+					 theActionsToDisplay := theActions.
 
-	"first item is selected => preview is shown"
-	self selectFirst
+					 (closeOnEmptyCompletion and: [ showRequested not ]) ifTrue: [ 
+						 (theActions anySatisfy: [ :each | each isEmpty ]) ifTrue: [ 
+							 theActionsToDisplay := #(  ) ] ].
+
+					 "action is deselected => preview is cancelled"
+					 self deselectAll.
+					 self completionActions: theActionsToDisplay.
+
+					 self hasCompletionActions
+						 ifTrue: [ 
+							 shouldSelectFirst ifTrue: [ "first item is selected => preview is shown" 
+								 self selectFirst ] ]
+						 ifFalse: [ self removePopup ].
+					aBlock cull: theActionsToDisplay ]) ]
+		in: aText
+		at: anIndex
 ]
