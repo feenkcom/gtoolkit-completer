@@ -38,23 +38,6 @@ GtCompleterControllerExamples >> completeWithCursorMove [
 ]
 
 { #category : 'completing' }
-GtCompleterControllerExamples >> completeWithTab [
-	<gtExample>
-	| aCompleter |
-	
-	aCompleter := self openOn: '' withStrategy: self alphabetStrategy.
-	self enter: #(0 'dd' #tabComplete:) into: aCompleter.
-	
-	self assert: aCompleter textEditor text asString equals: 'dddd'.
-	self
-		assert: (aCompleter textEditor cursors allCursors collect: #position)
-		equals: #(4).
-	self assert: aCompleter textEditor selection isEmpty.
-	
-	^ aCompleter
-]
-
-{ #category : 'completing' }
 GtCompleterControllerExamples >> completionPreview [
 	<gtExample>
 	| aCompleter |
