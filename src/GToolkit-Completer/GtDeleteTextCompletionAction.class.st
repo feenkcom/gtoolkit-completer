@@ -1,6 +1,6 @@
 Class {
-	#name : 'GtDeleteTextCompletionAction',
-	#superclass : 'GtCompletionAction',
+	#name : #GtDeleteTextCompletionAction,
+	#superclass : #GtCompletionAction,
 	#instVars : [
 		'from',
 		'to',
@@ -9,7 +9,7 @@ Class {
 	#category : 'GToolkit-Completer-Actions'
 }
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtDeleteTextCompletionAction class >> labeled: aString from: fromIndex to: toIndex [
 	^ (self labeled: aString)
 		from: fromIndex;
@@ -17,17 +17,17 @@ GtDeleteTextCompletionAction class >> labeled: aString from: fromIndex to: toInd
 		yourself
 ]
 
-{ #category : 'comparing' }
+{ #category : #comparing }
 GtDeleteTextCompletionAction >> = anObject [
 	^ super = anObject and: [ self from = anObject from and: [ self to = anObject to ] ]
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtDeleteTextCompletionAction >> affectsText [
 	^ super affectsText or: [ from <= to ]
 ]
 
-{ #category : 'executing' }
+{ #category : #executing }
 GtDeleteTextCompletionAction >> finishCompletionOn: aCompletionController moveCursor: aBoolean [
 	from > to
 		ifTrue: [ ^ self ].
@@ -35,27 +35,27 @@ GtDeleteTextCompletionAction >> finishCompletionOn: aCompletionController moveCu
 	self delete: from - 1 to: to on: aCompletionController
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtDeleteTextCompletionAction >> from [
 	^ from
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtDeleteTextCompletionAction >> from: anInteger [
 	from := anInteger
 ]
 
-{ #category : 'comparing' }
+{ #category : #comparing }
 GtDeleteTextCompletionAction >> hash [
 	^ (super hash bitXor: self from hash) bitXor: self to hash
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtDeleteTextCompletionAction >> isEmpty [
 	^ from > to
 ]
 
-{ #category : 'executing' }
+{ #category : #executing }
 GtDeleteTextCompletionAction >> previewOn: aCompletionController [
 	from > to
 		ifTrue: [ ^ self ].
@@ -64,31 +64,31 @@ GtDeleteTextCompletionAction >> previewOn: aCompletionController [
 		attributes: { GtPreviewDeletionAttribute new }
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtDeleteTextCompletionAction >> to [
 	^ to
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtDeleteTextCompletionAction >> to: anInteger [
 	to := anInteger
 ]
 
-{ #category : 'translating' }
+{ #category : #translating }
 GtDeleteTextCompletionAction >> translateBy: anIndex [
 	super translateBy: anIndex.
 	from := from + anIndex.
 	to := to + anIndex
 ]
 
-{ #category : 'executing' }
+{ #category : #executing }
 GtDeleteTextCompletionAction >> undoDrillDownOn: aCompletionController [
 	deletedString isNil
 		ifTrue: [ ^ self ].
 	self insert: deletedString at: from - 1 on: aCompletionController
 ]
 
-{ #category : 'executing' }
+{ #category : #executing }
 GtDeleteTextCompletionAction >> undoPreviewOn: aCompletionController [
 	from > to
 		ifTrue: [ ^ self ].

@@ -1,28 +1,28 @@
 Class {
-	#name : 'GtCompletionStrategyAttribute',
-	#superclass : 'BlTextAttribute',
+	#name : #GtCompletionStrategyAttribute,
+	#superclass : #BlTextAttribute,
 	#instVars : [
 		'strategy'
 	],
 	#category : 'GToolkit-Completer'
 }
 
-{ #category : 'comparing' }
+{ #category : #comparing }
 GtCompletionStrategyAttribute >> equals: aTextAttribute [
 	^ self strategy == aTextAttribute strategy
 ]
 
-{ #category : 'comparing' }
+{ #category : #comparing }
 GtCompletionStrategyAttribute >> hash [
 	^ self class hash bitXor: self strategy hash
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompletionStrategyAttribute >> strategy [
 	^ strategy
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompletionStrategyAttribute >> strategy: completionStrategy [
 	strategy := completionStrategy
 ]

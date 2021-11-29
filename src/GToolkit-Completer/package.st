@@ -1,1 +1,1 @@
-Package { #name : 'GToolkit-Completer' }
+Package { #name : #'GToolkit-Completer' }

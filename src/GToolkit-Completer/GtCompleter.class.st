@@ -10,8 +10,8 @@ BlTktWorkerProvider completionPool
 
 "
 Class {
-	#name : 'GtCompleter',
-	#superclass : 'Object',
+	#name : #GtCompleter,
+	#superclass : #Object,
 	#instVars : [
 		'defaultStrategy',
 		'showRequested',
@@ -22,7 +22,7 @@ Class {
 	#category : 'GToolkit-Completer-Model'
 }
 
-{ #category : 'completion' }
+{ #category : #completion }
 GtCompleter >> complete: aBlText at: anIndex [
 	"Compute completion actions syncronously for a given text and an index"
 	<return: #Collection of: #GtCompletionAction>
@@ -34,7 +34,7 @@ GtCompleter >> complete: aBlText at: anIndex [
 		requested: showRequested
 ]
 
-{ #category : 'completion' }
+{ #category : #completion }
 GtCompleter >> completeAsyncDo: aBlock in: aBlText at: anIndex [
 	"Compute completion actions asyncronously and evaluate a given Block when the computation is finished"	
 		
@@ -68,19 +68,19 @@ GtCompleter >> completeAsyncDo: aBlock in: aBlText at: anIndex [
 			otherwise: [ completerCommand execute ] ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompleter >> defaultStrategy [
 	<return: #GtCompletionStrategy>
 	
 	^ defaultStrategy
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompleter >> defaultStrategy: aGtCompletionStrategy [
 	defaultStrategy := aGtCompletionStrategy
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtCompleter >> initialize [
 	super initialize.
 	
@@ -90,19 +90,19 @@ GtCompleter >> initialize [
 	completerMonitor := Monitor new
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompleter >> maxCompletionItems [
 	<return: #Number>
 	
 	^ maxCompletionItems
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompleter >> maxCompletionItems: aNumber [
 	maxCompletionItems := aNumber
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompleter >> strategyAt: anIndex in: aBlText [
 	"Choose a completion strategy for a given text index within a text"
 	| aStrategy |
@@ -116,7 +116,7 @@ GtCompleter >> strategyAt: anIndex in: aBlText [
 	^ aStrategy
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompleter >> terminateCompleterCommand [
 	completerMonitor critical: [
 		completerCommand ifNotNil: [ :aCommand | aCommand terminate ].

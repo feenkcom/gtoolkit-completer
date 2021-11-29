@@ -1,43 +1,43 @@
 Class {
-	#name : 'GtCompositeCompletionAction',
-	#superclass : 'GtCompletionAction',
+	#name : #GtCompositeCompletionAction,
+	#superclass : #GtCompletionAction,
 	#instVars : [
 		'actions'
 	],
 	#category : 'GToolkit-Completer-Actions'
 }
 
-{ #category : 'comparing' }
+{ #category : #comparing }
 GtCompositeCompletionAction >> = anObject [
 	^ super = anObject and: [ self actions = anObject actions ]
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtCompositeCompletionAction >> actions [
 	^ actions
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtCompositeCompletionAction >> addAction: aCompletionAction [
 	actions add: aCompletionAction
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtCompositeCompletionAction >> affectsText [
 	^ super affectsText or: [ actions anySatisfy: [ :each | each affectsText ] ]
 ]
 
-{ #category : 'executing' }
+{ #category : #executing }
 GtCompositeCompletionAction >> drillDownOn: aCompletionController [
 	actions do: [ :each | each drillDownOn: aCompletionController ]
 ]
 
-{ #category : 'executing' }
+{ #category : #executing }
 GtCompositeCompletionAction >> finishCompletionOn: aCompletionController moveCursor: aBoolean [
 	actions do: [ :each | each finishCompletionOn: aCompletionController moveCursor: aBoolean ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompositeCompletionAction >> gtActionsFor: aView [ 
 	<gtView>
 	self actions ifNil: [ ^ aView empty ].
@@ -47,51 +47,51 @@ GtCompositeCompletionAction >> gtActionsFor: aView [
 		view: #gtItemsFor:
 ]
 
-{ #category : 'comparing' }
+{ #category : #comparing }
 GtCompositeCompletionAction >> hash [
 	^ super hash bitXor: self actions hash
 ]
 
-{ #category : 'initialize-release' }
+{ #category : #'initialize-release' }
 GtCompositeCompletionAction >> initialize [
 	super initialize.
 	actions := OrderedCollection new
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtCompositeCompletionAction >> isEmpty [
 	^ actions allSatisfy: [ :each | each isEmpty ]
 ]
 
-{ #category : 'executing' }
+{ #category : #executing }
 GtCompositeCompletionAction >> previewOn: aCompletionController [
 	actions do: [ :each | each previewOn: aCompletionController ]
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtCompositeCompletionAction >> removeAction: aCompletionAction [
 	actions remove: aCompletionAction ifAbsent: [  ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompositeCompletionAction >> searchStartPosition [
 	actions
 		do: [ :each | each searchStartPosition ifNotNil: [ :pos | ^ pos ] ].
 	^ nil
 ]
 
-{ #category : 'translating' }
+{ #category : #translating }
 GtCompositeCompletionAction >> translateBy: anIndex [
 	super translateBy: anIndex.
 	self actions do: [ :each | each translateBy: anIndex ]
 ]
 
-{ #category : 'executing' }
+{ #category : #executing }
 GtCompositeCompletionAction >> undoDrillDownOn: aCompletionController [
 	actions reverseDo: [ :each | each undoDrillDownOn: aCompletionController ]
 ]
 
-{ #category : 'executing' }
+{ #category : #executing }
 GtCompositeCompletionAction >> undoPreviewOn: aCompletionController [
 	actions reverseDo: [ :each | each undoPreviewOn: aCompletionController ]
 ]

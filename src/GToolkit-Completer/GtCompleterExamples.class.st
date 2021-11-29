@@ -1,10 +1,10 @@
 Class {
-	#name : 'GtCompleterExamples',
-	#superclass : 'Object',
+	#name : #GtCompleterExamples,
+	#superclass : #Object,
 	#category : 'GToolkit-Completer-Examples'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompleterExamples >> alphabetStrategy [
 	<gtExample>
 	| strategy tree |
@@ -15,7 +15,7 @@ GtCompleterExamples >> alphabetStrategy [
 	^ strategy
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompleterExamples >> completeAlphabetStrategy [
 	<gtExample>
 	| aCompleter theActions insertAction |
@@ -33,7 +33,7 @@ GtCompleterExamples >> completeAlphabetStrategy [
 	^ theActions
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompleterExamples >> completer [
 	<gtExample>
 	| completer |

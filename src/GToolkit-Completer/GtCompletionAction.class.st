@@ -1,6 +1,6 @@
 Class {
-	#name : 'GtCompletionAction',
-	#superclass : 'Object',
+	#name : #GtCompletionAction,
+	#superclass : #Object,
 	#instVars : [
 		'label',
 		'partial'
@@ -8,56 +8,56 @@ Class {
 	#category : 'GToolkit-Completer-Actions'
 }
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtCompletionAction class >> labeled: aString [
 	^ self new
 		label: aString;
 		yourself
 ]
 
-{ #category : 'comparing' }
+{ #category : #comparing }
 GtCompletionAction >> = anObject [
 	^ self class = anObject class and: [ self label = anObject label ]
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtCompletionAction >> affectsText [
 	^ partial
 ]
 
-{ #category : 'private-text modification' }
+{ #category : #'private-text modification' }
 GtCompletionAction >> delete: from to: to on: aCompletionController [
 	aCompletionController textEditor deleter
 		from: from to: to;
 		delete
 ]
 
-{ #category : 'displaying' }
+{ #category : #displaying }
 GtCompletionAction >> displayString [
 	^ label
 ]
 
-{ #category : 'executing' }
+{ #category : #executing }
 GtCompletionAction >> drillDownOn: aCompletionController [
 	self finishCompletionOn: aCompletionController moveCursor: true
 ]
 
-{ #category : 'executing' }
+{ #category : #executing }
 GtCompletionAction >> finishCompletionOn: aCompletionController moveCursor: aBoolean [
 ]
 
-{ #category : 'comparing' }
+{ #category : #comparing }
 GtCompletionAction >> hash [
 	^ self class hash bitXor: label hash
 ]
 
-{ #category : 'initialize-release' }
+{ #category : #'initialize-release' }
 GtCompletionAction >> initialize [
 	super initialize.
 	partial := false
 ]
 
-{ #category : 'private-text modification' }
+{ #category : #'private-text modification' }
 GtCompletionAction >> insert: aString at: anInteger on: aCompletionController [
 	aString isEmpty
 		ifTrue: [ ^ self ].
@@ -67,51 +67,51 @@ GtCompletionAction >> insert: aString at: anInteger on: aCompletionController [
 		insert
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtCompletionAction >> isEmpty [
 	^ false
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtCompletionAction >> isPartial [
 	^ partial
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompletionAction >> label [
 	^ label
 ]
 
-{ #category : 'initialize-release' }
+{ #category : #'initialize-release' }
 GtCompletionAction >> label: aString [
 	label := aString
 ]
 
-{ #category : 'initialize-release' }
+{ #category : #'initialize-release' }
 GtCompletionAction >> partial: aBoolean [
 	partial := aBoolean
 ]
 
-{ #category : 'executing' }
+{ #category : #executing }
 GtCompletionAction >> previewOn: aCompletionController [
 	self subclassResponsibility
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompletionAction >> searchStartPosition [
 	^ nil
 ]
 
-{ #category : 'translating' }
+{ #category : #translating }
 GtCompletionAction >> translateBy: anIndex [
 ]
 
-{ #category : 'executing' }
+{ #category : #executing }
 GtCompletionAction >> undoDrillDownOn: aCompletionController [
 	
 ]
 
-{ #category : 'executing' }
+{ #category : #executing }
 GtCompletionAction >> undoPreviewOn: aCompletionController [
 	self subclassResponsibility
 ]

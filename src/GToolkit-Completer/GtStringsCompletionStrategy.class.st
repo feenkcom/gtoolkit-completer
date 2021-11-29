@@ -1,33 +1,36 @@
 Class {
-	#name : 'GtStringsCompletionStrategy',
-	#superclass : 'GtCompletionStrategy',
+	#name : #GtStringsCompletionStrategy,
+	#superclass : #GtCompletionStrategy,
 	#instVars : [
-		'completions'
+		'completions',
+		'completionsBlock'
 	],
-	#category : 'GToolkit-Completer'
+	#category : #'GToolkit-Completer'
 }
 
-{ #category : 'private' }
+{ #category : #private }
 GtStringsCompletionStrategy >> buildCompletions [
 	^ GtPrefixTree new
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtStringsCompletionStrategy >> completions [
-	^ completions ifNil: [ completions := self buildCompletions ]
+	^ completions ifNil: [ completions := completionsBlock
+		ifNil: [ self buildCompletions ]
+		ifNotNil: [ :aBlock | aBlock value ] ]
 ]
 
-{ #category : 'initialize-release' }
-GtStringsCompletionStrategy >> completions: prefixTree [
-	completions := prefixTree
+{ #category : #'initialize-release' }
+GtStringsCompletionStrategy >> completions: prefixTreeOrBlock [
+	completionsBlock := prefixTreeOrBlock
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtStringsCompletionStrategy >> first: anInteger startingWith: aString [
 	^ self completions first: anInteger startingWith: aString
 ]
 
-{ #category : 'gt-extensions' }
+{ #category : #'gt-extensions' }
 GtStringsCompletionStrategy >> gtCompletionsFor: aView [
 	<gtView>
 	^ aView list
@@ -35,7 +38,7 @@ GtStringsCompletionStrategy >> gtCompletionsFor: aView [
 		items: [ self completions asOrderedCollection ]
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtStringsCompletionStrategy >> hasCompletionEntryFor: aString [
 	self completions
 		do: [ :each | 
