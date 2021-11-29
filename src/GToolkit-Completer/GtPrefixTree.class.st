@@ -7,7 +7,7 @@ Class {
 		'children',
 		'maxWeight'
 	],
-	#category : 'GToolkit-Completer'
+	#category : #'GToolkit-Completer'
 }
 
 { #category : #'instance creation' }
@@ -23,6 +23,11 @@ GtPrefixTree >> add: aString [
 { #category : #adding }
 GtPrefixTree >> add: aString weight: aNumber [
 	self privateAdd: aString weight: aNumber startIndex: 1
+]
+
+{ #category : #iterating }
+GtPrefixTree >> asyncStreamStartingWith: aString [
+	^ GtPrefixTreeStream tree: self prefix: aString
 ]
 
 { #category : #private }
