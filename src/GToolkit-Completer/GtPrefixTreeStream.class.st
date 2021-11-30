@@ -4,9 +4,9 @@ Class {
 	#traits : 'TAsyncStream',
 	#classTraits : 'TAsyncStream classTrait',
 	#instVars : [
+		'root',
 		'prefix',
-		'stack',
-		'root'
+		'stack'
 	],
 	#category : #'GToolkit-Completer'
 }
@@ -20,19 +20,16 @@ GtPrefixTreeStream class >> tree: aPrefixTree prefix: aString [
 
 { #category : #private }
 GtPrefixTreeStream >> createInitialStack [
-	| currentPrefix currentNode index char |
 	stack := Stack new.
-	currentPrefix := ''.
-	currentNode := root.
-	[ (index := currentPrefix size + currentNode prefix size) < prefix size ]
-		whileTrue:
-			[ char := prefix at: index + 1.
-			currentPrefix := currentPrefix , currentNode prefix.
-			currentNode := (currentNode children ifNil: [ #() ]) detect: [ :each | each prefix first = char ] ifNone: [ ^ self ] ].
-	stack
-		push:
-			{currentNode.
-				currentPrefix}
+	root
+		findNode: prefix
+		current: ''
+		do:
+			[ :node :prefixString | 
+			stack
+				push:
+					{node.
+						prefixString} ]
 ]
 
 { #category : #'api - stream' }

@@ -1,25 +1,40 @@
 Class {
 	#name : #GtCompletionStrategy,
 	#superclass : #Object,
-	#category : 'GToolkit-Completer'
+	#category : #'GToolkit-Completer'
 }
 
 { #category : #accessing }
-GtCompletionStrategy >> completionActionsFor: aText at: positionInteger max: maxSize [
+GtCompletionStrategy >> completionActionStreamFor: aText at: positionInteger [
 	| prefix |
 	prefix := self completionPrefixAt: positionInteger in: aText.
-	(prefix isNil or: [ prefix size < self minimumPrefixLength ])
-		ifTrue: [ ^ #() ].
-	(self hasCompletionEntryFor: prefix)
-		ifFalse: [ ^ #() ].
-	^ (self first: maxSize startingWith: prefix)
+	(prefix isNil or: [ prefix size < self minimumPrefixLength or: [ (self hasCompletionEntryFor: prefix) not ] ])
+		ifTrue: [ ^ #() asAsyncStream ].
+	^ (self completionStringStreamStartingWith: prefix)
 		collect:
-			[ :each | GtInsertTextCompletionAction labeled: each completion: (each allButFirst: prefix size) position: positionInteger ]
+			[ :each | 
+			GtInsertTextCompletionAction
+				labeled: each
+				completion: (each allButFirst: prefix size)
+				position: positionInteger ]
 ]
 
 { #category : #accessing }
-GtCompletionStrategy >> completionActionsFor: aText at: positionInteger max: maxSize requested: aBoolean [
-	^ self completionActionsFor: aText at: positionInteger max: maxSize
+GtCompletionStrategy >> completionActionStreamFor: aText at: positionInteger requested: aBoolean [
+	^ self completionActionStreamFor: aText at: positionInteger
+]
+
+{ #category : #accessing }
+GtCompletionStrategy >> completionActionsFor: aText at: positionInteger max: maxSize [
+	^ ((self completionActionStreamFor: aText at: positionInteger) take: maxSize) toArray wait
+]
+
+{ #category : #accessing }
+GtCompletionStrategy >> completionActionsFor: aText at: positionInteger max: maxInteger requested: aBoolean [
+	^ ((self
+		completionActionStreamFor: aText
+		at: positionInteger
+		requested: aBoolean) take: maxInteger) toArray wait
 ]
 
 { #category : #accessing }
@@ -35,6 +50,11 @@ GtCompletionStrategy >> completionPrefixAt: anIndex in: blText [
 	startIndex := startIndex - 1.
 	startIndex >= 1 ] whileTrue.
 	^ (blText copyFrom: 1 to: anIndex) asString
+]
+
+{ #category : #accessing }
+GtCompletionStrategy >> completionStringStreamStartingWith: aString [
+	^ #() asAsyncStream
 ]
 
 { #category : #accessing }

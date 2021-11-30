@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'trees'
 	],
-	#category : 'GToolkit-Completer'
+	#category : #'GToolkit-Completer'
 }
 
 { #category : #'instance creation' }
@@ -17,6 +17,11 @@ GtCompositePrefixTree class >> trees: aCollection [
 { #category : #adding }
 GtCompositePrefixTree >> add: newObject [ 
 	self error: 'Cannot add new object'
+]
+
+{ #category : #enumerating }
+GtCompositePrefixTree >> asyncStreamStartingWith: aString [
+	^ (trees collect: [ :each | each asyncStreamStartingWith: aString ]) fold: [ :a :b | a merge: b ]
 ]
 
 { #category : #enumerating }
