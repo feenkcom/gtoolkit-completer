@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'space'
 	],
-	#category : 'GToolkit-Completer-Examples'
+	#category : #'GToolkit-Completer-Examples'
 }
 
 { #category : #strategies }
@@ -216,11 +216,10 @@ GtCompleterControllerExamples >> scripterWithCompletion [
 	| aScripter anEditor |
 	
 	aScripter := self scripter.
-	anEditor := self scripterElement.
-		
+	anEditor := self scripterElement.	
 	aScripter element: anEditor.
-	
-	^ aScripter pulse
+
+	^ aScripter
 ]
 
 { #category : #private }
