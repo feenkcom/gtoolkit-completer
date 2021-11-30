@@ -1,7 +1,7 @@
 Class {
 	#name : #GtPrefixTreeExamples,
 	#superclass : #Object,
-	#category : 'GToolkit-Completer-Examples'
+	#category : #'GToolkit-Completer-Examples'
 }
 
 { #category : #examples }
@@ -156,6 +156,23 @@ GtPrefixTreeExamples >> testSelect [
 	items := OrderedCollection new.
 	tree weightedDo: [ :each | items add: each ].
 	selected weightedDo: [ :each | self assert: items removeFirst = each ]
+]
+
+{ #category : #'test-iterating' }
+GtPrefixTreeExamples >> testStream [
+	<gtExample>
+	
+	| tree streamElements stream |
+	tree := self oneToHundredTree.
+	stream := tree asyncStreamStartingWith: ''.
+	streamElements := Set withAll: stream asyncSimilarCopy toArray wait.
+	self assert: streamElements size equals: tree size.
+	tree do: [ :each | streamElements remove: each ].
+	self assert: streamElements isEmpty.
+	streamElements := Set withAll: (tree asyncStreamStartingWith: '1') toArray wait.
+	tree do: [ :each | streamElements remove: each ] startingWith: '1'.
+	self assert: streamElements isEmpty.
+	^ stream
 ]
 
 { #category : #'test-iterating' }
