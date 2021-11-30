@@ -14,6 +14,11 @@ GtStringsCompletionStrategy >> buildCompletions [
 ]
 
 { #category : #accessing }
+GtStringsCompletionStrategy >> completionStringStreamStartingWith: aString [
+	^ self completions asyncStreamStartingWith: aString
+]
+
+{ #category : #accessing }
 GtStringsCompletionStrategy >> completions [
 	^ completions ifNil: [ completions := completionsBlock
 		ifNil: [ self buildCompletions ]

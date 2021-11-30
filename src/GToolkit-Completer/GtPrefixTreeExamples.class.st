@@ -208,3 +208,16 @@ GtPrefixTreeExamples >> testWeightedFirstStartingWith [
 			(self oneToHundredTree weightedFirst: 10 startingWith: '2') asArray
 				= #('29' '28' '27' '26' '25' '24' '23' '22' '21' '20')
 ]
+
+{ #category : #'test-iterating' }
+GtPrefixTreeExamples >> testWeightedStream [
+	<gtExample>
+	
+	| tree streamElements stream |
+	tree := self oneToHundredTree.
+	stream := tree asyncWeightedStreamStartingWith: ''.
+	streamElements := stream asyncSimilarCopy toArray wait.
+	self assert: streamElements size equals: tree size.
+	(100 to: 1 by: -1) keysAndValuesDo: [ :i :value | self assert: (streamElements at: i) equals: value printString ].
+	^ stream
+]

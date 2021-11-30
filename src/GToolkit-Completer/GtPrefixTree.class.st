@@ -30,6 +30,11 @@ GtPrefixTree >> asyncStreamStartingWith: aString [
 	^ GtPrefixTreeStream tree: self prefix: aString
 ]
 
+{ #category : #iterating }
+GtPrefixTree >> asyncWeightedStreamStartingWith: aString [
+	^ GtWeightedPrefixTreeStream tree: self prefix: aString
+]
+
 { #category : #private }
 GtPrefixTree >> children [
 	^ children
@@ -70,6 +75,21 @@ GtPrefixTree >> ensureChildren [
 	children isNil
 		ifTrue: [ children := SortedCollection new: 2.
 			children sortBlock: [ :a :b | a prefix < b prefix ] ]
+]
+
+{ #category : #enumerating }
+GtPrefixTree >> findNode: prefixString current: currentPrefix do: aBlock [
+	| index char child |
+	index := currentPrefix size + prefix size.
+	index < prefixString size
+		ifTrue:
+			[ char := prefixString at: index + 1.
+			child := (children ifNil: [ #() ]) detect: [ :each | each prefix first = char ] ifNone: [ ^ self ].
+			^ child
+				findNode: prefixString
+				current: currentPrefix , prefix
+				do: aBlock ].
+	aBlock value: self value: currentPrefix
 ]
 
 { #category : #accessing }
