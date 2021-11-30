@@ -1,13 +1,13 @@
 Class {
-	#name : 'GtCompleterControllerExamples',
-	#superclass : 'Object',
+	#name : #GtCompleterControllerExamples,
+	#superclass : #Object,
 	#instVars : [
 		'space'
 	],
-	#category : 'GToolkit-Completer-Examples'
+	#category : #'GToolkit-Completer-Examples'
 }
 
-{ #category : 'strategies' }
+{ #category : #strategies }
 GtCompleterControllerExamples >> alphabetStrategy [
 	<gtExample>
 	| strategy tree |
@@ -18,7 +18,7 @@ GtCompleterControllerExamples >> alphabetStrategy [
 	^ strategy
 ]
 
-{ #category : 'completing' }
+{ #category : #completing }
 GtCompleterControllerExamples >> completeWithCursorMove [
 	<gtExample>
 	| aCompleter |
@@ -37,7 +37,7 @@ GtCompleterControllerExamples >> completeWithCursorMove [
 	^ aCompleter
 ]
 
-{ #category : 'completing' }
+{ #category : #completing }
 GtCompleterControllerExamples >> completionPreview [
 	<gtExample>
 	| aCompleter |
@@ -54,7 +54,7 @@ GtCompleterControllerExamples >> completionPreview [
 	^ aCompleter
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtCompleterControllerExamples >> editorElementFor: aString [
 	| editor editorElement text |
 	text := aString asRopedText.
@@ -68,7 +68,7 @@ GtCompleterControllerExamples >> editorElementFor: aString [
 	^ editorElement
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtCompleterControllerExamples >> enter: anArray into: completionController [
 	anArray
 		do: [ :each | 
@@ -85,7 +85,7 @@ GtCompleterControllerExamples >> enter: anArray into: completionController [
 					each value: completionController ] ]
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtCompleterControllerExamples >> insertString: aString on: completionController [
 
 	"inserter deletes selected text by default"
@@ -95,13 +95,13 @@ GtCompleterControllerExamples >> insertString: aString on: completionController 
 		insert
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtCompleterControllerExamples >> moveCursorTo: anInteger on: aCompletionController [
 	self pauseForCompletion.
 	aCompletionController textEditor moveCursorTo: anInteger
 ]
 
-{ #category : 'examples - scripter' }
+{ #category : #'examples - scripter' }
 GtCompleterControllerExamples >> move_cursor_to_end [
 	<gtExample>
 	| aScripter |
@@ -115,7 +115,7 @@ GtCompleterControllerExamples >> move_cursor_to_end [
 	^ aScripter syncContinue
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtCompleterControllerExamples >> openOn: aString withStrategy: aCompletionStrategy [
 	| editorElement completionController |
 	
@@ -135,7 +135,7 @@ GtCompleterControllerExamples >> openOn: aString withStrategy: aCompletionStrate
 	^ completionController
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtCompleterControllerExamples >> pauseForCompletion [
 	"advance time by popup delay (instantly)"
 	space time wait: GtCompletionController popupDelay.
@@ -143,7 +143,7 @@ GtCompleterControllerExamples >> pauseForCompletion [
 	space pulse
 ]
 
-{ #category : 'examples - scripter' }
+{ #category : #'examples - scripter' }
 GtCompleterControllerExamples >> remove_last_character_while_completion_is_about_to_appear [
 	<gtExample>
 	| aScripter |
@@ -173,7 +173,7 @@ GtCompleterControllerExamples >> remove_last_character_while_completion_is_about
 	^ aScripter syncContinue
 ]
 
-{ #category : 'examples - scripter' }
+{ #category : #'examples - scripter' }
 GtCompleterControllerExamples >> request_focus [
 	<gtExample>
 	| aScripter |
@@ -188,14 +188,14 @@ GtCompleterControllerExamples >> request_focus [
 	^ aScripter syncContinue
 ]
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtCompleterControllerExamples >> scripter [
 	<gtExample>
 	
 	^ BlDevScripter new
 ]
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtCompleterControllerExamples >> scripterElement [
 	<gtExample>
 	| anEditor aCompletionController |
@@ -210,20 +210,19 @@ GtCompleterControllerExamples >> scripterElement [
 	^ anEditor
 ]
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtCompleterControllerExamples >> scripterWithCompletion [
 	<gtExample>
 	| aScripter anEditor |
 	
 	aScripter := self scripter.
-	anEditor := self scripterElement.
-		
+	anEditor := self scripterElement.	
 	aScripter element: anEditor.
-	
-	^ aScripter pulse
+
+	^ aScripter
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtCompleterControllerExamples >> selectPreviewMatching: aString in: completionController [
 	self pauseForCompletion.
 	completionController completionActions isEmpty
@@ -237,13 +236,13 @@ GtCompleterControllerExamples >> selectPreviewMatching: aString in: completionCo
 	self error: 'Could not find completion action'
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtCompleterControllerExamples >> tabComplete: completionController [
 	self pauseForCompletion.
 	completionController completeWithCursor: true
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtCompleterControllerExamples >> tabNext: completionController [
 	completionController processTabKey: true
 ]

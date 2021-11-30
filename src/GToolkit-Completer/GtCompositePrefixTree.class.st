@@ -1,25 +1,25 @@
 Class {
-	#name : 'GtCompositePrefixTree',
-	#superclass : 'Collection',
+	#name : #GtCompositePrefixTree,
+	#superclass : #Collection,
 	#instVars : [
 		'trees'
 	],
 	#category : 'GToolkit-Completer'
 }
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtCompositePrefixTree class >> trees: aCollection [
 	^ self new
 		trees: aCollection;
 		yourself
 ]
 
-{ #category : 'adding' }
+{ #category : #adding }
 GtCompositePrefixTree >> add: newObject [ 
 	self error: 'Cannot add new object'
 ]
 
-{ #category : 'enumerating' }
+{ #category : #enumerating }
 GtCompositePrefixTree >> do: aBlock [
 	| seen |
 	seen := Set new.
@@ -32,12 +32,12 @@ GtCompositePrefixTree >> do: aBlock [
 							aBlock value: each ] ] ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompositePrefixTree >> first: anInteger [
 	^ self first: anInteger startingWith: ''
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompositePrefixTree >> first: anInteger startingWith: aString [
 	| results |
 	results := Set new.
@@ -50,27 +50,27 @@ GtCompositePrefixTree >> first: anInteger startingWith: aString [
 		ifFalse: [ results ]
 ]
 
-{ #category : 'removing' }
+{ #category : #removing }
 GtCompositePrefixTree >> remove: oldObject ifAbsent: anExceptionBlock [ 
 	self error: 'Cannot remove old object'
 ]
 
-{ #category : 'enumerating' }
+{ #category : #enumerating }
 GtCompositePrefixTree >> species [
 	^ OrderedCollection
 ]
 
-{ #category : 'initialize-release' }
+{ #category : #'initialize-release' }
 GtCompositePrefixTree >> trees: aCollection [
 	trees := aCollection
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompositePrefixTree >> weightedFirst: anInteger [
 	^ self weightedFirst: anInteger startingWith: ''
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompositePrefixTree >> weightedFirst: anInteger startingWith: aString [
 	| results sorted |
 	results := Dictionary new.

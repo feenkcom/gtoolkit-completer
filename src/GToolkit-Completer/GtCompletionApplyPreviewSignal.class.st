@@ -1,23 +1,23 @@
 Class {
-	#name : 'GtCompletionApplyPreviewSignal',
-	#superclass : 'ContextStackSignal',
+	#name : #GtCompletionApplyPreviewSignal,
+	#superclass : #ContextStackSignal,
 	#instVars : [
 		'action'
 	],
 	#category : 'GToolkit-Completer-Signals'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompletionApplyPreviewSignal >> action [
 	^ action
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompletionApplyPreviewSignal >> action: anObject [
 	action := anObject
 ]
 
-{ #category : 'printing' }
+{ #category : #printing }
 GtCompletionApplyPreviewSignal >> printOneLineContentsOn: aStream [
 
 	self action ifNil: [ 

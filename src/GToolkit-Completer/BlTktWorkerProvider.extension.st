@@ -1,6 +1,6 @@
-Extension { #name : 'BlTktWorkerProvider' }
+Extension { #name : #BlTktWorkerProvider }
 
-{ #category : '*GToolkit-Completer' }
+{ #category : #'*GToolkit-Completer' }
 BlTktWorkerProvider class >> completionPool [
 
 	^ self 
@@ -8,7 +8,7 @@ BlTktWorkerProvider class >> completionPool [
 		ifMissing: [ self new completionPool; service ]
 ]
 
-{ #category : '*GToolkit-Completer' }
+{ #category : #'*GToolkit-Completer' }
 BlTktWorkerProvider >> completionPool [
 	"Completion processing: maxPoolSize: 2, priority: 25"
 	self
@@ -18,7 +18,7 @@ BlTktWorkerProvider >> completionPool [
 		processPriority: Processor userBackgroundPriority - 5
 ]
 
-{ #category : '*GToolkit-Completer' }
+{ #category : #'*GToolkit-Completer' }
 BlTktWorkerProvider class >> completionPoolName [
 
 	^ 'Completion'

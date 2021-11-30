@@ -1,10 +1,10 @@
 Class {
-	#name : 'GtCompletionStrategy',
-	#superclass : 'Object',
+	#name : #GtCompletionStrategy,
+	#superclass : #Object,
 	#category : 'GToolkit-Completer'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompletionStrategy >> completionActionsFor: aText at: positionInteger max: maxSize [
 	| prefix |
 	prefix := self completionPrefixAt: positionInteger in: aText.
@@ -17,12 +17,12 @@ GtCompletionStrategy >> completionActionsFor: aText at: positionInteger max: max
 			[ :each | GtInsertTextCompletionAction labeled: each completion: (each allButFirst: prefix size) position: positionInteger ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompletionStrategy >> completionActionsFor: aText at: positionInteger max: maxSize requested: aBoolean [
 	^ self completionActionsFor: aText at: positionInteger max: maxSize
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompletionStrategy >> completionPrefixAt: anIndex in: blText [
 	| startIndex |
 	anIndex < self minimumPrefixLength
@@ -37,17 +37,17 @@ GtCompletionStrategy >> completionPrefixAt: anIndex in: blText [
 	^ (blText copyFrom: 1 to: anIndex) asString
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompletionStrategy >> first: anInteger startingWith: aString [
 	^ #()
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtCompletionStrategy >> hasCompletionEntryFor: aString [
 	^ false
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtCompletionStrategy >> hasCompletionsAt: anInteger in: aText [
 	| prefix |
 	prefix := self completionPrefixAt: anInteger in: aText.
@@ -56,12 +56,12 @@ GtCompletionStrategy >> hasCompletionsAt: anInteger in: aText [
 	^ self hasCompletionEntryFor: prefix
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtCompletionStrategy >> isSeparatorCharacter: aCharacter [
 	^ aCharacter isSeparator
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtCompletionStrategy >> minimumPrefixLength [
 	"Minimum length of the prefix before the completion popup appears"
 
