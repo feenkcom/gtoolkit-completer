@@ -1,7 +1,7 @@
 Class {
 	#name : #GtCompleterExamples,
 	#superclass : #Object,
-	#category : 'GToolkit-Completer-Examples'
+	#category : #'GToolkit-Completer-Examples'
 }
 
 { #category : #accessing }
@@ -18,19 +18,20 @@ GtCompleterExamples >> alphabetStrategy [
 { #category : #accessing }
 GtCompleterExamples >> completeAlphabetStrategy [
 	<gtExample>
-	| aCompleter theActions insertAction |
+	| aCompleter actionStream items |
 	
 	aCompleter := self completer.
 	aCompleter defaultStrategy: self alphabetStrategy.
 
-	theActions := aCompleter complete: 'c' asRopedText at: 1.
-	self assert: theActions size equals: 1.
-	self assert: theActions first equals: (GtInsertTextCompletionAction
+	actionStream := aCompleter complete: 'c' asRopedText at: 1.
+	items := (actionStream asyncSimilarCopy take: 10) toArray wait.
+	self assert: items size equals: 1.
+	self assert: items first equals: (GtInsertTextCompletionAction
 			 labeled: 'ccc'
 			 completion: 'cc'
 			 position: 1
 			 from: 1).
-	^ theActions
+	^ actionStream
 ]
 
 { #category : #accessing }
@@ -38,7 +39,6 @@ GtCompleterExamples >> completer [
 	<gtExample>
 	| completer |
 	
-	completer := GtCompleter new.
-	self assert: completer maxCompletionItems equals: 10.		
+	completer := GtCompleter new.	
 	^ completer
 ]

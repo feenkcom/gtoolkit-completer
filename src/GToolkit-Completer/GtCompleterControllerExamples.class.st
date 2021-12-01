@@ -225,8 +225,8 @@ GtCompleterControllerExamples >> scripterWithCompletion [
 { #category : #private }
 GtCompleterControllerExamples >> selectPreviewMatching: aString in: completionController [
 	self pauseForCompletion.
-	completionController completionActions isEmpty
-		ifTrue: [ ^ self error: 'No completion actions' ].
+	completionController completionActionStream asyncSimilarCopy isNotEmpty wait
+		ifFalse: [ ^ self error: 'No completion actions' ].
 	100
 		timesRepeat: [ completionController
 				selectedCompletionItemDo: [ :aCompletionItem | 

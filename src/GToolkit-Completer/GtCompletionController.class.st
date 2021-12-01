@@ -30,19 +30,18 @@ Class {
 		'popupHandlers',
 		'textElementRemovedDelay',
 		'showOnTextModification',
-		'completer'
+		'completer',
+		'actionStream'
 	],
 	#classVars : [
-		'MaxPopupItems',
 		'PopupDelay'
 	],
-	#category : 'GToolkit-Completer-UI'
+	#category : #'GToolkit-Completer-UI'
 }
 
 { #category : #'class initialization' }
 GtCompletionController class >> initialize [
-	PopupDelay := 200 milliSeconds.
-	MaxPopupItems := 100
+	PopupDelay := 200 milliSeconds
 ]
 
 { #category : #'instance creation' }
@@ -209,6 +208,11 @@ GtCompletionController >> completeWithCursor: aBoolean [
 ]
 
 { #category : #'private - accessing' }
+GtCompletionController >> completionActionStream [
+	^ actionStream asyncSimilarCopy ifNil: [ #() asAsyncStream ]
+]
+
+{ #category : #'private - accessing' }
 GtCompletionController >> completionActions [
 	<return: #Collection of: #GtCompletionAction>
 
@@ -216,8 +220,25 @@ GtCompletionController >> completionActions [
 ]
 
 { #category : #'private - accessing' }
-GtCompletionController >> completionActions: aCollectionOfGtCompletionAction [
-	listElement items: aCollectionOfGtCompletionAction
+GtCompletionController >> completionActions: aGtCompletionActionStream [
+	actionStream := aGtCompletionActionStream.
+	listElement
+		itemsProvider:
+			((BrListStreamItemsProvider new)
+				stream: aGtCompletionActionStream;
+				preloadAmount: 1)
+]
+
+{ #category : #private }
+GtCompletionController >> completionActionsWithIndexDo: aBlock [
+	| index stream item |
+	stream := self completionActionStream.
+	index := 1.
+	[ item := stream next wait.
+	item isSome ]
+		whileTrue:
+			[ aBlock value: item value value: index.
+			index := index + 1 ]
 ]
 
 { #category : #'event handling' }
@@ -250,7 +271,11 @@ GtCompletionController >> drillDown [
 
 { #category : #testing }
 GtCompletionController >> hasCompletionActions [
-	^ self completionActions notEmpty and: [ self completionActions size ~= 1 or: [ self completionActions first affectsText ] ]
+	^ self completionActionStream hasNext wait
+		and:
+			[ | stream |
+			stream := self completionActionStream.
+			stream next wait value affectsText or: [ stream hasNext wait ] ]
 ]
 
 { #category : #private }
@@ -302,7 +327,6 @@ GtCompletionController >> initialize [
 	super initialize.
 	
 	completer := GtCompleter new.
-	completer maxCompletionItems: MaxPopupItems.
 
 	drillDownActions := OrderedCollection new.
 	closeOnEmptyCompletion := true.
@@ -481,8 +505,7 @@ GtCompletionController >> popupHandlers [
 
 { #category : #'private - popup' }
 GtCompletionController >> popupPosition [
-	self completionActions
-		do: [ :each | each searchStartPosition ifNotNil: [ :pos | ^ pos ] ].
+	self completionActionsWithIndexDo: [ :each :i | each searchStartPosition ifNotNil: [ :pos | ^ pos ] ].
 	^ nil
 ]
 
@@ -588,7 +611,8 @@ GtCompletionController >> scrollToSelected [
 GtCompletionController >> selectAction: aCompletionAction [
 	"Select the given completion action deselecting the other ones"
 
-	self selectAt: (self completionActions indexOf: aCompletionAction ifAbsent: [ ^ self deselectAll ])
+	self completionActionsWithIndexDo: [ :action :i | action = aCompletionAction ifTrue: [ ^ self selectAt: i ] ].
+	self deselectAll
 ]
 
 { #category : #'private - list selection' }
@@ -642,9 +666,10 @@ GtCompletionController >> selectedCompletionIndexDo: aBlock [
 { #category : #'private - list selection' }
 GtCompletionController >> selectedCompletionItemDo: aBlock [
 	"Evaluate a given block with the currently selected completion item if there is one"
-	
-	self selectedCompletionIndexDo: [ :anIndex |
-		aBlock value: (self completionActions at: anIndex) ]
+
+	self
+		selectedCompletionIndexDo:
+			[ :anIndex | self completionActionsWithIndexDo: [ :action :i | i = anIndex ifTrue: [ ^ aBlock value: action ] ] ]
 ]
 
 { #category : #accessing }
@@ -667,7 +692,7 @@ GtCompletionController >> showPopupAt: anIndex [
 	just ignore the request"
 	textElement isAttachedToSceneGraph ifFalse: [ ^ self ].
 
-	self updatePopupItemsAt: anIndex autoSelect: true andThen: [ :theActions |
+	self updatePopupItemsAt: anIndex autoSelect: true andThen: [ :actionStream |
 		(self isShowingPopup or: [ self hasCompletionActions not ])
 			ifTrue: [ showRequested := false ]
 			ifFalse: [ 
@@ -866,14 +891,14 @@ GtCompletionController >> updatePopupItemsAt: anIndex autoSelect: shouldSelectFi
 	aText := textElement editor textSnapshot.
 
 	completer
-		completeAsyncDo: [ :theActions | 		
+		completeAsyncDo: [ :actionStream | 		
 			textElement enqueueTask: (BlTaskAction new action: [ 
 					 | theActionsToDisplay |
-					 theActionsToDisplay := theActions.
+					 theActionsToDisplay := actionStream cached.
 
 					 (closeOnEmptyCompletion and: [ showRequested not ]) ifTrue: [ 
-						 (theActions anySatisfy: [ :each | each isEmpty ]) ifTrue: [ 
-							 theActionsToDisplay := #(  ) ] ].
+						 ((theActionsToDisplay asyncSimilarCopy take: 3) toArray wait anySatisfy: [ :each | each isEmpty ]) ifTrue: [ 
+							 theActionsToDisplay := #() asAsyncStream ] ].
 
 					 "action is deselected => preview is cancelled"
 					 self deselectAll.

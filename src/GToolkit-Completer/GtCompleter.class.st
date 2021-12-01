@@ -16,10 +16,9 @@ Class {
 		'defaultStrategy',
 		'showRequested',
 		'completerCommand',
-		'completerMonitor',
-		'maxCompletionItems'
+		'completerMonitor'
 	],
-	#category : 'GToolkit-Completer-Model'
+	#category : #'GToolkit-Completer-Model'
 }
 
 { #category : #completion }
@@ -28,9 +27,8 @@ GtCompleter >> complete: aBlText at: anIndex [
 	<return: #Collection of: #GtCompletionAction>
 
 	^ (self strategyAt: anIndex in: aBlText)
-		completionActionsFor: aBlText
+		completionActionStreamFor: aBlText
 		at: anIndex
-		max: self maxCompletionItems
 		requested: showRequested
 ]
 
@@ -43,8 +41,8 @@ GtCompleter >> completeAsyncDo: aBlock in: aBlText at: anIndex [
 		self terminateCompleterCommand.
 
 		completerCommandBlock := [
-			| theActions |
-			theActions := [ self complete: aBlText at: anIndex ] on: Error do: [ :anError |
+			| actionStream |
+			actionStream := [ self complete: aBlText at: anIndex ] on: Error do: [ :anError |
 				anError emit.
 						
 				NonInteractiveTranscript stdout
@@ -54,8 +52,8 @@ GtCompleter >> completeAsyncDo: aBlock in: aBlText at: anIndex [
 					print: anError;
 					cr;
 					flush.
-				anError return: #() ].
-			aBlock value: theActions.
+				anError return: #() asAsyncStream ].
+			aBlock value: actionStream.
 			
 			completerMonitor critical: [
 				completerCommand == aCommand
@@ -85,21 +83,8 @@ GtCompleter >> initialize [
 	super initialize.
 	
 	defaultStrategy := GtCompletionStrategy new.
-	maxCompletionItems := 10.
 	showRequested := false.
 	completerMonitor := Monitor new
-]
-
-{ #category : #accessing }
-GtCompleter >> maxCompletionItems [
-	<return: #Number>
-	
-	^ maxCompletionItems
-]
-
-{ #category : #accessing }
-GtCompleter >> maxCompletionItems: aNumber [
-	maxCompletionItems := aNumber
 ]
 
 { #category : #accessing }

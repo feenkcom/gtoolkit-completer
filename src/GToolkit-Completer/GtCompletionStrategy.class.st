@@ -25,11 +25,6 @@ GtCompletionStrategy >> completionActionStreamFor: aText at: positionInteger req
 ]
 
 { #category : #accessing }
-GtCompletionStrategy >> completionActionsFor: aText at: positionInteger max: maxSize [
-	^ ((self completionActionStreamFor: aText at: positionInteger) take: maxSize) toArray wait
-]
-
-{ #category : #accessing }
 GtCompletionStrategy >> completionActionsFor: aText at: positionInteger max: maxInteger requested: aBoolean [
 	^ ((self
 		completionActionStreamFor: aText
