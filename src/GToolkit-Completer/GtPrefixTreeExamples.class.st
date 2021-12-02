@@ -176,6 +176,18 @@ GtPrefixTreeExamples >> testStream [
 ]
 
 { #category : #'test-iterating' }
+GtPrefixTreeExamples >> testStreamNonExistantElement [
+	<gtExample>
+	
+	| tree stream streamElements |
+	tree := GtPrefixTree withAll: #('self' 'true' 'false' 'nil' 'thisContext').
+	stream := tree asyncStreamStartingWith: 'no'.
+	streamElements := stream asyncSimilarCopy toArray wait.
+	self assert: streamElements isEmpty.
+	^ stream
+]
+
+{ #category : #'test-iterating' }
 GtPrefixTreeExamples >> testWeightedDo [
 	<gtExample>
 	| i |
