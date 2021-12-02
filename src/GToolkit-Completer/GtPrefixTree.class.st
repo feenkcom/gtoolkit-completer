@@ -79,12 +79,14 @@ GtPrefixTree >> ensureChildren [
 
 { #category : #enumerating }
 GtPrefixTree >> findNode: prefixString current: currentPrefix do: aBlock [
-	| index char child |
+	| index child |
 	index := currentPrefix size + prefix size.
 	index < prefixString size
 		ifTrue:
-			[ char := prefixString at: index + 1.
-			child := (children ifNil: [ #() ]) detect: [ :each | each prefix first = char ] ifNone: [ ^ self ].
+			[ child := (children ifNil: [ #() ])
+				detect:
+					[ :each | each prefix beginsWith: (prefixString copyFrom: index + 1 to: (each prefix size + index min: prefixString size)) ]
+				ifNone: [ ^ self ].
 			^ child
 				findNode: prefixString
 				current: currentPrefix , prefix

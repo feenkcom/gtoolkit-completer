@@ -31,7 +31,8 @@ Class {
 		'textElementRemovedDelay',
 		'showOnTextModification',
 		'completer',
-		'actionStream'
+		'actionStream',
+		'showPreviewAttributes'
 	],
 	#classVars : [
 		'PopupDelay'
@@ -156,7 +157,7 @@ GtCompletionController >> applyPreview [
 					action: previewAction;
 					emit.
 
-				previewAction previewOn: self ] ]
+				showPreviewAttributes ifTrue: [ previewAction previewOn: self ] ] ]
 ]
 
 { #category : #'private - preview' }
@@ -170,7 +171,7 @@ GtCompletionController >> cancelPreview [
 					action: previewAction;
 					emit.
 			
-			previewAction undoPreviewOn: self.
+			showPreviewAttributes ifTrue: [ previewAction undoPreviewOn: self ].
 			previewAction := nil ]
 ]
 
@@ -210,13 +211,6 @@ GtCompletionController >> completeWithCursor: aBoolean [
 { #category : #'private - accessing' }
 GtCompletionController >> completionActionStream [
 	^ actionStream asyncSimilarCopy ifNil: [ #() asAsyncStream ]
-]
-
-{ #category : #'private - accessing' }
-GtCompletionController >> completionActions [
-	<return: #Collection of: #GtCompletionAction>
-
-	^ listElement items
 ]
 
 { #category : #'private - accessing' }
@@ -329,8 +323,9 @@ GtCompletionController >> initialize [
 	completer := GtCompleter new.
 
 	drillDownActions := OrderedCollection new.
-	closeOnEmptyCompletion := true.
+	closeOnEmptyCompletion := false.
 	showRequested := false.
+	showPreviewAttributes := false.
 	showOnTextModification := true.
 
 	listElement := self newCompletionList.
@@ -717,6 +712,18 @@ GtCompletionController >> showPreview [
 
 	self cancelPreview.
 	self applyPreview
+]
+
+{ #category : #accessing }
+GtCompletionController >> showPreviewAttributes [
+
+	^ showPreviewAttributes
+]
+
+{ #category : #accessing }
+GtCompletionController >> showPreviewAttributes: aBoolean [
+
+	showPreviewAttributes := aBoolean
 ]
 
 { #category : #'event handling' }
