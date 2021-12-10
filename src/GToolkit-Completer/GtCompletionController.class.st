@@ -420,7 +420,9 @@ GtCompletionController >> newCompletionList [
 		itemStencil: [
 			BrLabel new
 				hMatchParent;
-				aptitude: BrGlamorousListLabelAptitude + BrGlamorousListItemAptitude ];
+				constraintsDo: [ :c | c minWidth: 150 ];
+				aptitude: BrGlamorousLabelAptitude + BrGlamorousListItemAptitude;
+				padding: (BlInsets left: 10 right: 10) ];
 		itemDataBinder: [ :eachLabel :eachCompletion | eachLabel text: eachCompletion displayString ]
 ]
 
