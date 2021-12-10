@@ -414,8 +414,7 @@ GtCompletionController >> newCompletionList [
 	<return: #BrSimpleList>
 
 	^ BrSimpleList new
-		hMatchParent;
-		vFitContentLimited;
+		fitContentLimited;
 		aptitudeDo: [ :aListLook | aListLook listElement constraints maxHeight: 200 ];
 		items: #();
 		itemStencil: [
@@ -433,7 +432,7 @@ GtCompletionController >> newPopupElement [
 		background: Color white;
 		constraintsDo: [ :c |
 			c vertical fitContentLimited.
-			c horizontal exact: 200 ]
+			c horizontal fitContentLimited ]
 ]
 
 { #category : #private }
