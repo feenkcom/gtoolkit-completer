@@ -102,10 +102,6 @@ GtCompletionController >> activeShortcutHandler [
 				action: [ self undoDrillDown ]);
 		addShortcut:
 			(BlShortcutWithAction new
-				combination: BlKeyCombination return;
-				action: [ self completeWithCursor: true ]);
-		addShortcut:
-			(BlShortcutWithAction new
 				combination: BlKeyCombination tab;
 				action: [ self completeWithCursor: true ]);
 		addShortcut:
