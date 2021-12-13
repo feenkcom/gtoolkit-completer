@@ -88,6 +88,16 @@ GtCompleter >> initialize [
 ]
 
 { #category : #accessing }
+GtCompleter >> showRequested [
+	^ showRequested
+]
+
+{ #category : #accessing }
+GtCompleter >> showRequested: aBoolean [
+	showRequested := aBoolean
+]
+
+{ #category : #accessing }
 GtCompleter >> strategyAt: anIndex in: aBlText [
 	"Choose a completion strategy for a given text index within a text"
 	| aStrategy |

@@ -24,7 +24,6 @@ Class {
 		'announcer',
 		'lostFocusDelay',
 		'closeOnEmptyCompletion',
-		'showRequested',
 		'textEditorHandlers',
 		'textElementFilters',
 		'popupHandlers',
@@ -145,7 +144,8 @@ GtCompletionController >> addAttachmentAttributeAt: anIndex [
 	| position attributes |
 	position := self popupPosition ifNil: [ anIndex ].
 	"popupPosition may exceed the text size, see https://github.com/feenkcom/gtoolkit/issues/1227"
-	position := position min: self textEditor text size.
+	self textEditor text isEmpty ifTrue: [ ^ self ].
+	position := (position min: self textEditor text size) max: 1.
 	self textEditor text clearAttributes: [ :each | each == attribute ].
 	attributes := OrderedCollection with: attribute.
 	(self textEditor text from: position to: position)
@@ -344,7 +344,6 @@ GtCompletionController >> initialize [
 
 	drillDownActions := OrderedCollection new.
 	closeOnEmptyCompletion := false.
-	showRequested := false.
 	showPreviewAttributes := false.
 	showOnTextModification := true.
 
@@ -572,7 +571,7 @@ GtCompletionController >> removeAttachmentAttribute [
 GtCompletionController >> removePopup [
 	self cancelPreview.
 	self terminatePopupDelay.
-	showRequested := false.
+	completer showRequested: false.
 	overlay detach.
 	overlay removeFromParent.
 	self removeAttachmentAttribute
@@ -708,9 +707,9 @@ GtCompletionController >> showPopupAt: anIndex [
 	just ignore the request"
 	textElement isAttachedToSceneGraph ifFalse: [ ^ self ].
 
-	self updatePopupItemsAt: anIndex autoSelect: true andThen: [ :actionStream |
+	self updatePopupItemsAt: anIndex autoSelect: true andThen: [ :stream |
 		(self isShowingPopup or: [ self hasCompletionActions not ])
-			ifTrue: [ showRequested := false ]
+			ifTrue: [ completer showRequested: false ]
 			ifFalse: [ 
 				self
 					assert: [ overlay isAttachedToSceneGraph not ]
@@ -752,7 +751,7 @@ GtCompletionController >> startCompletion [
 	| location |
 	self textEditor cursors cursorsCount = 1
 		ifFalse: [ ^ self ].
-	showRequested := true.
+	completer showRequested: true.
 	location := self textEditor cursors first position.
 	self showPopupAt: location
 ]
@@ -919,12 +918,12 @@ GtCompletionController >> updatePopupItemsAt: anIndex autoSelect: shouldSelectFi
 	aText := textElement editor textSnapshot.
 
 	completer
-		completeAsyncDo: [ :actionStream | 		
+		completeAsyncDo: [ :stream | 		
 			textElement enqueueTask: (BlTaskAction new action: [ 
 					 | theActionsToDisplay |
-					 theActionsToDisplay := actionStream cached.
+					 theActionsToDisplay := stream cached.
 
-					 (closeOnEmptyCompletion and: [ showRequested not ]) ifTrue: [ 
+					 (closeOnEmptyCompletion and: [ completer showRequested not ]) ifTrue: [ 
 						 ((theActionsToDisplay asyncSimilarCopy take: 3) toArray wait anySatisfy: [ :each | each isEmpty ]) ifTrue: [ 
 							 theActionsToDisplay := #() asAsyncStream ] ].
 
