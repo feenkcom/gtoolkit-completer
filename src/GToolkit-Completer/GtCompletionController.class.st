@@ -35,14 +35,28 @@ Class {
 		'showPreviewAttributes'
 	],
 	#classVars : [
+		'CompleteOnReturn',
 		'PopupDelay'
 	],
 	#category : #'GToolkit-Completer-UI'
 }
 
+{ #category : #accessing }
+GtCompletionController class >> completeOnReturn [
+	"Return true if completion should complete when Enter is pressed, false otherwise"
+
+	^ CompleteOnReturn
+]
+
+{ #category : #accessing }
+GtCompletionController class >> completeOnReturn: aBoolean [
+	CompleteOnReturn := aBoolean
+]
+
 { #category : #'class initialization' }
 GtCompletionController class >> initialize [
-	PopupDelay := 200 milliSeconds
+	PopupDelay := 200 milliSeconds.
+	CompleteOnReturn := false
 ]
 
 { #category : #'instance creation' }
@@ -113,6 +127,16 @@ GtCompletionController >> activeShortcutHandler [
 			(BlShortcutWithAction new
 				combination: BlKeyCombination escape;
 				action: [ self removePopup ]).
+
+	self class completeOnReturn
+		ifTrue: [ activeShortcutHandler addShortcut:
+			(BlShortcutWithAction new
+				repeatable: false;
+				combination: BlKeyCombination return;
+				action: [ :event |
+					event consumed: true.
+					self completeWithCursor: true ]) ].
+
 	^ activeShortcutHandler
 ]
 
