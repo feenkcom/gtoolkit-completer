@@ -437,6 +437,7 @@ GtCompletionController >> newCompletionList [
 	<return: #BrSimpleList>
 
 	^ BrSimpleList new
+		id: #'completion-list';
 		fitContentLimited;
 		aptitudeDo: [ :aListLook | aListLook listElement constraints maxHeight: 200 ];
 		items: #();
