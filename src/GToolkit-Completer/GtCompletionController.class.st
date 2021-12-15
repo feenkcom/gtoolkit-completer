@@ -16,7 +16,6 @@ Class {
 	#instVars : [
 		'completionDelay',
 		'textElement',
-		'attribute',
 		'overlay',
 		'listElement',
 		'previewAction',
@@ -139,29 +138,6 @@ GtCompletionController >> activeShortcutHandler [
 	^ activeShortcutHandler
 ]
 
-{ #category : #'private - popup' }
-GtCompletionController >> addAttachmentAttributeAt: anIndex [
-
-	| position attributes height |
-	position := self popupPosition ifNil: [ anIndex ].
-	"popupPosition may exceed the text size, see https://github.com/feenkcom/gtoolkit/issues/1227"
-	self textEditor text isEmpty ifTrue: [ 
-		height := textElement padding top + (textElement children isEmpty
-			           ifTrue: [ 18 ]
-			           ifFalse: [ textElement children first height + 2 ]).
-		overlay relocate:
-			(textElement localPointToGlobal: textElement padding left @ height).
-		^ self ].
-	position := (position min: self textEditor text size) max: 1.
-	self textEditor text clearAttributes: [ :each | each == attribute ].
-	attributes := OrderedCollection with: attribute.
-	(self textEditor text from: position to: position)
-		clearAttributes: [ :each | 
-			attributes add: each.
-			true ];
-		attributes: attributes
-]
-
 { #category : #'private - accessing' }
 GtCompletionController >> announcer [
 	^ announcer ifNil: [ announcer := Announcer new ]
@@ -264,9 +240,9 @@ GtCompletionController >> completionActionsWithIndexDo: aBlock [
 
 { #category : #'event handling' }
 GtCompletionController >> cursorMoved: anEvent [
-	anEvent newIndex = anEvent oldIndex
-		ifTrue: [ ^ self ].
+	anEvent newIndex = anEvent oldIndex ifTrue: [ ^ self ].
 	(anEvent dueTo isDeleter or: [ anEvent dueTo isInserter ])
+		ifTrue: [ textElement enqueueTask: (BlTaskAction new action: [ self isShowingPopup ifTrue: [ self movePopupToCursor ] ]) ]
 		ifFalse: [ self removePopup ]
 ]
 
@@ -365,9 +341,7 @@ GtCompletionController >> initialize [
 	lostFocusDelay delay: 5 milliSeconds.
 
 	textElementRemovedDelay := BlDelayedTaskAction new.
-	textElementRemovedDelay delay: 50 milliSeconds.
-
-	attribute := GtCompletionAttachmentAttribute for: self
+	textElementRemovedDelay delay: 50 milliSeconds
 ]
 
 { #category : #installation }
@@ -437,6 +411,13 @@ GtCompletionController >> moveCursorToNextUncompletedItem: direction [
 		ifNotNil: [ :position | 
 			self textEditor moveCursorTo: position.
 			true ]
+]
+
+{ #category : #'private - popup' }
+GtCompletionController >> movePopupToCursor [
+	textElement
+		allChildrenBreadthFirstDetect: [ :each | each isKindOf: BrCursorElement ]
+		ifFound: [ :each | overlay relocate: (each localPointToGlobal: 0 @ (each height + 1)) ]
 ]
 
 { #category : #'private - instance creation' }
@@ -571,18 +552,12 @@ GtCompletionController >> processTabKey: forwardBoolean [
 ]
 
 { #category : #'private - popup' }
-GtCompletionController >> removeAttachmentAttribute [
-	self textEditor text clearAttributes: [ :each | each == attribute ]
-]
-
-{ #category : #'private - popup' }
 GtCompletionController >> removePopup [
 	self cancelPreview.
 	self terminatePopupDelay.
 	completer showRequested: false.
 	overlay detach.
-	overlay removeFromParent.
-	self removeAttachmentAttribute
+	overlay removeFromParent
 ]
 
 { #category : #'private - popup' }
@@ -728,7 +703,7 @@ GtCompletionController >> showPopupAt: anIndex [
 						textElement isAttachedToSceneGraph ]
 					description: [ 'Text editor must be in the scene graph' ].
 
-				self addAttachmentAttributeAt: anIndex.
+				self movePopupToCursor.
 
 				textElement space root addChild: overlay ] ]
 ]
