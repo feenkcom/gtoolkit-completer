@@ -55,7 +55,7 @@ GtCompletionController class >> completeOnReturn: aBoolean [
 { #category : #'class initialization' }
 GtCompletionController class >> initialize [
 	PopupDelay := 200 milliSeconds.
-	CompleteOnReturn := false
+	CompleteOnReturn := true
 ]
 
 { #category : #'instance creation' }
