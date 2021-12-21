@@ -2,10 +2,10 @@ Class {
 	#name : #GtCompletionAction,
 	#superclass : #Object,
 	#instVars : [
-		'label',
-		'partial'
+		'partial',
+		'displayText'
 	],
-	#category : 'GToolkit-Completer-Actions'
+	#category : #'GToolkit-Completer-Actions'
 }
 
 { #category : #'instance creation' }
@@ -33,8 +33,8 @@ GtCompletionAction >> delete: from to: to on: aCompletionController [
 ]
 
 { #category : #displaying }
-GtCompletionAction >> displayString [
-	^ label
+GtCompletionAction >> displayText [
+	^ displayText
 ]
 
 { #category : #executing }
@@ -48,7 +48,7 @@ GtCompletionAction >> finishCompletionOn: aCompletionController moveCursor: aBoo
 
 { #category : #comparing }
 GtCompletionAction >> hash [
-	^ self class hash bitXor: label hash
+	^ self class hash bitXor: self label hash
 ]
 
 { #category : #'initialize-release' }
@@ -79,12 +79,12 @@ GtCompletionAction >> isPartial [
 
 { #category : #accessing }
 GtCompletionAction >> label [
-	^ label
+	^ displayText asString
 ]
 
 { #category : #'initialize-release' }
 GtCompletionAction >> label: aString [
-	label := aString
+	displayText := aString asRopedText
 ]
 
 { #category : #'initialize-release' }

@@ -14,7 +14,7 @@ GtCompletionStrategy >> completionActionStreamFor: aText at: positionInteger [
 		collect:
 			[ :each | 
 			GtInsertTextCompletionAction
-				labeled: each
+				labeled: (self labelFor: each withSearch: prefix)
 				completion: (each allButFirst: prefix size)
 				position: positionInteger ]
 ]
@@ -76,9 +76,34 @@ GtCompletionStrategy >> isSeparatorCharacter: aCharacter [
 	^ aCharacter isSeparator
 ]
 
+{ #category : #private }
+GtCompletionStrategy >> labelFor: aString withSearch: subString [
+	| text attributes |
+	attributes := {(BlTextDecorationAttribute new)
+			color: BrGlamorousColors textHighlightColor;
+			thickness: 3;
+			underline}.
+	text := aString asRopedText glamorousCodeFont.
+	(self subsequenceIndices: subString of: aString) do: [ :i | (text from: i - 1 to: i - 1) attributes: attributes ].
+	^ text
+]
+
 { #category : #accessing }
 GtCompletionStrategy >> minimumPrefixLength [
 	"Minimum length of the prefix before the completion popup appears"
 
 	^ 1
+]
+
+{ #category : #private }
+GtCompletionStrategy >> subsequenceIndices: subString of: completeString [
+	| i results |
+	results := OrderedCollection new: subString size.
+	i := 1.
+	subString
+		do:
+			[ :char | 
+			i := (completeString indexOf: char startingAt: i) + 1.
+			i > 1 ifTrue: [ results add: i ] ifFalse: [ ^ #() ] ].
+	^ results
 ]

@@ -442,19 +442,24 @@ GtCompletionController >> moveCursorToNextUncompletedItem: direction [
 { #category : #'private - instance creation' }
 GtCompletionController >> newCompletionList [
 	<return: #BrSimpleList>
-
-	^ BrSimpleList new
+	
+	^ (BrSimpleList new)
 		id: #'completion-list';
 		fitContentLimited;
 		aptitudeDo: [ :aListLook | aListLook listElement constraints maxHeight: 200 ];
 		items: #();
-		itemStencil: [
-			BrLabel new
-				hMatchParent;
-				constraintsDo: [ :c | c minWidth: 150 ];
-				aptitude: BrGlamorousLabelAptitude + BrGlamorousListItemAptitude;
-				padding: (BlInsets left: 10 right: 10) ];
-		itemDataBinder: [ :eachLabel :eachCompletion | eachLabel text: eachCompletion displayString ]
+		itemStencil:
+				[ (BrLabel new)
+						hMatchParent;
+						constraintsDo: [ :c | c minWidth: 150 ];
+						aptitude: BrGlamorousLabelAptitude + BrGlamorousListItemAptitude;
+						padding:
+								(BlInsets
+										top: 1
+										left: 10
+										bottom: 1
+										right: 10) ];
+		itemDataBinder: [ :eachLabel :eachCompletion | eachLabel text: eachCompletion displayText ]
 ]
 
 { #category : #'private - instance creation' }
