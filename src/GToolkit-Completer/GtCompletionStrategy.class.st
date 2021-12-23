@@ -84,7 +84,7 @@ GtCompletionStrategy >> labelFor: aString withSearch: subString [
 			thickness: 3;
 			underline}.
 	text := aString asRopedText glamorousCodeFont.
-	(self subsequenceIndices: subString of: aString) do: [ :i | (text from: i - 1 to: i - 1) attributes: attributes ].
+	(self subsequenceIndices: subString of: aString) do: [ :i | (text from: i to: i) attributes: attributes ].
 	^ text
 ]
 
@@ -99,11 +99,11 @@ GtCompletionStrategy >> minimumPrefixLength [
 GtCompletionStrategy >> subsequenceIndices: subString of: completeString [
 	| i results |
 	results := OrderedCollection new: subString size.
-	i := 1.
+	i := 0.
 	subString
 		do:
 			[ :char | 
-			i := (completeString indexOf: char startingAt: i) + 1.
-			i > 1 ifTrue: [ results add: i ] ifFalse: [ ^ #() ] ].
+			i := completeString indexOf: char startingAt: i + 1.
+			i > 0 ifTrue: [ results add: i ] ifFalse: [ ^ #() ] ].
 	^ results
 ]
