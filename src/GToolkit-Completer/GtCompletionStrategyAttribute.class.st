@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'strategy'
 	],
-	#category : 'GToolkit-Completer'
+	#category : #'GToolkit-Completer-Attributes'
 }
 
 { #category : #comparing }

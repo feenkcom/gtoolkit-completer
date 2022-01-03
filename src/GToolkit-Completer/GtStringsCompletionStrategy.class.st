@@ -1,11 +1,11 @@
 Class {
 	#name : #GtStringsCompletionStrategy,
-	#superclass : #GtCompletionStrategy,
+	#superclass : #GtStreamedCompletionStrategy,
 	#instVars : [
 		'completions',
 		'completionsBlock'
 	],
-	#category : #'GToolkit-Completer'
+	#category : #'GToolkit-Completer-Strategies'
 }
 
 { #category : #private }
@@ -28,11 +28,6 @@ GtStringsCompletionStrategy >> completions [
 { #category : #'initialize-release' }
 GtStringsCompletionStrategy >> completions: prefixTreeOrBlock [
 	completionsBlock := prefixTreeOrBlock
-]
-
-{ #category : #accessing }
-GtStringsCompletionStrategy >> first: anInteger startingWith: aString [
-	^ self completions first: anInteger startingWith: aString
 ]
 
 { #category : #'gt-extensions' }

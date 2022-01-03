@@ -5,7 +5,7 @@ Class {
 		'element',
 		'controller'
 	],
-	#category : 'GToolkit-Completer'
+	#category : #'GToolkit-Completer-Attributes'
 }
 
 { #category : #'instance creation' }

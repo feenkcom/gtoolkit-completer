@@ -8,7 +8,7 @@ Class {
 		'prefix',
 		'stack'
 	],
-	#category : #'GToolkit-Completer'
+	#category : #'GToolkit-Completer-PrefixTree'
 }
 
 { #category : #'instance creation' }

@@ -7,7 +7,7 @@ Class {
 		'children',
 		'maxWeight'
 	],
-	#category : #'GToolkit-Completer'
+	#category : #'GToolkit-Completer-PrefixTree'
 }
 
 { #category : #'instance creation' }
