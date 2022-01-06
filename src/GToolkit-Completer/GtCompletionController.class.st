@@ -30,7 +30,7 @@ Class {
 		'textElementRemovedDelay',
 		'showOnTextModification',
 		'completer',
-		'actionStream',
+		'completionResult',
 		'showPreviewAttributes'
 	],
 	#classVars : [
@@ -143,7 +143,7 @@ GtCompletionController >> activeShortcutHandler [
 GtCompletionController >> addAttachmentAttributeAt: anIndex [
 
 	| position attributes height |
-	position := self popupPosition ifNil: [ anIndex ].
+	position := self completionResult popupPosition ifNil: [ anIndex ].
 	"popupPosition may exceed the text size, see https://github.com/feenkcom/gtoolkit/issues/1227"
 	self textEditor text isEmpty ifTrue: [ 
 		height := textElement padding top + (textElement children isEmpty
@@ -212,6 +212,12 @@ GtCompletionController >> closeOnEmptyCompletion: aBoolean [
 	closeOnEmptyCompletion := aBoolean
 ]
 
+{ #category : #popup }
+GtCompletionController >> completeWithAction: aGtCompletionAction [
+	previewAction := aGtCompletionAction.
+	self completeWithCursor: true
+]
+
 { #category : #private }
 GtCompletionController >> completeWithCursor: aBoolean [
 
@@ -236,30 +242,8 @@ GtCompletionController >> completeWithCursor: aBoolean [
 ]
 
 { #category : #'private - accessing' }
-GtCompletionController >> completionActionStream [
-	^ actionStream asyncSimilarCopy ifNil: [ #() asAsyncStream ]
-]
-
-{ #category : #'private - accessing' }
-GtCompletionController >> completionActions: aGtCompletionActionStream [
-	actionStream := aGtCompletionActionStream.
-	listElement
-		itemsProvider:
-			((BrListStreamItemsProvider new)
-				stream: aGtCompletionActionStream;
-				preloadAmount: 1)
-]
-
-{ #category : #private }
-GtCompletionController >> completionActionsWithIndexDo: aBlock [
-	| index stream item |
-	stream := self completionActionStream.
-	index := 1.
-	[ item := stream next wait.
-	item isSome ]
-		whileTrue:
-			[ aBlock value: item value value: index.
-			index := index + 1 ]
+GtCompletionController >> completionResult [
+	^ completionResult ifNil: [ GtCompletionResult empty ]
 ]
 
 { #category : #'event handling' }
@@ -288,15 +272,6 @@ GtCompletionController >> drillDown [
 			previewAction drillDownOn: self.
 			previewAction := nil.
 			self updatePopupItemsAt: self position autoSelect: true ]
-]
-
-{ #category : #testing }
-GtCompletionController >> hasCompletionActions [
-	^ self completionActionStream hasNext wait
-		and:
-			[ | stream |
-			stream := self completionActionStream.
-			stream next wait value affectsText or: [ stream hasNext wait ] ]
 ]
 
 { #category : #private }
@@ -520,6 +495,13 @@ GtCompletionController >> onSelectionChanged: anEvent [
 					textElement requestFocus ] ]
 ]
 
+{ #category : #popup }
+GtCompletionController >> popupElement: anElement [
+	(overlay children size = 1 and: [ overlay children first == anElement ]) ifTrue: [ ^ self ].
+	overlay removeChildren.
+	overlay addChild: anElement
+]
+
 { #category : #'private - installation' }
 GtCompletionController >> popupHandlers [
 	^ popupHandlers
@@ -529,12 +511,6 @@ GtCompletionController >> popupHandlers [
 			(BlEventHandler
 				on: BlBlurEvent
 				do: [ :event | self removePopupOnLostFocus ])} ]
-]
-
-{ #category : #'private - popup' }
-GtCompletionController >> popupPosition [
-	self completionActionsWithIndexDo: [ :each :i | each searchStartPosition ifNotNil: [ :pos | ^ pos ] ].
-	^ nil
 ]
 
 { #category : #private }
@@ -590,6 +566,11 @@ GtCompletionController >> removePopup [
 	self removeAttachmentAttribute
 ]
 
+{ #category : #popup }
+GtCompletionController >> removePopupElement [
+	overlay removeChildren
+]
+
 { #category : #'private - popup' }
 GtCompletionController >> removePopupOnAnchorRemoved [
 	textElementRemovedDelay
@@ -639,7 +620,7 @@ GtCompletionController >> scrollToSelected [
 GtCompletionController >> selectAction: aCompletionAction [
 	"Select the given completion action deselecting the other ones"
 
-	self completionActionsWithIndexDo: [ :action :i | action = aCompletionAction ifTrue: [ ^ self selectAt: i ] ].
+	self completionResult  completionActionsWithIndexDo: [ :action :i | action = aCompletionAction ifTrue: [ ^ self selectAt: i ] ].
 	self deselectAll
 ]
 
@@ -697,7 +678,27 @@ GtCompletionController >> selectedCompletionItemDo: aBlock [
 
 	self
 		selectedCompletionIndexDo:
-			[ :anIndex | self completionActionsWithIndexDo: [ :action :i | i = anIndex ifTrue: [ ^ aBlock value: action ] ] ]
+			[ :anIndex | self completionResult completionActionsWithIndexDo: [ :action :i | i = anIndex ifTrue: [ ^ aBlock value: action ] ] ]
+]
+
+{ #category : #popup }
+GtCompletionController >> showListItems: aStream [
+	| theActionsToDisplay |
+	self popupElement: listElement.
+		
+	"action is deselected => preview is cancelled"
+	self deselectAll.
+	theActionsToDisplay := aStream.
+	(self closeOnEmptyCompletion and: [ completer showRequested not ])
+		ifTrue:
+			[ ((theActionsToDisplay asyncSimilarCopy take: 3) toArray wait anySatisfy: [ :each | each isEmpty ])
+				ifTrue: [ theActionsToDisplay := #() asAsyncStream ] ].
+	listElement
+		itemsProvider:
+			((BrListStreamItemsProvider new)
+				stream: theActionsToDisplay;
+				preloadAmount: 1).
+	self completionResult hasCompletionActions ifTrue: [ self selectFirst ] ifFalse: [ self removePopup ]
 ]
 
 { #category : #accessing }
@@ -720,8 +721,8 @@ GtCompletionController >> showPopupAt: anIndex [
 	just ignore the request"
 	textElement isAttachedToSceneGraph ifFalse: [ ^ self ].
 
-	self updatePopupItemsAt: anIndex autoSelect: true andThen: [ :stream |
-		(self isShowingPopup or: [ self hasCompletionActions not ])
+	self updatePopupItemsAt: anIndex autoSelect: true andThen: [
+		(self isShowingPopup or: [ self completionResult hasCompletionActions not ])
 			ifTrue: [ completer showRequested: false ]
 			ifFalse: [ 
 				self
@@ -926,30 +927,18 @@ GtCompletionController >> updatePopupItemsAt: anIndex autoSelect: shouldSelectFi
 
 { #category : #'private - popup' }
 GtCompletionController >> updatePopupItemsAt: anIndex autoSelect: shouldSelectFirst andThen: aBlock [
-
 	| aText |
 	aText := textElement editor textSnapshot.
-
 	completer
-		completeAsyncDo: [ :stream | 		
-			textElement enqueueTask: (BlTaskAction new action: [ 
-					 | theActionsToDisplay |
-					 theActionsToDisplay := stream cached.
-
-					 (closeOnEmptyCompletion and: [ completer showRequested not ]) ifTrue: [ 
-						 ((theActionsToDisplay asyncSimilarCopy take: 3) toArray wait anySatisfy: [ :each | each isEmpty ]) ifTrue: [ 
-							 theActionsToDisplay := #() asAsyncStream ] ].
-
-					 "action is deselected => preview is cancelled"
-					 self deselectAll.
-					 self completionActions: theActionsToDisplay.
-
-					 self hasCompletionActions
-						 ifTrue: [ 
-							 shouldSelectFirst ifTrue: [ "first item is selected => preview is shown" 
-								 self selectFirst ] ]
-						 ifFalse: [ self removePopup ].
-					aBlock cull: theActionsToDisplay ]) ]
+		completeAsyncDo:
+			[ :result | 
+			completionResult := result.
+			textElement
+				enqueueTask:
+					(BlTaskAction new
+						action:
+							[ result showOn: self.
+							aBlock cull: result ]) ]
 		in: aText
 		at: anIndex
 ]

@@ -9,7 +9,7 @@ Class {
 		'maxHeap',
 		'nodeHeap'
 	],
-	#category : #'GToolkit-Completer'
+	#category : #'GToolkit-Completer-PrefixTree'
 }
 
 { #category : #'instance creation' }

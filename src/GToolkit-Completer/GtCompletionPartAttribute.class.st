@@ -1,7 +1,7 @@
 Class {
 	#name : #GtCompletionPartAttribute,
 	#superclass : #BlTextAttribute,
-	#category : 'GToolkit-Completer'
+	#category : #'GToolkit-Completer-Attributes'
 }
 
 { #category : #'initialize-release' }

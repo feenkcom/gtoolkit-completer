@@ -1,36 +1,8 @@
 Class {
 	#name : #GtCompletionStrategy,
 	#superclass : #Object,
-	#category : #'GToolkit-Completer'
+	#category : #'GToolkit-Completer-Strategies'
 }
-
-{ #category : #accessing }
-GtCompletionStrategy >> completionActionStreamFor: aText at: positionInteger [
-	| prefix |
-	prefix := self completionPrefixAt: positionInteger in: aText.
-	(prefix isNil or: [ prefix size < self minimumPrefixLength or: [ (self hasCompletionEntryFor: prefix) not ] ])
-		ifTrue: [ ^ #() asAsyncStream ].
-	^ (self completionStringStreamStartingWith: prefix)
-		collect:
-			[ :each | 
-			GtInsertTextCompletionAction
-				labeled: (self labelFor: each withSearch: prefix)
-				completion: (each allButFirst: prefix size)
-				position: positionInteger ]
-]
-
-{ #category : #accessing }
-GtCompletionStrategy >> completionActionStreamFor: aText at: positionInteger requested: aBoolean [
-	^ self completionActionStreamFor: aText at: positionInteger
-]
-
-{ #category : #accessing }
-GtCompletionStrategy >> completionActionsFor: aText at: positionInteger max: maxInteger requested: aBoolean [
-	^ ((self
-		completionActionStreamFor: aText
-		at: positionInteger
-		requested: aBoolean) take: maxInteger) toArray wait
-]
 
 { #category : #accessing }
 GtCompletionStrategy >> completionPrefixAt: anIndex in: blText [
@@ -47,19 +19,14 @@ GtCompletionStrategy >> completionPrefixAt: anIndex in: blText [
 	^ (blText copyFrom: 1 to: anIndex) asString
 ]
 
-{ #category : #accessing }
-GtCompletionStrategy >> completionStringStreamStartingWith: aString [
-	^ #() asAsyncStream
-]
-
-{ #category : #accessing }
-GtCompletionStrategy >> first: anInteger startingWith: aString [
-	^ #()
+{ #category : #completing }
+GtCompletionStrategy >> completionResultFor: aText at: positionInteger requested: aBoolean [
+	^ GtCompletionResult empty
 ]
 
 { #category : #testing }
 GtCompletionStrategy >> hasCompletionEntryFor: aString [
-	^ false
+	^ true
 ]
 
 { #category : #testing }
@@ -74,6 +41,11 @@ GtCompletionStrategy >> hasCompletionsAt: anInteger in: aText [
 { #category : #testing }
 GtCompletionStrategy >> isSeparatorCharacter: aCharacter [
 	^ aCharacter isSeparator
+]
+
+{ #category : #testing }
+GtCompletionStrategy >> isSubsequence: subString of: completeString [
+	^ (self subsequenceIndices: subString of: completeString) size = subString size
 ]
 
 { #category : #private }

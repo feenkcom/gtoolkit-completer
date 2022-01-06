@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'string'
 	],
-	#category : 'GToolkit-Completer'
+	#category : #'GToolkit-Completer-Attributes'
 }
 
 { #category : #'instance creation' }

@@ -1,7 +1,7 @@
 Class {
 	#name : #GtPreviewDeletionAttribute,
 	#superclass : #BlTextAttribute,
-	#category : 'GToolkit-Completer'
+	#category : #'GToolkit-Completer-Attributes'
 }
 
 { #category : #drawing }

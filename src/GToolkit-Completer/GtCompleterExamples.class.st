@@ -18,20 +18,20 @@ GtCompleterExamples >> alphabetStrategy [
 { #category : #accessing }
 GtCompleterExamples >> completeAlphabetStrategy [
 	<gtExample>
-	| aCompleter actionStream items |
+	| aCompleter result items |
 	
 	aCompleter := self completer.
 	aCompleter defaultStrategy: self alphabetStrategy.
 
-	actionStream := aCompleter complete: 'c' asRopedText at: 1.
-	items := (actionStream asyncSimilarCopy take: 10) toArray wait.
+	result := aCompleter complete: 'c' asRopedText at: 1.
+	items := (result stream asyncSimilarCopy take: 10) toArray wait.
 	self assert: items size equals: 1.
 	self assert: items first equals: (GtInsertTextCompletionAction
 			 labeled: 'ccc'
 			 completion: 'cc'
 			 position: 1
 			 from: 1).
-	^ actionStream
+	^ result
 ]
 
 { #category : #accessing }

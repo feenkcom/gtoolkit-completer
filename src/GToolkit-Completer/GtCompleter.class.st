@@ -24,10 +24,10 @@ Class {
 { #category : #completion }
 GtCompleter >> complete: aBlText at: anIndex [
 	"Compute completion actions syncronously for a given text and an index"
-	<return: #Collection of: #GtCompletionAction>
+	<return: #GtCompletionResult>
 
 	^ (self strategyAt: anIndex in: aBlText)
-		completionActionStreamFor: aBlText
+		completionResultFor: aBlText
 		at: anIndex
 		requested: showRequested
 ]
@@ -41,8 +41,8 @@ GtCompleter >> completeAsyncDo: aBlock in: aBlText at: anIndex [
 		self terminateCompleterCommand.
 
 		completerCommandBlock := [
-			| actionStream |
-			actionStream := [ self complete: aBlText at: anIndex ] on: Error do: [ :anError |
+			| result |
+			result := [ self complete: aBlText at: anIndex ] on: Error do: [ :anError |
 				anError emit.
 						
 				NonInteractiveTranscript stdout
@@ -52,8 +52,8 @@ GtCompleter >> completeAsyncDo: aBlock in: aBlText at: anIndex [
 					print: anError;
 					cr;
 					flush.
-				anError return: #() asAsyncStream ].
-			aBlock value: actionStream.
+				anError return: GtCompletionResult empty ].
+			aBlock value: result.
 			
 			completerMonitor critical: [
 				completerCommand == aCommand
@@ -82,7 +82,7 @@ GtCompleter >> defaultStrategy: aGtCompletionStrategy [
 GtCompleter >> initialize [
 	super initialize.
 	
-	defaultStrategy := GtCompletionStrategy new.
+	defaultStrategy := GtStreamedCompletionStrategy new.
 	showRequested := false.
 	completerMonitor := Monitor new
 ]
