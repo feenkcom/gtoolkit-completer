@@ -477,7 +477,8 @@ GtCompletionController >> nextUncompletedItem: direction [
 { #category : #'private - cursor' }
 GtCompletionController >> onAttached: anElement [
 	overlay attachTo: anElement.
-	overlay visibility: BlVisibility visible
+	overlay visibility: BlVisibility visible.
+	textElementRemovedDelay stop
 ]
 
 { #category : #'private - list selection' }
@@ -573,10 +574,7 @@ GtCompletionController >> removePopupElement [
 
 { #category : #'private - popup' }
 GtCompletionController >> removePopupOnAnchorRemoved [
-	textElementRemovedDelay
-		action: [
-			(textElement isAttachedToSceneGraph)
-				ifFalse: [ self removePopup ] ].
+	textElementRemovedDelay action: [ self removePopup ].
 	textElementRemovedDelay element: overlay.
 	textElementRemovedDelay startOrRestart
 ]
