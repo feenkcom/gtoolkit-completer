@@ -202,6 +202,20 @@ GtCompletionController >> cancelPreview [
 			previewAction := nil ]
 ]
 
+{ #category : #'private - list selection' }
+GtCompletionController >> clickedLabel: event [
+	| clickedItem |
+	clickedItem := event currentTarget userData at: #completion ifAbsent: [  ].
+	clickedItem ifNil: [ ^ self ].
+	listElement
+		selectedItemDo:
+			[ :each | 
+			each == clickedItem
+				ifTrue:
+					[ event consumed: true.
+					self completeFromClick ] ]
+]
+
 { #category : #accessing }
 GtCompletionController >> closeOnEmptyCompletion [
 	^ closeOnEmptyCompletion
@@ -212,6 +226,13 @@ GtCompletionController >> closeOnEmptyCompletion: aBoolean [
 	closeOnEmptyCompletion := aBoolean
 ]
 
+{ #category : #'private - list selection' }
+GtCompletionController >> completeFromClick [
+	self showPreview.
+	self completeWithCursor: true.
+	textElement requestFocus
+]
+
 { #category : #popup }
 GtCompletionController >> completeWithAction: aGtCompletionAction [
 	previewAction := aGtCompletionAction.
@@ -220,25 +241,24 @@ GtCompletionController >> completeWithAction: aGtCompletionAction [
 
 { #category : #private }
 GtCompletionController >> completeWithCursor: aBoolean [
-
-	self ignoreTextEventsWhile: [ 
-		| partial |
-		partial := false.
-		previewAction notNil ifTrue: [ 
-			partial := previewAction isPartial.
-			previewAction finishCompletionOn: self moveCursor: aBoolean.
-			self resetActions ].
-		self deselectAll.
-		partial
-			ifTrue: [ 
-				self
-					updatePopupItemsAt: self position
-					autoSelect: true
-					andThen: [ 
+	self
+		ignoreTextEventsWhile:
+			[ | partial |
+			partial := false.
+			previewAction notNil
+				ifTrue:
+					[ partial := previewAction isPartial.
+					previewAction finishCompletionOn: self moveCursor: aBoolean.
+					self resetActions ].
+			partial
+				ifTrue:
+					[ self
+						updatePopupItemsAt: self position
+						autoSelect: true
+						andThen: [ self announcer announce: GtCompleterCompletionAccepted new ] ]
+				ifFalse:
+					[ self removePopup.
 					self announcer announce: GtCompleterCompletionAccepted new ] ]
-			ifFalse: [ 
-				self removePopup.
-				self announcer announce: GtCompleterCompletionAccepted new ] ]
 ]
 
 { #category : #'private - accessing' }
@@ -425,6 +445,7 @@ GtCompletionController >> newCompletionList [
 		items: #();
 		itemStencil:
 				[ (BrLabel new)
+						when: BlClickEvent do: [ :evt | self clickedLabel: evt ];
 						hMatchParent;
 						constraintsDo: [ :c | c minWidth: 150 ];
 						aptitude: BrGlamorousLabelAptitude + BrGlamorousListItemAptitude;
@@ -434,7 +455,10 @@ GtCompletionController >> newCompletionList [
 										left: 10
 										bottom: 1
 										right: 10) ];
-		itemDataBinder: [ :eachLabel :eachCompletion | eachLabel text: eachCompletion displayText ]
+		itemDataBinder:
+				[ :eachLabel :eachCompletion | 
+					eachLabel userData at: #completion put: eachCompletion.
+					eachLabel text: eachCompletion displayText ]
 ]
 
 { #category : #'private - instance creation' }
@@ -484,16 +508,11 @@ GtCompletionController >> onAttached: anElement [
 { #category : #'private - list selection' }
 GtCompletionController >> onSelectionChanged: anEvent [
 	anEvent sourceEvent
-		ifNil: [
-			self scrollToSelected.
+		ifNil:
+			[ self scrollToSelected.
 			self showPreview.
-			textElement enqueueTask: (BlTaskAction new action: [ textElement requestFocus ]). ]
-		ifNotNil: [ :aSourceEvent |
-			aSourceEvent isMouse
-				ifTrue: [
-					self showPreview.
-					self completeWithCursor: true.
-					textElement requestFocus ] ]
+			textElement enqueueTask: (BlTaskAction new action: [ textElement requestFocus ]) ]
+		ifNotNil: [ :aSourceEvent | aSourceEvent isMouse ifTrue: [ self completeFromClick ] ]
 ]
 
 { #category : #popup }
