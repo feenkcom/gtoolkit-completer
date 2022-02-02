@@ -150,27 +150,29 @@ GtCompleterControllerExamples >> remove_last_character_while_completion_is_about
 	
 	aScripter := self move_cursor_to_end.
 	
-	aScripter substep: 'Type e to start completion' do: [ :aStep |
-		aStep
-			type: 'e';
-			onSelf ].
-	
-	aScripter
-		substep: 'Wait for completion to appear'
-		do: [ :aStep | aStep wait forEmptySpaceTaskQueue ].
-		
-	aScripter substep: 'Remove last character' do: [ :aStep |
-		aStep keyClick: BlKeyboardKey backspace ].
-	
-	aScripter substep: 'Type e to start completion' do: [ :aStep |
-		aStep
-			type: 'e';
-			onSelf ].
+	aScripter type
+		label: 'Type e to start completion';
+		text: 'e';
+		onSelf;
+		play.
 
-	aScripter substep: 'Remove last character' do: [ :aStep |
-		aStep keyClick: BlKeyboardKey backspace ].
+	aScripter keyClick
+		label: 'Remove last character';
+		key: BlKeyboardKey backspace;
+		play.
+		
+	aScripter type
+		label: 'Type e to start completion';
+		text: 'e';
+		onSelf;
+		play.
+		
+	aScripter keyClick
+		label: 'Remove last character';
+		key: BlKeyboardKey backspace;
+		play.
 	
-	^ aScripter syncContinue
+	^ aScripter
 ]
 
 { #category : #'examples - scripter' }
