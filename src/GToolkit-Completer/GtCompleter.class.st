@@ -15,8 +15,8 @@ Class {
 	#instVars : [
 		'defaultStrategy',
 		'showRequested',
-		'completerCommand',
-		'completerMonitor'
+		'completerMonitor',
+		'completerPromise'
 	],
 	#category : #'GToolkit-Completer-Model'
 }
@@ -34,36 +34,29 @@ GtCompleter >> complete: aBlText at: anIndex [
 
 { #category : #completion }
 GtCompleter >> completeAsyncDo: aBlock in: aBlText at: anIndex [
-	"Compute completion actions asyncronously and evaluate a given Block when the computation is finished"	
-		
-	completerMonitor critical: [
-		| completerCommandBlock aCommand |
-		self terminateCompleterCommand.
+	"Compute completion actions asyncronously and evaluate a given Block when the computation is finished"
+	<return: #TAsyncPromise>
 
-		completerCommandBlock := [
-			| result |
-			result := [ self complete: aBlText at: anIndex ] on: Error do: [ :anError |
-				anError emit.
-						
+	^ completerMonitor critical: [
+		| aNewCommand | 
+		completerPromise ifNotNil: [ :anExistingCommand | anExistingCommand cancelSoft ].
+		completerPromise := nil.
+	
+		completerPromise := aNewCommand := [ self complete: aBlText at: anIndex ] asAsyncFuture await: (AsyncFutureExecutionConfiguration new customGroup: #Completer; lowPriority).
+		completerPromise then: [ :aResult |
+				completerMonitor critical: [ completerPromise := nil. ].
+				aBlock value: aResult ]
+			otherwise: [ :anError |
 				NonInteractiveTranscript stdout
 					nextPutAll: '[';
 					nextPutAll: anError signalerContext blocDefiningMethod printString;
 					nextPutAll: '] ';
 					print: anError;
 					cr;
-					flush.
-				anError return: GtCompletionResult empty ].
-			aBlock value: result.
-			
-			completerMonitor critical: [
-				completerCommand == aCommand
-					ifTrue: [ completerCommand := nil ] ] ].
-
-		completerCommand := aCommand := completerCommandBlock asBlTktTerminableCommand asBlTktLoggingCommand.
-		
-		BlUseAsyncFeatures 
-			ifEnabledDo: [ BlTktWorkerProvider completionPool schedule: completerCommand ]
-			otherwise: [ completerCommand execute ] ]
+					flush.	
+			completerMonitor critical: [ completerPromise := nil ].
+			aBlock value: GtCompletionResult empty ].
+		aNewCommand ]
 ]
 
 { #category : #accessing }
@@ -109,11 +102,4 @@ GtCompleter >> strategyAt: anIndex in: aBlText [
 			(eachAttribute isKindOf: GtCompletionStrategyAttribute)
 				ifTrue: [ aStrategy := eachAttribute strategy ] ].
 	^ aStrategy
-]
-
-{ #category : #accessing }
-GtCompleter >> terminateCompleterCommand [
-	completerMonitor critical: [
-		completerCommand ifNotNil: [ :aCommand | aCommand terminate ].
-		completerCommand := nil ]
 ]
