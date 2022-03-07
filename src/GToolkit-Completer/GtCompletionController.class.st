@@ -946,7 +946,7 @@ GtCompletionController >> updatePopupItemsAt: anIndex autoSelect: shouldSelectFi
 GtCompletionController >> updatePopupItemsAt: anIndex autoSelect: shouldSelectFirst andThen: aBlock [
 	| aText |
 	aText := textElement editor textSnapshot.
-	completer
+	textElement enqueueTask: (BlPromiseTask new promise: (completer
 		completeAsyncDo:
 			[ :result | 
 			completionResult := result.
@@ -957,5 +957,5 @@ GtCompletionController >> updatePopupItemsAt: anIndex autoSelect: shouldSelectFi
 							[ result showOn: self.
 							aBlock cull: result ]) ]
 		in: aText
-		at: anIndex
+		at: anIndex))
 ]
