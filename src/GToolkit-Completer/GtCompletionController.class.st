@@ -579,7 +579,7 @@ GtCompletionController >> removeAttachmentAttribute [
 { #category : #'private - popup' }
 GtCompletionController >> removePopup [
 	self cancelPreview.
-	self terminatePopupDelay.
+	self resetPopup.
 	completer showRequested: false.
 	overlay detach.
 	overlay removeFromParent.
@@ -619,6 +619,13 @@ GtCompletionController >> removeUncompletedAttributeAt: anInteger [
 GtCompletionController >> resetActions [
 	previewAction := nil.
 	drillDownActions := OrderedCollection new
+]
+
+{ #category : #'private - popup' }
+GtCompletionController >> resetPopup [
+	listElement items: #().
+	self cancelPreview.
+	completionDelay stop
 ]
 
 { #category : #'private - list selection' }
@@ -790,7 +797,7 @@ GtCompletionController >> startCompletion [
 { #category : #'private - popup' }
 GtCompletionController >> startCompletionAt: aTextIndex [
 	| aText |
-	self terminatePopupDelay.
+	self resetPopup.
 	
 	"If we have multiple cursors, don't open the completion."
 	self textEditor cursors cursorsCount = 1
@@ -824,11 +831,6 @@ GtCompletionController >> strategy: aCompletionStrategy [
 	completer defaultStrategy: aCompletionStrategy
 ]
 
-{ #category : #'private - popup' }
-GtCompletionController >> terminatePopupDelay [
-	completionDelay stop
-]
-
 { #category : #'private - accessing' }
 GtCompletionController >> text [
 	<return: #BlText>
@@ -838,7 +840,7 @@ GtCompletionController >> text [
 
 { #category : #'event handling' }
 GtCompletionController >> textDeleted: anEvent [
-	self terminatePopupDelay.
+	self resetPopup.
 	self isShowingPopup
 		ifTrue: [ self startCompletionAt: anEvent fromIndex - 1 ]
 ]
