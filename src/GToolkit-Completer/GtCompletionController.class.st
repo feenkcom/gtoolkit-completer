@@ -141,25 +141,28 @@ GtCompletionController >> activeShortcutHandler [
 
 { #category : #'private - popup' }
 GtCompletionController >> addAttachmentAttributeAt: anIndex [
-
 	| position attributes height |
-	position := self completionResult popupPosition ifNil: [ anIndex ].
-	"popupPosition may exceed the text size, see https://github.com/feenkcom/gtoolkit/issues/1227"
-	self textEditor text isEmpty ifTrue: [ 
-		height := textElement padding top + (textElement children isEmpty
-			           ifTrue: [ 18 ]
-			           ifFalse: [ textElement children first height + 2 ]).
-		overlay relocate:
-			(textElement localPointToGlobal: textElement padding left @ height).
-		^ self ].
+	position := self completionResult popupPosition ifNil: [ anIndex ].	"popupPosition may exceed the text size, see https://github.com/feenkcom/gtoolkit/issues/1227"
+	self textEditor text isEmpty
+		ifTrue:
+			[ height := textElement padding top
+				+ (textElement children isEmpty ifTrue: [ 18 ] ifFalse: [ textElement children first height + 2 ]).
+			overlay relocate: (textElement localPointToGlobal: textElement padding left @ height).
+			^ self ].
 	position := (position min: self textEditor text size) max: 1.
 	self textEditor text clearAttributes: [ :each | each == attribute ].
 	attributes := OrderedCollection with: attribute.
-	(self textEditor text from: position to: position)
-		clearAttributes: [ :each | 
+	self textEditor text
+		clearAttributes: position
+		to: position
+		if:
+			[ :each | 
 			attributes add: each.
-			true ];
+			true ].
+	self textEditor text
 		attributes: attributes
+		from: position
+		to: position
 ]
 
 { #category : #'private - accessing' }
@@ -612,7 +615,10 @@ GtCompletionController >> removeUncompletedAttributeAt: anInteger [
 	text := self text.
 	position := anInteger.
 	[ position <= text size and: [ self isUncompletedAt: position ] ] whileTrue: [ position := position + 1 ].
-	(text from: anInteger to: position - 1) clearAttributes: [ :each | each isKindOf: GtCompletionPartAttribute ]
+	text
+		clearAttributes: anInteger
+		to: position - 1
+		if: [ :each | each isKindOf: GtCompletionPartAttribute ]
 ]
 
 { #category : #private }
