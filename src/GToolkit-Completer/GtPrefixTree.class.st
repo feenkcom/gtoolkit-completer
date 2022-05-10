@@ -206,17 +206,27 @@ GtPrefixTree >> privateAdd: aString weight: aNumber startIndex: anInteger [
 
 { #category : #private }
 GtPrefixTree >> privateAddChild: aString weight: aNumber startIndex: anIndex [
-	| char node |
-	anIndex > aString size
-		ifTrue: [ ^ self weight: weight + aNumber ].
+	| char node first last |
+	anIndex > aString size ifTrue: [ ^ self weight: weight + aNumber ].
 	self ensureChildren.
 	char := aString at: anIndex.
-	children
-		do: [ :each | 
-			each prefix first = char
-				ifTrue: [ each privateAdd: aString weight: aNumber startIndex: anIndex.
-					maxWeight := maxWeight max: each maxWeight.
-					^ self ] ].
+	first := 1.
+	last := children size.
+	[ first <= last ]
+		whileTrue:
+			[ | child mid childPrefix |
+			mid := first + last bitShift: -1.
+			child := children at: mid.
+			childPrefix := child prefix first.
+			childPrefix = char
+				ifTrue:
+					[ child
+						privateAdd: aString
+						weight: aNumber
+						startIndex: anIndex.
+					maxWeight := maxWeight max: child maxWeight.
+					^ self ].
+			childPrefix < char ifTrue: [ first := mid + 1 ] ifFalse: [ last := mid - 1 ] ].
 	node := self class new.
 	node
 		prefix: (aString copyFrom: anIndex to: aString size);
