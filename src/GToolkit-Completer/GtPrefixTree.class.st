@@ -112,6 +112,15 @@ GtPrefixTree >> first: anInteger startingWith: aString [
 	^ items
 ]
 
+{ #category : #accessing }
+GtPrefixTree >> gtSpecificSizeInMemory [
+	^ self sizeInMemory + (children 
+		ifNil: [ 0 ] 
+		ifNotNil: [ 
+			children sizeInMemory + (children 
+				sum: [ :aTree | aTree gtSpecificSizeInMemory ]) ] ) 
+]
+
 { #category : #ui }
 GtPrefixTree >> gtViewChildrenFor: aView [
 	<gtView>
