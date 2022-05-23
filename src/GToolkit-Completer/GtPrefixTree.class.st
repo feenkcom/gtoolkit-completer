@@ -114,11 +114,15 @@ GtPrefixTree >> first: anInteger startingWith: aString [
 
 { #category : #accessing }
 GtPrefixTree >> gtSpecificSizeInMemory [
-	^ self sizeInMemory + (children 
-		ifNil: [ 0 ] 
-		ifNotNil: [ 
-			children sizeInMemory + (children 
-				sum: [ :aTree | aTree gtSpecificSizeInMemory ]) ] ) 
+	^ self sizeInMemory 
+		+ (prefix isSymbol 
+			ifTrue: [ 0 ] 
+			ifFalse: [ prefix sizeInMemory ] )
+		+ (children 
+			ifNil: [ 0 ] 
+			ifNotNil: [ 
+				children sizeInMemory + (children 
+					sum: [ :aTree | aTree gtSpecificSizeInMemory ]) ] ) 
 ]
 
 { #category : #ui }
