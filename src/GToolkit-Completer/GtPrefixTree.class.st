@@ -22,7 +22,16 @@ GtPrefixTree >> add: aString [
 
 { #category : #adding }
 GtPrefixTree >> add: aString weight: aNumber [
-	self privateAdd: aString weight: aNumber startIndex: 1
+	^ self
+		privateAdd: aString
+		weight: aNumber
+		startIndex: 1
+]
+
+{ #category : #enumerating }
+GtPrefixTree >> allNodesDo: aBlock [
+	aBlock value: self.
+	self childrenDo: [ :each | each allNodesDo: aBlock ]
 ]
 
 { #category : #iterating }
@@ -224,26 +233,25 @@ GtPrefixTree >> privateAddChild: aString weight: aNumber startIndex: anIndex [
 	first := 1.
 	last := children size.
 	[ first <= last ]
-		whileTrue:
-			[ | child mid childPrefix |
+		whileTrue: [ | child mid childPrefix |
 			mid := first + last bitShift: -1.
 			child := children at: mid.
 			childPrefix := child prefix first.
 			childPrefix = char
-				ifTrue:
-					[ child
-						privateAdd: aString
-						weight: aNumber
-						startIndex: anIndex.
+				ifTrue: [ node := child
+							privateAdd: aString
+							weight: aNumber
+							startIndex: anIndex.
 					maxWeight := maxWeight max: child maxWeight.
-					^ self ].
+					^ node ].
 			childPrefix < char ifTrue: [ first := mid + 1 ] ifFalse: [ last := mid - 1 ] ].
 	node := self class new.
 	node
 		prefix: (aString copyFrom: anIndex to: aString size);
 		weight: aNumber.
 	children add: node beforeIndex: first.
-	maxWeight := maxWeight max: node maxWeight
+	maxWeight := maxWeight max: node maxWeight.
+	^ node
 ]
 
 { #category : #private }
@@ -275,24 +283,27 @@ GtPrefixTree >> privateIncludes: aString startingAt: anIndex [
 
 { #category : #private }
 GtPrefixTree >> privateRemove: aString weight: aNumber startIndex: anInteger [
-	| nextIndex char child |
+	| nextIndex char child result |
 	nextIndex := anInteger + prefix size.
-	nextIndex - 1 > aString size
-		ifTrue: [ ^ self ].
-	prefix = (aString copyFrom: anInteger to: nextIndex - 1)
-		ifFalse: [ ^ self ].
+	nextIndex - 1 > aString size ifTrue: [ ^ nil ].
+	prefix = (aString copyFrom: anInteger to: nextIndex - 1) ifFalse: [ ^ nil ].
 	nextIndex > aString size
 		ifTrue: [ weight := weight - aNumber max: 0.
-			self updateMaxWeight ]
+			self updateMaxWeight.
+			^ self ]
 		ifFalse: [ char := aString at: nextIndex.
 			self
 				childrenDo: [ :each | 
 					each prefix first = char
-						ifTrue: [ each privateRemove: aString weight: aNumber startIndex: nextIndex.
+						ifTrue: [ result := each
+									privateRemove: aString
+									weight: aNumber
+									startIndex: nextIndex.
 							child := each ] ].
 			self updateMaxWeight.
 			(child notNil and: [ child maxWeight = 0 ])
-				ifTrue: [ children remove: child ] ]
+				ifTrue: [ children remove: child ].
+			^ result ]
 ]
 
 { #category : #private }
@@ -329,7 +340,7 @@ GtPrefixTree >> privateWeightedDo: aBlock withPrefix: aString [
 GtPrefixTree >> remove: aString [
 	"Unlike normal collections, we don't throw an error if we remove something that isn't in the tree."
 
-	^ self remove: aString weight: 1
+	self remove: aString weight: 1
 ]
 
 { #category : #removing }
@@ -341,8 +352,10 @@ GtPrefixTree >> remove: aString ifAbsent: aBlock [
 
 { #category : #removing }
 GtPrefixTree >> remove: aString weight: aNumber [
-	self privateRemove: aString weight: aNumber startIndex: 1.
-	^ aString
+	^ self
+		privateRemove: aString
+		weight: aNumber
+		startIndex: 1
 ]
 
 { #category : #enumerating }
