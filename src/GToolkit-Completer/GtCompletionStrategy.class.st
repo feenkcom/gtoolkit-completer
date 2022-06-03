@@ -70,11 +70,11 @@ GtCompletionStrategy >> minimumPrefixLength [
 { #category : #private }
 GtCompletionStrategy >> subsequenceIndices: subString of: completeString [
 	| i results |
+	subString size > completeString size ifTrue: [ ^ #() ].
 	results := OrderedCollection new: subString size.
 	i := 0.
 	subString
-		do:
-			[ :char | 
+		do: [ :char | 
 			i := completeString indexOf: char startingAt: i + 1.
 			i > 0 ifTrue: [ results add: i ] ifFalse: [ ^ #() ] ].
 	^ results
