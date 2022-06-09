@@ -123,15 +123,16 @@ GtPrefixTree >> first: anInteger startingWith: aString [
 
 { #category : #accessing }
 GtPrefixTree >> gtSpecificSizeInMemory [
-	^ self sizeInMemory 
-		+ (prefix isSymbol 
-			ifTrue: [ 0 ] 
-			ifFalse: [ prefix sizeInMemory ] )
-		+ (children 
-			ifNil: [ 0 ] 
-			ifNotNil: [ 
-				children sizeInMemory + (children 
-					sum: [ :aTree | aTree gtSpecificSizeInMemory ]) ] ) 
+	| strings size |
+	strings := IdentitySet new.
+	size := 0.
+	self
+		allNodesDo: [ :each | 
+			size := size + each sizeInMemory.
+			each prefix isSymbol ifFalse: [ strings add: each prefix ].
+			each children ifNotNil: [ :col | size := size + col gtSpecificSizeInMemory ] ].
+	strings do: [ :each | size := size + each sizeInMemory ].
+	^ size
 ]
 
 { #category : #ui }
