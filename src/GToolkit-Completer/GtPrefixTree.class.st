@@ -142,7 +142,7 @@ GtPrefixTree >> gtViewChildrenFor: aView [
 		title: 'Children trees' translated;
 		items: [ {self} ];
 		children: [ :each | each children ifNil: [ #() ] ];
-		column: 'Prefix' text: [ :aPrefixTree | aPrefixTree prefix ] width: 100;
+		column: 'Prefix' text: [ :aPrefixTree | aPrefixTree prefix ];
 		column: 'Tree' text: [ :aPrefixTree | aPrefixTree ]
 ]
 
