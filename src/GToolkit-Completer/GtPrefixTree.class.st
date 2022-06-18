@@ -260,7 +260,10 @@ GtPrefixTree >> privateDo: aBlock withPrefix: aString [
 	| label |
 	label := aString , prefix.
 	weight > 0
-		ifTrue: [ aBlock cull: label cull: weight ].
+		ifTrue: [ aBlock
+				cull: label
+				cull: weight
+				cull: self ].
 	self childrenDo: [ :each | each privateDo: aBlock withPrefix: label ]
 ]
 
