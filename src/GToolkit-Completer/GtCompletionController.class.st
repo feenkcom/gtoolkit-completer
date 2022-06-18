@@ -854,7 +854,7 @@ GtCompletionController >> textDeleted: anEvent [
 
 { #category : #'private - accessing' }
 GtCompletionController >> textEditor [
-	<return: #BrTextEditor>
+	<return: #BrTextEditorModel>
 
 	^ textElement editor
 ]
