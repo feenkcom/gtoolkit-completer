@@ -727,7 +727,7 @@ GtCompletionController >> showListItems: aStream [
 		itemsProvider:
 			((BrListStreamItemsProvider new)
 				preloadAmount: 10;
-				preloadDuration: 25 milliseconds;
+				preloadDuration: 25 milliSeconds;
 				stream: theActionsToDisplay).
 	self completionResult hasCompletionActions ifTrue: [ self selectFirst ] ifFalse: [ self removePopup ]
 ]
