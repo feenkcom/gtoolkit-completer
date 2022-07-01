@@ -178,6 +178,15 @@ GtPrefixTree >> maxWeight: anObject [
 	^ maxWeight := anObject
 ]
 
+{ #category : #accessing }
+GtPrefixTree >> nodeFor: aString [
+	self
+		nodeFor: aString
+		startingAt: 1
+		do: [ :node :pre | (pre , node prefix) = aString ifTrue: [ ^ node ] ].
+	^ nil
+]
+
 { #category : #private }
 GtPrefixTree >> nodeFor: aString startingAt: anIndex do: aBlock [
 	| nextIndex |
