@@ -69,6 +69,10 @@ GtPrefixTree >> collect: aBlock [
 	^ result
 ]
 
+{ #category : #private }
+GtPrefixTree >> compressData [
+]
+
 { #category : #iterating }
 GtPrefixTree >> do: aBlock [
 	self privateDo: aBlock withPrefix: ''
@@ -176,6 +180,10 @@ GtPrefixTree >> maxWeight [
 { #category : #private }
 GtPrefixTree >> maxWeight: anObject [
 	^ maxWeight := anObject
+]
+
+{ #category : #private }
+GtPrefixTree >> moveDataTo: newChild [
 ]
 
 { #category : #accessing }
@@ -398,6 +406,7 @@ GtPrefixTree >> splitAt: anInteger [
 	newChild weight: weight.
 	newChild maxWeight: maxWeight.
 	newChild prefix: (prefix copyFrom: anInteger to: prefix size).
+	self moveDataTo: newChild.
 	weight := 0.
 	children := nil.
 	self prefix: (prefix copyFrom: 1 to: anInteger - 1).
