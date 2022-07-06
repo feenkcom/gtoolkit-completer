@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'actions'
 	],
-	#category : 'GToolkit-Completer-Actions'
+	#category : #'GToolkit-Completer-Actions'
 }
 
 { #category : #comparing }
@@ -45,6 +45,15 @@ GtCompositeCompletionAction >> gtActionsFor: aView [
 		title: 'Actions';
 		object: [ self actions ];
 		view: #gtItemsFor:
+]
+
+{ #category : #printing }
+GtCompositeCompletionAction >> gtDisplayOn: aStream [
+	super printOn: aStream.
+	aStream
+		nextPut: $(;
+		nextPutAll: self label;
+		nextPut: $)
 ]
 
 { #category : #comparing }
