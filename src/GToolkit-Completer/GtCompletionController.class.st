@@ -725,7 +725,7 @@ GtCompletionController >> showListItems: aStream [
 				ifTrue: [ theActionsToDisplay := #() asAsyncStream ] ].
 	listElement
 		itemsProvider:
-			((BrListStreamItemsProvider new)
+			((BrStreamItemsProvider new)
 				preloadAmount: 10;
 				preloadDuration: 25 milliSeconds;
 				stream: theActionsToDisplay).
