@@ -131,7 +131,7 @@ GtCompletionController >> activeShortcutHandler [
 		ifTrue: [ activeShortcutHandler addShortcut:
 			(BlShortcutWithAction new
 				repeatable: false;
-				combination: BlKeyCombination return;
+				combination: BlKeyCombination enter;
 				action: [ :event |
 					event consumed: true.
 					self completeWithCursor: true ]) ].
