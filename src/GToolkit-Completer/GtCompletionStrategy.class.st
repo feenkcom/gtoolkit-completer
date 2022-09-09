@@ -68,8 +68,12 @@ GtCompletionStrategy >> labelFor: aString withWords: wordString [
 				thickness: 3;
 				underline}.
 	text := aString asRopedText glamorousCodeFont.
-	(GtPharoIndex current intervalsIn: aString matching: wordString)
-		do: [ :each | (text from: each first to: each last) attributes: attributes ].
+	(aString beginsWith: wordString caseSensitive: false)
+		ifTrue: [ (text from: 1 to: wordString size) attributes: attributes ]
+		ifFalse: [ (GtPharoIndex current intervalsIn: aString matching: wordString)
+				ifEmpty: [ (self subsequenceIndices: wordString of: aString)
+						do: [ :i | (text from: i to: i) attributes: attributes ] ]
+				ifNotEmpty: [ :col | col do: [ :each | (text from: each first to: each last) attributes: attributes ] ] ].
 	^ text
 ]
 
