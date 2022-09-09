@@ -25,6 +25,13 @@ GtCompositePrefixTree >> asyncStreamStartingWith: aString [
 ]
 
 { #category : #enumerating }
+GtCompositePrefixTree >> asyncStreamStartingWith: aString caseSensitive: aBoolean [
+	^ (trees
+		collect: [ :each | each asyncStreamStartingWith: aString caseSensitive: aBoolean ])
+		fold: [ :a :b | a merge: b ]
+]
+
+{ #category : #enumerating }
 GtCompositePrefixTree >> do: aBlock [
 	| seen |
 	seen := Set new.
