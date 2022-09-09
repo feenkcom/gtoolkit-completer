@@ -15,6 +15,32 @@ GtPrefixTreeExamples >> allSymbolsTree [
 ]
 
 { #category : #examples }
+GtPrefixTreeExamples >> caseSearching [
+	<gtExample>
+	| tree caseSensitive caseInsensitive |
+	tree := self allSymbolsTree.
+	caseSensitive := (tree asyncStreamStartingWith: #PrInTOn caseSensitive: true)
+			toArray wait asSortedCollection.
+	caseInsensitive := (tree asyncStreamStartingWith: #PrInTOn caseSensitive: false)
+			toArray wait asSortedCollection.
+	self assert: caseSensitive size < caseInsensitive size.
+	self assert: (caseSensitive includes: #PrInTOn).
+	self assert: (caseInsensitive includes: #printOn:).
+	self
+		assert: (caseInsensitive intersection: caseSensitive) size = caseSensitive size.
+	self
+		assert: caseSensitive
+				= (tree asyncWeightedStreamStartingWith: #PrInTOn caseSensitive: true) toArray
+						wait asSortedCollection.
+	self
+		assert: caseInsensitive
+				= (tree asyncWeightedStreamStartingWith: #PrInTOn caseSensitive: false) toArray
+						wait asSortedCollection.
+	^ {caseSensitive.
+		caseInsensitive}
+]
+
+{ #category : #examples }
 GtPrefixTreeExamples >> emptyTree [
 	<gtExample>
 	^ GtPrefixTree new
