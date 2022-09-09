@@ -60,6 +60,19 @@ GtCompletionStrategy >> labelFor: aString withSearch: subString [
 	^ text
 ]
 
+{ #category : #private }
+GtCompletionStrategy >> labelFor: aString withWords: wordString [
+	| text attributes |
+	attributes := {BlTextDecorationAttribute new
+				color: BrGlamorousColors textHighlightColor;
+				thickness: 3;
+				underline}.
+	text := aString asRopedText glamorousCodeFont.
+	(GtPharoIndex current intervalsIn: aString matching: wordString)
+		do: [ :each | (text from: each first to: each last) attributes: attributes ].
+	^ text
+]
+
 { #category : #accessing }
 GtCompletionStrategy >> minimumPrefixLength [
 	"Minimum length of the prefix before the completion popup appears"
