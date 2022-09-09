@@ -1,39 +1,27 @@
 Class {
 	#name : #GtWeightedPrefixTreeStream,
-	#superclass : #Object,
-	#traits : 'TAsyncStream',
-	#classTraits : 'TAsyncStream classTrait',
+	#superclass : #GtAbstractPrefixTreeStream,
 	#instVars : [
-		'root',
-		'prefix',
 		'maxHeap',
 		'nodeHeap'
 	],
 	#category : #'GToolkit-Completer-PrefixTree'
 }
 
-{ #category : #'instance creation' }
-GtWeightedPrefixTreeStream class >> tree: aPrefixTree prefix: aString [
-	^ (self new)
-		tree: aPrefixTree prefix: aString;
-		yourself
-]
-
 { #category : #private }
 GtWeightedPrefixTreeStream >> createInitialHeaps [
 	maxHeap := Heap
-		sortBlock:
-			[ :a :b | a first maxWeight > b first maxWeight or: [ a first weight = b first weight and: [ a last < b last ] ] ].
+			sortBlock: [ :a :b | 
+				a first maxWeight > b first maxWeight
+					or: [ a first weight = b first weight and: [ a last < b last ] ] ].
 	nodeHeap := Heap
-		sortBlock: [ :a :b | a first weight > b first weight or: [ a first weight = b first weight and: [ a last < b last ] ] ].
-	root
-		findNode: prefix
-		current: ''
-		do:
-			[ :node :prefixString | 
+			sortBlock: [ :a :b | 
+				a first weight > b first weight
+					or: [ a first weight = b first weight and: [ a last < b last ] ] ].
+	self
+		nodesDo: [ :node :prefixString | 
 			maxHeap
-				add:
-					{node.
+				add: {node.
 						prefixString} ]
 ]
 
@@ -63,10 +51,4 @@ GtWeightedPrefixTreeStream >> pollNext: anAsynchronousContext [
 GtWeightedPrefixTreeStream >> postSimilarCopy [
 	nodeHeap := nil.
 	maxHeap := nil
-]
-
-{ #category : #'initialize-release' }
-GtWeightedPrefixTreeStream >> tree: aPrefixTree prefix: aString [
-	root := aPrefixTree.
-	prefix := aString
 ]

@@ -1,34 +1,19 @@
 Class {
 	#name : #GtPrefixTreeStream,
-	#superclass : #Object,
-	#traits : 'TAsyncStream',
-	#classTraits : 'TAsyncStream classTrait',
+	#superclass : #GtAbstractPrefixTreeStream,
 	#instVars : [
-		'root',
-		'prefix',
 		'stack'
 	],
 	#category : #'GToolkit-Completer-PrefixTree'
 }
 
-{ #category : #'instance creation' }
-GtPrefixTreeStream class >> tree: aPrefixTree prefix: aString [
-	^ (self new)
-		tree: aPrefixTree prefix: aString;
-		yourself
-]
-
 { #category : #private }
 GtPrefixTreeStream >> createInitialStack [
 	stack := Stack new.
-	root
-		findNode: prefix
-		current: ''
-		do:
-			[ :node :prefixString | 
+	self
+		nodesDo: [ :node :prefixString | 
 			stack
-				push:
-					{node.
+				push: {node.
 						prefixString} ]
 ]
 
@@ -52,10 +37,4 @@ GtPrefixTreeStream >> pollNext: anAsynchronousContext [
 { #category : #'api - stream copy' }
 GtPrefixTreeStream >> postSimilarCopy [
 	stack := nil
-]
-
-{ #category : #'initialize-release' }
-GtPrefixTreeStream >> tree: aPrefixTree prefix: aString [
-	root := aPrefixTree.
-	prefix := aString
 ]

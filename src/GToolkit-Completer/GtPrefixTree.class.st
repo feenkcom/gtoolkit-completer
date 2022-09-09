@@ -40,8 +40,24 @@ GtPrefixTree >> asyncStreamStartingWith: aString [
 ]
 
 { #category : #iterating }
+GtPrefixTree >> asyncStreamStartingWith: aString caseSensitive: aBoolean [
+	^ GtPrefixTreeStream
+		tree: self
+		prefix: aString
+		caseSensitive: aBoolean
+]
+
+{ #category : #iterating }
 GtPrefixTree >> asyncWeightedStreamStartingWith: aString [
 	^ GtWeightedPrefixTreeStream tree: self prefix: aString
+]
+
+{ #category : #iterating }
+GtPrefixTree >> asyncWeightedStreamStartingWith: aString caseSensitive: aBoolean [
+	^ GtWeightedPrefixTreeStream
+		tree: self
+		prefix: aString
+		caseSensitive: aBoolean
 ]
 
 { #category : #private }
@@ -103,6 +119,27 @@ GtPrefixTree >> findNode: prefixString current: currentPrefix do: aBlock [
 				current: currentPrefix , prefix
 				do: aBlock ].
 	aBlock value: self value: currentPrefix
+]
+
+{ #category : #enumerating }
+GtPrefixTree >> findNodes: prefixString caseSensitive: aBoolean current: currentPrefix do: aBlock [
+	| index |
+	index := currentPrefix size + prefix size.
+	index < prefixString size
+		ifTrue: [ (children ifNil: [ #() ])
+				do: [ :each | 
+					(each prefix
+						beginsWith: (prefixString
+								copyFrom: index + 1
+								to: (each prefix size + index min: prefixString size))
+						caseSensitive: aBoolean)
+						ifTrue: [ each
+								findNodes: prefixString
+								caseSensitive: aBoolean
+								current: currentPrefix , prefix
+								do: aBlock.
+							aBoolean ifTrue: [ ^ self ] ] ] ]
+		ifFalse: [ aBlock value: self value: currentPrefix ]
 ]
 
 { #category : #accessing }
