@@ -31,8 +31,19 @@ GtCompositePrefixTree >> asyncStreamStartingWith: aString caseSensitive: aBoolea
 		fold: [ :a :b | a merge: b ]
 ]
 
+{ #category : #accessing }
+GtCompositePrefixTree >> asyncWeightedStreamStartingWith: aString [
+	^ (trees collect: [ :each | each asyncWeightedStreamStartingWith: aString ])
+		fold: [ :a :b | a merge: b ]
+]
+
 { #category : #enumerating }
 GtCompositePrefixTree >> do: aBlock [
+	self do: aBlock startingWith: ''
+]
+
+{ #category : #accessing }
+GtCompositePrefixTree >> do: aBlock startingWith: aString [
 	| seen |
 	seen := Set new.
 	trees
@@ -41,7 +52,8 @@ GtCompositePrefixTree >> do: aBlock [
 				do: [ :each | 
 					(seen includes: each)
 						ifFalse: [ seen add: each.
-							aBlock value: each ] ] ]
+							aBlock value: each ] ]
+				startingWith: aString ]
 ]
 
 { #category : #accessing }

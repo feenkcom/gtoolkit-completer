@@ -4,7 +4,7 @@ Class {
 	#category : #'GToolkit-Completer-Strategies'
 }
 
-{ #category : #accessing }
+{ #category : #completing }
 GtStreamedCompletionStrategy >> completionActionStreamFor: aText at: positionInteger [
 	| prefix |
 	prefix := self completionPrefixAt: positionInteger in: aText.
@@ -19,12 +19,12 @@ GtStreamedCompletionStrategy >> completionActionStreamFor: aText at: positionInt
 				position: positionInteger ]
 ]
 
-{ #category : #accessing }
+{ #category : #completing }
 GtStreamedCompletionStrategy >> completionActionStreamFor: aText at: positionInteger requested: aBoolean [
 	^ self completionActionStreamFor: aText at: positionInteger
 ]
 
-{ #category : #accessing }
+{ #category : #completing }
 GtStreamedCompletionStrategy >> completionResultFor: aText at: positionInteger requested: aBoolean [
 	^ GtStreamedCompletionResult
 		onStream:
@@ -34,7 +34,7 @@ GtStreamedCompletionStrategy >> completionResultFor: aText at: positionInteger r
 				requested: aBoolean)
 ]
 
-{ #category : #accessing }
+{ #category : #completing }
 GtStreamedCompletionStrategy >> completionStringStreamStartingWith: aString [
 	^ #() asAsyncStream
 ]
