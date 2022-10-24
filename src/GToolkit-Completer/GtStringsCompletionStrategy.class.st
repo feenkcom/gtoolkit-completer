@@ -13,7 +13,7 @@ GtStringsCompletionStrategy >> buildCompletions [
 	^ GtPrefixTree new
 ]
 
-{ #category : #accessing }
+{ #category : #completing }
 GtStringsCompletionStrategy >> completionStringStreamStartingWith: aString [
 	^ self completions asyncStreamStartingWith: aString
 ]

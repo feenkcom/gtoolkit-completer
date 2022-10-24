@@ -4,7 +4,7 @@ Class {
 	#category : #'GToolkit-Completer-Strategies'
 }
 
-{ #category : #accessing }
+{ #category : #private }
 GtWeightedStringsCompletionStrategy >> completionStringStreamStartingWith: aString [
 	^ self completions asyncWeightedStreamStartingWith: aString
 ]

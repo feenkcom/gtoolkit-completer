@@ -4,7 +4,7 @@ Class {
 	#category : #'GToolkit-Completer-Strategies'
 }
 
-{ #category : #accessing }
+{ #category : #completing }
 GtCompletionStrategy >> completionPrefixAt: anIndex in: blText [
 	| startIndex |
 	anIndex < self minimumPrefixLength
