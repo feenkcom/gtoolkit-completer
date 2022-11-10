@@ -26,6 +26,16 @@ GtStreamedCompletionResult >> completionActionsWithIndexDo: aBlock [
 			index := index + 1 ]
 ]
 
+{ #category : #accessing }
+GtStreamedCompletionResult >> gtLiveFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'Items';
+		priority: 10;
+		object: [ self stream ];
+		view: #gtLiveFor:
+]
+
 { #category : #testing }
 GtStreamedCompletionResult >> hasCompletionActions [
 	| localStream |
