@@ -39,5 +39,6 @@ GtCompletionAttachmentAttribute >> initialize [
 	super initialize.
 	self beAppend.
 	self beNotOverwritableByStyler.
-	self placeholderAlignment: #alignBottom
+	self placeholderAlignment: #alignBottom.
+	self shouldPropagate: false
 ]
