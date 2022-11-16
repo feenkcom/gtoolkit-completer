@@ -141,22 +141,19 @@ GtCompletionController >> activeShortcutHandler [
 
 { #category : #'private - popup' }
 GtCompletionController >> addAttachmentAttributeAt: anIndex [
-	| position attributes height |
-	position := self completionResult popupPosition ifNil: [ anIndex ].	"popupPosition may exceed the text size, see https://github.com/feenkcom/gtoolkit/issues/1227"
-	self textEditor text isEmpty
-		ifTrue:
-			[ height := textElement padding top
-				+ (textElement children isEmpty ifTrue: [ 18 ] ifFalse: [ textElement children first height + 2 ]).
-			overlay relocate: (textElement localPointToGlobal: textElement padding left @ height).
-			^ self ].
-	position := (position min: self textEditor text size) max: 1.
-	self textEditor text clearAttributes: [ :each | each == attribute ].
+	| position attributes |
+	position := self completionResult popupPosition ifNil: [ anIndex ].
+
+	position := (position min: self textEditor text size) - 1 max: 0.
+	self textEditor text
+		clearAttributes: 0
+		to: self textEditor text size
+		if: [ :each | each == attribute ].
 	attributes := OrderedCollection with: attribute.
 	self textEditor text
 		clearAttributes: position
 		to: position
-		if:
-			[ :each | 
+		if: [ :each | 
 			attributes add: each.
 			true ].
 	self textEditor text
