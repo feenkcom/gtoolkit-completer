@@ -105,6 +105,20 @@ GtPrefixTree >> ensureChildren [
 ]
 
 { #category : #enumerating }
+GtPrefixTree >> exactMatchFor: prefixString caseSensitive: aBoolean [
+	self
+		findNodes: prefixString
+		caseSensitive: aBoolean
+		current: ''
+		do: [ :node :string | 
+			node weight > 0
+				ifTrue: [ | name |
+					name := string , node prefix.
+					(name sameAs: prefixString) ifTrue: [ ^ name ] ] ].
+	^ nil
+]
+
+{ #category : #enumerating }
 GtPrefixTree >> findNode: prefixString current: currentPrefix do: aBlock [
 	| index child |
 	index := currentPrefix size + prefix size.
