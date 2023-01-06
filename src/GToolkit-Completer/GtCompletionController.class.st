@@ -677,16 +677,13 @@ GtCompletionController >> selectPreviousItem [
 
 { #category : #private }
 GtCompletionController >> selectUncompletedAt: position [
-	| first last size |
+	| first |
 	first := position - 1.
-	[ first >= 1 and: [ self isUncompletedAt: first ] ] whileTrue: [ first := first - 1 ].
-	last := position + 1.
-	size := self text size.
-	[ last <= size and: [ self isUncompletedAt: last ] ] whileTrue: [ last := last + 1 ].
-	last := last - 1.
+	[ first >= 1 and: [ self isUncompletedAt: first ] ]
+		whileTrue: [ first := first - 1 ].
 	self textEditor selecter
 		overwrite;
-		from: first to: last;
+		from: first to: first + 1;
 		withoutCursorUpdate;
 		select
 ]
