@@ -4,6 +4,14 @@ Class {
 	#category : #'GToolkit-Completer-Strategies'
 }
 
+{ #category : #accessing }
+GtCompletionStrategy class >> matchingCharacterAttributes [
+	^ {BlTextDecorationAttribute new
+			color: BrGlamorousColors textHighlightColor;
+			thickness: 3;
+			underline}
+]
+
 { #category : #completing }
 GtCompletionStrategy >> completionPrefixAt: anIndex in: blText [
 	| startIndex |
@@ -51,12 +59,10 @@ GtCompletionStrategy >> isSubsequence: subString of: completeString [
 { #category : #private }
 GtCompletionStrategy >> labelFor: aString withSearch: subString [
 	| text attributes |
-	attributes := {(BlTextDecorationAttribute new)
-			color: BrGlamorousColors textHighlightColor;
-			thickness: 3;
-			underline}.
+	attributes := self class matchingCharacterAttributes.
 	text := aString asRopedText glamorousCodeFont.
-	(self subsequenceIndices: subString of: aString) do: [ :i | (text from: i to: i) attributes: attributes ].
+	(self subsequenceIndices: subString of: aString)
+		do: [ :i | (text from: i to: i) attributes: attributes ].
 	^ text
 ]
 
