@@ -312,7 +312,7 @@ GtCompletionController >> inactiveShortcutHandler [
 			(BlShortcutWithAction new
 				repeatable: false;
 				combination:
-					(BlKeyCombination builder secondary
+					(BlKeyCombination builder control
 						key: BlKeyboardKey space;
 						build);
 				action: [ :event | 
