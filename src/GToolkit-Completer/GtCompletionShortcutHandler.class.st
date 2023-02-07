@@ -6,40 +6,40 @@ I only process shortcuts if a completion popup is opened, otherwise I ignore the
 
 "
 Class {
-	#name : #GtCompletionShortcutHander,
+	#name : #GtCompletionShortcutHandler,
 	#superclass : #BlShortcutHandlerWithShortcuts,
 	#instVars : [
 		'completionController',
 		'consumeEvent',
 		'whenActive'
 	],
-	#category : 'GToolkit-Completer-UI'
+	#category : #'GToolkit-Completer-UI'
 }
 
 { #category : #accessing }
-GtCompletionShortcutHander >> completionController [
+GtCompletionShortcutHandler >> completionController [
 	<return: #GtCompletionController>
 
 	^ completionController
 ]
 
 { #category : #accessing }
-GtCompletionShortcutHander >> completionController: aCompletionController [
+GtCompletionShortcutHandler >> completionController: aCompletionController [
 	completionController := aCompletionController
 ]
 
 { #category : #accessing }
-GtCompletionShortcutHander >> consumeEvent [
+GtCompletionShortcutHandler >> consumeEvent [
 	^ consumeEvent
 ]
 
 { #category : #accessing }
-GtCompletionShortcutHander >> consumeEvent: aBoolean [
+GtCompletionShortcutHandler >> consumeEvent: aBoolean [
 	consumeEvent := aBoolean
 ]
 
 { #category : #'api - event managing' }
-GtCompletionShortcutHander >> handleEvent: anEvent [
+GtCompletionShortcutHandler >> handleEvent: anEvent [
 	consumeEvent := true.
 	super handleEvent: anEvent.
 	consumeEvent
@@ -47,23 +47,23 @@ GtCompletionShortcutHander >> handleEvent: anEvent [
 ]
 
 { #category : #'initialize-release' }
-GtCompletionShortcutHander >> initialize [
+GtCompletionShortcutHandler >> initialize [
 	super initialize.
 	whenActive := true
 ]
 
 { #category : #'api - event managing' }
-GtCompletionShortcutHander >> wantsEvent: anEvent [
+GtCompletionShortcutHandler >> wantsEvent: anEvent [
 	^ self completionController isActive = whenActive
 		and: [ super wantsEvent: anEvent ]
 ]
 
 { #category : #'initialize-release' }
-GtCompletionShortcutHander >> whenActive [
+GtCompletionShortcutHandler >> whenActive [
 	whenActive := true
 ]
 
 { #category : #'initialize-release' }
-GtCompletionShortcutHander >> whenInactive [
+GtCompletionShortcutHandler >> whenInactive [
 	whenActive := false
 ]

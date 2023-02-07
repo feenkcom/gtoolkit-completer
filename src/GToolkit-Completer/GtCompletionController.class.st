@@ -93,7 +93,7 @@ GtCompletionController class >> popupDelay: aDuration [
 { #category : #'private - installation' }
 GtCompletionController >> activeShortcutHandler [
 	| activeShortcutHandler |
-	activeShortcutHandler := GtCompletionShortcutHander new.
+	activeShortcutHandler := GtCompletionShortcutHandler new.
 	activeShortcutHandler
 		completionController: self;
 		whenActive;
@@ -304,7 +304,7 @@ GtCompletionController >> ignoreTextEventsWhile: aBlock [
 { #category : #'private - installation' }
 GtCompletionController >> inactiveShortcutHandler [
 	| inactiveShortcutHandler |
-	inactiveShortcutHandler := GtCompletionShortcutHander new.
+	inactiveShortcutHandler := GtCompletionShortcutHandler new.
 	inactiveShortcutHandler
 		completionController: self;
 		whenInactive;
