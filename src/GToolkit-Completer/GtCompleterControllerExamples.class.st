@@ -109,8 +109,8 @@ GtCompleterControllerExamples >> move_cursor_to_end [
 	aScripter := self request_focus.
 	
 	aScripter substep: 'Move cursor' do: [ :aStep |
-		aStep keyClick: BlKeyboardKey arrowRight.
-		aStep keyClick: BlKeyboardKey arrowRight ].
+		aStep keyPress: BlKeyboardKey arrowRight.
+		aStep keyPress: BlKeyboardKey arrowRight ].
 	
 	^ aScripter syncContinue
 ]
@@ -156,7 +156,7 @@ GtCompleterControllerExamples >> remove_last_character_while_completion_is_about
 		onSelf;
 		play.
 
-	aScripter keyClick
+	aScripter keyPress
 		label: 'Remove last character';
 		key: BlKeyboardKey backspace;
 		play.
@@ -167,7 +167,7 @@ GtCompleterControllerExamples >> remove_last_character_while_completion_is_about
 		onSelf;
 		play.
 		
-	aScripter keyClick
+	aScripter keyPress
 		label: 'Remove last character';
 		key: BlKeyboardKey backspace;
 		play.
