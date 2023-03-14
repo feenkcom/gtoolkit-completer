@@ -74,6 +74,11 @@ GtCompositePrefixTree >> first: anInteger startingWith: aString [
 		ifFalse: [ results ]
 ]
 
+{ #category : #accessing }
+GtCompositePrefixTree >> includes: aString [
+	^ trees anySatisfy: [ :each | each includes: aString ]
+]
+
 { #category : #removing }
 GtCompositePrefixTree >> remove: oldObject ifAbsent: anExceptionBlock [ 
 	self error: 'Cannot remove old object'
