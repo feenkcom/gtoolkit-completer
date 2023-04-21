@@ -205,6 +205,12 @@ GtCompletionController >> cancelPreview [
 { #category : #'private - list selection' }
 GtCompletionController >> clickedLabel: event [
 	| clickedItem |
+	
+	"is sent when an item is clicked in the completion list, which means that the list must be already initialized"
+	self
+		assert: [ listElement notNil ]
+		description: [ 'List element must be initialized here' ].
+	
 	clickedItem := event currentTarget userData at: #completion ifAbsent: [  ].
 	clickedItem ifNil: [ ^ self ].
 	listElement
@@ -277,8 +283,10 @@ GtCompletionController >> cursorMoved: anEvent [
 { #category : #'private - list selection' }
 GtCompletionController >> deselectAll [
 	"Deselect all completion actions"
-
-	listElement deselectAll
+	
+	"completion list may not be initialized"
+	listElement
+		ifNotNil: [ :aListElement | aListElement deselectAll ]
 ]
 
 { #category : #private }
@@ -348,10 +356,10 @@ GtCompletionController >> initialize [
 	closeOnEmptyCompletion := false.
 	showPreviewAttributes := false.
 	showOnTextModification := true.
-
-	listElement := self newCompletionList.
+	
+	"list element is initialized lazily in #showListItems:"
+	listElement := nil.
 	overlay := self newPopupElement.
-	overlay addChild: listElement.
 
 	completionDelay := BlDelayedTaskAction new.
 	completionDelay delay: self class popupDelay.
@@ -374,6 +382,10 @@ GtCompletionController >> install [
 
 { #category : #'private - installation' }
 GtCompletionController >> installPopupHandlers [
+	
+	"we will try to install the popup handlers when we initialize the list lazily"
+	listElement
+		ifNil: [ ^ self ].
 	self popupHandlers do: [ :each | listElement addEventHandler: each ]
 ]
 
@@ -540,15 +552,18 @@ GtCompletionController >> position [
 
 { #category : #private }
 GtCompletionController >> primaryLetterKeyCombinations [
-	| letters |
-	letters := ($a asInteger to: $z asInteger)
-		collect: [ :i | 
-			BlSingleKeyCombination
-				key: (BlKeyboardKey perform: (Character value: i) asSymbol) ].
-	^ BlAlternativeCombination new
-		withAll:
-			(letters
-				collect: [ :each | BlKeyCombination builder primary build with: each ])
+	| combination |
+	
+	combination := BlKeyCombination primaryA.
+	$b asInteger to: $z asInteger do: [ :i |
+		| primaryKeyCombination |
+		primaryKeyCombination := BlKeyCombination builder
+			primary;
+			key: (BlKeyboardKey perform: (Character value: i) asSymbol);
+			build.
+		combination := combination or: primaryKeyCombination ].
+	
+	^ combination
 ]
 
 { #category : #'event handling' }
@@ -601,7 +616,7 @@ GtCompletionController >> removePopupOnAnchorRemoved [
 { #category : #'private - popup' }
 GtCompletionController >> removePopupOnLostFocus [
 	lostFocusDelay
-		action: [ (textElement hasFocus or: [ listElement hasFocus ])
+		action: [ (textElement hasFocus or: [ listElement ifNil: [ false ] ifNotNil: [ :aListElement | aListElement hasFocus ] ])
 				ifFalse: [ self removePopup ] ].
 	lostFocusDelay startOrRestart
 ]
@@ -626,7 +641,7 @@ GtCompletionController >> resetActions [
 
 { #category : #'private - popup' }
 GtCompletionController >> resetPopup [
-	listElement items: #().
+	listElement ifNotNil: [ :aListElement | aListElement items: #() ].
 	self cancelPreview.
 	completionDelay stop
 ]
@@ -634,7 +649,10 @@ GtCompletionController >> resetPopup [
 { #category : #'private - list selection' }
 GtCompletionController >> scrollTo: anIndex [
 	self flag: 'Implement corresponding list api'.
-
+	
+	self
+		assert: [ listElement notNil ]
+		description: [ 'List element must be initialized here' ].
 	listElement children first scrollToPosition: anIndex
 ]
 
@@ -655,6 +673,9 @@ GtCompletionController >> selectAction: aCompletionAction [
 GtCompletionController >> selectAt: anIndex [
 	"Select a completion action at a given index deselecting all other ones"
 
+	self
+		assert: [ listElement notNil ]
+		description: [ 'List element must be initialized here' ].
 	listElement selectOne: anIndex
 ]
 
@@ -667,11 +688,17 @@ GtCompletionController >> selectFirst [
 
 { #category : #'private - list selection' }
 GtCompletionController >> selectNextItem [
+	self
+		assert: [ listElement notNil ]
+		description: [ 'List element must be initialized here' ].
 	listElement selectNext
 ]
 
 { #category : #'private - list selection' }
 GtCompletionController >> selectPreviousItem [
+	self
+		assert: [ listElement notNil ]
+		description: [ 'List element must be initialized here' ].
 	listElement selectPrevious
 ]
 
@@ -692,6 +719,10 @@ GtCompletionController >> selectUncompletedAt: position [
 GtCompletionController >> selectedCompletionIndexDo: aBlock [
 	"Evaluate a given block with the current selection index if there is one"
 	
+	self
+		assert: [ listElement notNil ]
+		description: [ 'List element must be already initialized' ].
+	
 	listElement selectedIndices
 		ifNotEmpty: [ :theIndices | aBlock value: theIndices first ]
 ]
@@ -707,9 +738,17 @@ GtCompletionController >> selectedCompletionItemDo: aBlock [
 
 { #category : #popup }
 GtCompletionController >> showListItems: aStream [
+	"Initialize a completion list element with a given stream of completion candidates.
+	#listElement is initialized lazily in this method"
 	| theActionsToDisplay |
+	
+	listElement ifNil: [
+		listElement := self newCompletionList.
+		overlay addChild: listElement.
+		self installPopupHandlers ].
+
 	self popupElement: listElement.
-		
+
 	"action is deselected => preview is cancelled"
 	self deselectAll.
 	theActionsToDisplay := aStream.
@@ -920,6 +959,8 @@ GtCompletionController >> uninstall [
 
 { #category : #'private - installation' }
 GtCompletionController >> uninstallPopupHandlers [
+	listElement
+		ifNil: [ ^ self ].
 	self popupHandlers
 		do: [ :each | listElement removeEventHandler: each ]
 ]
