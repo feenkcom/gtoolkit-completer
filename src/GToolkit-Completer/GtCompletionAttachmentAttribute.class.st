@@ -25,7 +25,9 @@ GtCompletionAttachmentAttribute >> doAffect: aTBrTextEditorTextualPiece in: anEd
 	element := BlElement new.
 	element size: 0 @ 0.
 	element when: BlElementAddedToParentEvent do: [ :evt | controller onAttached: element ].
-	element when: BlElementRemovedFromSceneGraphEvent do: [ :evt | controller removePopupOnAnchorRemoved ].
+	
+	"Removed following line to prevent autocomplete only on every other keystroke"
+	"element when: BlElementRemovedFromSceneGraphEvent do: [ :evt | controller removePopupOnAnchorRemoved ]."
 	^ {element}
 ]
 
