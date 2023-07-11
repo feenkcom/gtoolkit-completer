@@ -177,16 +177,20 @@ GtPrefixTree >> first: anInteger startingWith: aString [
 ]
 
 { #category : #accessing }
+GtPrefixTree >> gtLocalSizeInMemory [
+	"This doesn't add the prefix string to the size as those can be shared"
+
+	| size |
+	size := self sizeInMemory.
+	children ifNotNil: [ :col | size := size + col gtSpecificSizeInMemory ].
+	^ size
+]
+
+{ #category : #accessing }
 GtPrefixTree >> gtSpecificSizeInMemory [
-	| strings size |
-	strings := IdentitySet new.
+	| size |
 	size := 0.
-	self
-		allNodesDo: [ :each | 
-			size := size + each sizeInMemory.
-			each prefix isSymbol ifFalse: [ strings add: each prefix ].
-			each children ifNotNil: [ :col | size := size + col gtSpecificSizeInMemory ] ].
-	strings do: [ :each | size := size + each sizeInMemory ].
+	self allNodesDo: [ :each | size := size + each gtLocalSizeInMemory ].
 	^ size
 ]
 
