@@ -43,7 +43,7 @@ GtCompletionShortcutHandler >> handleEvent: anEvent [
 	consumeEvent := true.
 	super handleEvent: anEvent.
 	consumeEvent
-		ifFalse: [ anEvent consumed: false ]
+		ifFalse: [ anEvent beNotConsumed ]
 ]
 
 { #category : #'initialize-release' }
