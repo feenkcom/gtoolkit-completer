@@ -15,6 +15,11 @@ GtStreamedCompletionResult class >> onStream: anAsyncStream [
 ]
 
 { #category : #accessing }
+GtStreamedCompletionResult >> asAsyncStream [
+	^ stream asyncSimilarCopy
+]
+
+{ #category : #accessing }
 GtStreamedCompletionResult >> completionActionsWithIndexDo: aBlock [
 	| index localStream item |
 	localStream := stream asyncSimilarCopy.
