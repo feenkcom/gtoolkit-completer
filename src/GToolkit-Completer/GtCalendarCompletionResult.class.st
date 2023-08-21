@@ -37,6 +37,11 @@ GtCalendarCompletionResult >> actionForDate: aDate [
 	^ insertionAction
 ]
 
+{ #category : #accessing }
+GtCalendarCompletionResult >> asAsyncStream [
+	self error: 'Calendar completion can''t be converted into a stream'
+]
+
 { #category : #initialization }
 GtCalendarCompletionResult >> date: aDate [
 	date := aDate

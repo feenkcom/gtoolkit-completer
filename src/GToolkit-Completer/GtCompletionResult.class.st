@@ -9,6 +9,13 @@ GtCompletionResult class >> empty [
 	^ self new
 ]
 
+{ #category : #accessing }
+GtCompletionResult >> asAsyncStream [
+	"Convert the completion result into a stream of items for custom display"
+
+	^ AsyncEmptyStream new
+]
+
 { #category : #testing }
 GtCompletionResult >> hasCompletionActions [
 	^ false

@@ -5,14 +5,21 @@ Class {
 }
 
 { #category : #completing }
-GtStreamedCompletionStrategy >> completionActionStreamFor: aText at: positionInteger [
+GtStreamedCompletionStrategy >> completionActionStreamFor: aText at: positionInteger requested: isRequested [
 	| prefix |
+	
 	prefix := self completionPrefixAt: positionInteger in: aText.
-	(prefix isNil or: [ prefix size < self minimumPrefixLength or: [ (self hasCompletionEntryFor: prefix) not ] ])
-		ifTrue: [ ^ #() asAsyncStream ].
+
+	isRequested
+		ifFalse: [ (prefix isNil
+				or: [ prefix size < self minimumPrefixLength
+						or: [ (self hasCompletionEntryFor: prefix) not ] ])
+				ifTrue: [ ^ #() asAsyncStream ] ].
+
+	prefix := prefix ifNil: [ '' ].
+
 	^ (self completionStringStreamStartingWith: prefix)
-		collect:
-			[ :each | 
+		collect: [ :each | 
 			GtInsertTextCompletionAction
 				labeled: (self labelFor: each withSearch: prefix)
 				completion: (each allButFirst: prefix size)
@@ -20,21 +27,18 @@ GtStreamedCompletionStrategy >> completionActionStreamFor: aText at: positionInt
 ]
 
 { #category : #completing }
-GtStreamedCompletionStrategy >> completionActionStreamFor: aText at: positionInteger requested: aBoolean [
-	^ self completionActionStreamFor: aText at: positionInteger
-]
-
-{ #category : #completing }
-GtStreamedCompletionStrategy >> completionResultFor: aText at: positionInteger requested: aBoolean [
+GtStreamedCompletionStrategy >> completionResultFor: aText at: positionInteger requested: isRequested [
 	^ GtStreamedCompletionResult
 		onStream:
 			(self
 				completionActionStreamFor: aText
 				at: positionInteger
-				requested: aBoolean)
+				requested: isRequested)
 ]
 
 { #category : #completing }
-GtStreamedCompletionStrategy >> completionStringStreamStartingWith: aString [
+GtStreamedCompletionStrategy >> completionStringStreamStartingWith: aPrefixString [
+	"Please note, that a prefix string can be empty"
+
 	^ #() asAsyncStream
 ]
