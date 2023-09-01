@@ -105,14 +105,16 @@ GtCompleterControllerExamples >> moveCursorTo: anInteger on: aCompletionControll
 GtCompleterControllerExamples >> move_cursor_to_end [
 	<gtExample>
 	| aScripter |
-	
 	aScripter := self request_focus.
-	
-	aScripter substep: 'Move cursor' do: [ :aStep |
-		aStep keyPress: BlKeyboardKey arrowRight.
-		aStep keyPress: BlKeyboardKey arrowRight ].
-	
-	^ aScripter syncContinue
+
+	aScripter
+		substep: 'Move cursor'
+		do: [ :aStep | 
+			aStep keyPress: BlKeyboardKey arrowRight.
+			aStep keyPress: BlKeyboardKey arrowRight.
+			aStep play ].
+
+	^ aScripter
 ]
 
 { #category : #private }
@@ -185,9 +187,10 @@ GtCompleterControllerExamples >> request_focus [
 	aScripter substep: 'Request focus' do: [ :aStep |
 		aStep
 			requestFocus;
-			onSelf ].
+			onSelf;
+			play ].
 	
-	^ aScripter syncContinue
+	^ aScripter
 ]
 
 { #category : #'instance creation' }
