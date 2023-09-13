@@ -918,10 +918,9 @@ GtCompletionController >> textElement: anEditorElement [
 GtCompletionController >> textElementFilters [
 	^ textElementFilters
 		ifNil: [ textElementFilters := {self activeShortcutHandler.
-			self inactiveShortcutHandler.
-			(BlEventHandler
-				on: BlBlurEvent
-				do: [ :event | self removePopupOnLostFocus ])} ]
+					self inactiveShortcutHandler.
+					BlEventHandler on: BlBlurEvent do: [ :event | self removePopupOnLostFocus ].
+					BlEventHandler on: BlClickEvent do: [ :event | self removePopup ]} ]
 ]
 
 { #category : #'event handling' }
