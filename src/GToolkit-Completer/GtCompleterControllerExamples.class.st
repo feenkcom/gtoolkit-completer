@@ -2,7 +2,8 @@ Class {
 	#name : #GtCompleterControllerExamples,
 	#superclass : #Object,
 	#instVars : [
-		'space'
+		'space',
+		'completionController'
 	],
 	#category : #'GToolkit-Completer-Examples'
 }
@@ -16,6 +17,30 @@ GtCompleterControllerExamples >> alphabetStrategy [
 	strategy := GtStringsCompletionStrategy new.
 	strategy completions: tree.
 	^ strategy
+]
+
+{ #category : #'examples - scripter' }
+GtCompleterControllerExamples >> assertPopupIn: aScripter shown: aBoolean [
+	aScripter check
+		label: 'Check completion is ' , (aBoolean ifTrue: [ 'shown' ] ifFalse: [ 'hidden' ]);
+		do: [ self assert: completionController isShowingPopup equals: aBoolean ];
+		play
+]
+
+{ #category : #'examples - scripter' }
+GtCompleterControllerExamples >> clickRemovesCompletion [
+	<gtExample>
+	| aScripter |
+	aScripter := self remove_last_character_while_completion_is_about_to_appear.
+
+	aScripter click
+		label: 'Click removes completion';
+		onSelf;
+		play.
+
+	self assertPopupIn: aScripter shown: false.
+
+	^ aScripter
 ]
 
 { #category : #completing }
@@ -119,7 +144,7 @@ GtCompleterControllerExamples >> move_cursor_to_end [
 
 { #category : #private }
 GtCompleterControllerExamples >> openOn: aString withStrategy: aCompletionStrategy [
-	| editorElement completionController |
+	| editorElement |
 	
 	editorElement := self editorElementFor: aString.
 	"editor must have focus for cursor to appear"
@@ -158,6 +183,8 @@ GtCompleterControllerExamples >> remove_last_character_while_completion_is_about
 		onSelf;
 		play.
 
+	self assertPopupIn: aScripter shown: true.
+
 	aScripter keyPress
 		label: 'Remove last character';
 		key: BlKeyboardKey backspace;
@@ -173,6 +200,8 @@ GtCompleterControllerExamples >> remove_last_character_while_completion_is_about
 		label: 'Remove last character';
 		key: BlKeyboardKey backspace;
 		play.
+
+	self assertPopupIn: aScripter shown: true.
 	
 	^ aScripter
 ]
@@ -203,15 +232,14 @@ GtCompleterControllerExamples >> scripter [
 { #category : #'instance creation' }
 GtCompleterControllerExamples >> scripterElement [
 	<gtExample>
-	| anEditor aCompletionController |
-	
+	| anEditor |
 	anEditor := BrEditor new
-		aptitude: BrGlamorousCodeEditorAptitude new + BrGlamorousTextAreaSpacingAptitude new;
-		text: 'ee'.
-	
-	aCompletionController := GtCompletionController on: anEditor strategy: self alphabetStrategy.
-	aCompletionController install.
-
+			aptitude: BrGlamorousCodeEditorAptitude new + BrGlamorousTextAreaSpacingAptitude new;
+			text: 'ee'.
+	completionController := GtCompletionController
+			on: anEditor
+			strategy: self alphabetStrategy.
+	completionController install.
 	^ anEditor
 ]
 
