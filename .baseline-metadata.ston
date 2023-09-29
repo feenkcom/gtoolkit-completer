@@ -1,1 +1,5 @@
-{	"repositories" : {		"github://feenkcom/Brick/src" : "v0.8.1039"	}}
+{
+	"repositories" : {
+		"github://feenkcom/Brick/src" : "v0.8.1040"
+	}
+}
