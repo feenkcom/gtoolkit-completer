@@ -21,10 +21,11 @@ GtCompleterControllerExamples >> alphabetStrategy [
 
 { #category : #'examples - scripter' }
 GtCompleterControllerExamples >> assertPopupIn: aScripter shown: aBoolean [
-	aScripter check
-		label: 'Check completion is ' , (aBoolean ifTrue: [ 'shown' ] ifFalse: [ 'hidden' ]);
-		do: [ self assert: completionController isShowingPopup equals: aBoolean ];
-		play
+	aScripter
+		checkStep: [ :s | 
+			s
+				label: 'Check completion is ' , (aBoolean ifTrue: [ 'shown' ] ifFalse: [ 'hidden' ]);
+				do: [ self assert: completionController isShowingPopup equals: aBoolean ] ]
 ]
 
 { #category : #'examples - scripter' }
@@ -33,10 +34,11 @@ GtCompleterControllerExamples >> clickRemovesCompletion [
 	| aScripter |
 	aScripter := self remove_last_character_while_completion_is_about_to_appear.
 
-	aScripter click
-		label: 'Click removes completion';
-		onSelf;
-		play.
+	aScripter
+		clickStep: [ :s | 
+			s
+				label: 'Click removes completion';
+				onSelf ].
 
 	self assertPopupIn: aScripter shown: false.
 
@@ -174,35 +176,38 @@ GtCompleterControllerExamples >> pauseForCompletion [
 GtCompleterControllerExamples >> remove_last_character_while_completion_is_about_to_appear [
 	<gtExample>
 	| aScripter |
-	
 	aScripter := self move_cursor_to_end.
-	
-	aScripter type
-		label: 'Type e to start completion';
-		text: 'e';
-		onSelf;
-		play.
+
+	aScripter
+		typeStep: [ :s | 
+			s
+				label: 'Type e to start completion';
+				text: 'e';
+				onSelf ].
 
 	self assertPopupIn: aScripter shown: true.
 
-	aScripter keyPress
-		label: 'Remove last character';
-		key: BlKeyboardKey backspace;
-		play.
-		
-	aScripter type
-		label: 'Type e to start completion';
-		text: 'e';
-		onSelf;
-		play.
-		
-	aScripter keyPress
-		label: 'Remove last character';
-		key: BlKeyboardKey backspace;
-		play.
+	aScripter
+		keyPressStep: [ :s | 
+			s
+				label: 'Remove last character';
+				key: BlKeyboardKey backspace ].
+
+	aScripter
+		typeStep: [ :s | 
+			s
+				label: 'Type e to start completion';
+				text: 'e';
+				onSelf ].
+
+	aScripter
+		keyPressStep: [ :s | 
+			s
+				label: 'Remove last character';
+				key: BlKeyboardKey backspace ].
 
 	self assertPopupIn: aScripter shown: true.
-	
+
 	^ aScripter
 ]
 
