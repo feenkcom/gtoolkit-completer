@@ -60,6 +60,21 @@ GtPrefixTree >> asyncWeightedStreamStartingWith: aString caseSensitive: aBoolean
 		caseSensitive: aBoolean
 ]
 
+{ #category : #accessing }
+GtPrefixTree >> cacheSizeInMemory [
+	| strings size |
+	size := 0.
+	strings := IdentitySet new.
+	
+	self allNodesDo: [ :each | 
+		each prefix isSymbol ifFalse: [ 
+			strings add: each prefix ] ].
+	size := size + self gtSpecificSizeInMemory .
+	
+	strings do: [ :each | size := size + each sizeInMemory ].
+	^ size
+]
+
 { #category : #private }
 GtPrefixTree >> children [
 	^ children
