@@ -401,7 +401,7 @@ GtPrefixTree >> privateRemove: aString weight: aNumber startIndex: anInteger [
 GtPrefixTree >> privateWeightedDo: aBlock withPrefix: aString [
 	| weighted maxWeighted |
 	weighted := Heap sortBlock: [ :a :b | a first weight > b first weight or: [ a first weight = b first weight and: [ a last < b last ] ] ].
-	maxWeighted := Heap sortBlock: [ :a :b | a first maxWeight > b first maxWeight or: [ a first weight = b first weight and: [ a last < b last ] ] ].
+	maxWeighted := Heap sortBlock: [ :a :b | a first maxWeight > b first maxWeight or: [ a first maxWeight = b first maxWeight and: [ a last < b last ] ] ].
 	self
 		nodeFor: aString
 		startingAt: 1
