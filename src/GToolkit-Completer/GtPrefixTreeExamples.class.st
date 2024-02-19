@@ -81,6 +81,20 @@ GtPrefixTreeExamples >> teamTestTree [
 		yourself
 ]
 
+{ #category : #accessing }
+GtPrefixTreeExamples >> testClassNamesWeightedOrder [
+	<gtExample>
+	| items previous |
+	items := GtPrefixTree new.
+	Smalltalk classNames do: [ :each | items add: each weight: each size ].
+	previous := SmallInteger maxVal.
+	items
+		weightedDo: [ :each :weight | 
+			self assert: previous >= weight.
+			previous := weight ].
+	^ items
+]
+
 { #category : #'test-enumerating' }
 GtPrefixTreeExamples >> testCollect [
 	<gtExample>
