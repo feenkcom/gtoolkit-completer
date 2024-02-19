@@ -791,15 +791,14 @@ GtCompletionController >> showPopupAt: anIndex [
 				self
 					assert: [ overlay isAttachedToSceneGraph not ]
 					description: [ 'Overlay must not be already visible' ].
+				
+				"it is theoretically possible that the text element disappears from the scene graph
+				while the completion is computed. in that case we shouldn't add an overlay"
+				textElement isAttachedToSceneGraph
+					ifTrue: [
+						self addAttachmentAttributeAt: anIndex.
 
-				self
-					assert: [ "otherwise how popup can be opened?" 
-						textElement isAttachedToSceneGraph ]
-					description: [ 'Text editor must be in the scene graph' ].
-
-				self addAttachmentAttributeAt: anIndex.
-
-				textElement space root addChild: overlay ] ]
+						textElement space root addChild: overlay ] ] ]
 ]
 
 { #category : #'private - preview' }
