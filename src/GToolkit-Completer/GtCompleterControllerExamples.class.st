@@ -96,27 +96,27 @@ GtCompleterControllerExamples >> editorElementFor: aString [
 ]
 
 { #category : #private }
-GtCompleterControllerExamples >> enter: anArray into: completionController [
+GtCompleterControllerExamples >> enter: anArray into: aCompletionController [
 	anArray
 		do: [ :each | 
 			each isInteger
-				ifTrue: [ self moveCursorTo: each on: completionController ].
+				ifTrue: [ self moveCursorTo: each on: aCompletionController ].
 			each isString
 				ifTrue: [ each isSymbol
-						ifTrue: [ self perform: each with: completionController ]
-						ifFalse: [ self insertString: each on: completionController ] ].
+						ifTrue: [ self perform: each with: aCompletionController ]
+						ifFalse: [ self insertString: each on: aCompletionController ] ].
 			each isCharacter
-				ifTrue: [ self insertString: (String with: each) on: completionController ].
+				ifTrue: [ self insertString: (String with: each) on: aCompletionController ].
 			each isBlock
 				ifTrue: [ self pauseForCompletion.
-					each value: completionController ] ]
+					each value: aCompletionController ] ]
 ]
 
 { #category : #private }
-GtCompleterControllerExamples >> insertString: aString on: completionController [
+GtCompleterControllerExamples >> insertString: aString on: aCompletionController [
 
 	"inserter deletes selected text by default"
-	completionController textEditor inserter
+	aCompletionController textEditor inserter
 		atCursor;
 		string: aString;
 		insert
@@ -261,26 +261,26 @@ GtCompleterControllerExamples >> scripterWithCompletion [
 ]
 
 { #category : #private }
-GtCompleterControllerExamples >> selectPreviewMatching: aString in: completionController [
+GtCompleterControllerExamples >> selectPreviewMatching: aString in: aCompletionController [
 	self pauseForCompletion.
-	completionController completionResult stream asyncSimilarCopy isNotEmpty wait
+	aCompletionController completionResult stream asyncSimilarCopy isNotEmpty wait
 		ifFalse: [ ^ self error: 'No completion actions' ].
 	100
-		timesRepeat: [ completionController
+		timesRepeat: [ aCompletionController
 				selectedCompletionItemDo: [ :aCompletionItem | 
 					(aString match: aCompletionItem label)
 						ifTrue: [ ^ self ] ].
-			completionController selectNextItem ].
+			aCompletionController selectNextItem ].
 	self error: 'Could not find completion action'
 ]
 
 { #category : #private }
-GtCompleterControllerExamples >> tabComplete: completionController [
+GtCompleterControllerExamples >> tabComplete: aCompletionController [
 	self pauseForCompletion.
-	completionController completeWithCursor: true
+	aCompletionController completeWithCursor: true
 ]
 
 { #category : #private }
-GtCompleterControllerExamples >> tabNext: completionController [
-	completionController processTabKey: true
+GtCompleterControllerExamples >> tabNext: aCompletionController [
+	aCompletionController processTabKey: true
 ]
