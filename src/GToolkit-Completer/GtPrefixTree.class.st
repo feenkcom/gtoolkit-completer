@@ -261,7 +261,7 @@ GtPrefixTree >> nodeFor: aString [
 	self
 		nodeFor: aString
 		startingAt: 1
-		do: [ :node :pre | (pre , node prefix) = aString ifTrue: [ ^ node ] ].
+		do: [ :node :pre | (pre , node prefix sameContentAs: aString) ifTrue: [ ^ node ] ].
 	^ nil
 ]
 
@@ -377,7 +377,8 @@ GtPrefixTree >> privateRemove: aString weight: aNumber startIndex: anInteger [
 	| nextIndex char child result |
 	nextIndex := anInteger + prefix size.
 	nextIndex - 1 > aString size ifTrue: [ ^ nil ].
-	prefix = (aString copyFrom: anInteger to: nextIndex - 1) ifFalse: [ ^ nil ].
+	(prefix sameContentAs: (aString copyFrom: anInteger to: nextIndex - 1))
+		ifFalse: [ ^ nil ].
 	nextIndex > aString size
 		ifTrue: [ weight := weight - aNumber max: 0.
 			self updateMaxWeight.
@@ -504,9 +505,7 @@ GtPrefixTree >> weight: aNumber [
 { #category : #accessing }
 GtPrefixTree >> weightOf: aString [
 	self
-		weightedDo: [ :each :value | 
-			each = aString
-				ifTrue: [ ^ value ] ]
+		weightedDo: [ :each :value | (each sameContentAs: aString) ifTrue: [ ^ value ] ]
 		startingWith: aString.
 	^ 0
 ]
