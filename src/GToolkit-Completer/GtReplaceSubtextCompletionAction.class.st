@@ -51,9 +51,12 @@ GtReplaceSubtextCompletionAction >> end [
 ]
 
 { #category : #accessing }
-GtReplaceSubtextCompletionAction >> end: anObject [
+GtReplaceSubtextCompletionAction >> end: aNumber [
+	self
+		assert: [ aNumber >= 0 ]
+		description: [ 'Start must not be negative' ].
 
-	end := anObject
+	end := aNumber
 ]
 
 { #category : #executing }
@@ -101,9 +104,12 @@ GtReplaceSubtextCompletionAction >> start [
 ]
 
 { #category : #accessing }
-GtReplaceSubtextCompletionAction >> start: anObject [
+GtReplaceSubtextCompletionAction >> start: aNumber [
+	self
+		assert: [ aNumber >= 0 ]
+		description: [ 'Start must not be negative' ].
 
-	start := anObject
+	start := aNumber
 ]
 
 { #category : #accessing }
