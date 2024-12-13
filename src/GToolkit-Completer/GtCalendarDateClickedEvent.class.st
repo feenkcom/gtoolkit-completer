@@ -2,7 +2,8 @@ Class {
 	#name : #GtCalendarDateClickedEvent,
 	#superclass : #BlEvent,
 	#instVars : [
-		'date'
+		'date',
+		'clickEvent'
 	],
 	#category : #'GToolkit-Completer-Calendar'
 }
@@ -12,6 +13,16 @@ GtCalendarDateClickedEvent class >> forDate: aDate [
 	^ (self new)
 		date: aDate;
 		yourself
+]
+
+{ #category : #accessing }
+GtCalendarDateClickedEvent >> clickEvent [
+	^ clickEvent
+]
+
+{ #category : #accessing }
+GtCalendarDateClickedEvent >> clickEvent: aBlClickEvent [
+	clickEvent := aBlClickEvent
 ]
 
 { #category : #accessing }
