@@ -32,7 +32,10 @@ GtCalendarElement >> buildDays [
 				padding: (BlInsets all: 1);
 				layout: BlLinearLayout horizontal alignCenter;
 				label: current dayOfMonth printString;
-				action: [ self dispatchEvent: (GtCalendarDateClickedEvent forDate: selectedDate) ].
+				action: [ self dispatchEvent: (GtCalendarDateClickedEvent forDate: selectedDate) ];
+				actionWithModifiers: [ :aButtonElement :aButtonModel :anEvent | 
+					self dispatchEvent: (GtCalendarDateClickedWithModifiersEvent 
+						forDate: selectedDate modifiers: anEvent modifiers) ].
 			date = current
 				ifTrue:
 					[ label
