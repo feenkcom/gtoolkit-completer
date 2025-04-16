@@ -77,7 +77,7 @@ GtCompleter >> initialize [
 	
 	defaultStrategy := GtStreamedCompletionStrategy new.
 	showRequested := false.
-	completerMonitor := Monitor new
+	completerMonitor := Mutex new
 ]
 
 { #category : #accessing }
