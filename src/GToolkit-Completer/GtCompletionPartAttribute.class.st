@@ -7,5 +7,6 @@ Class {
 { #category : #'initialize-release' }
 GtCompletionPartAttribute >> initialize [
 	super initialize.
-	self beNotOverwritableByStyler
+	self beNotOverwritableByStyler.
+	self shouldPropagate: false
 ]
