@@ -228,13 +228,6 @@ GtCompleterControllerExamples >> request_focus [
 ]
 
 { #category : #'instance creation' }
-GtCompleterControllerExamples >> scripter [
-	<gtExample>
-	
-	^ BlScripter new
-]
-
-{ #category : #'instance creation' }
 GtCompleterControllerExamples >> scripterElement [
 	<gtExample>
 	| anEditor |
@@ -252,9 +245,8 @@ GtCompleterControllerExamples >> scripterElement [
 GtCompleterControllerExamples >> scripterWithCompletion [
 	<gtExample>
 	| aScripter anEditor |
-	
-	aScripter := self scripter.
-	anEditor := self scripterElement.	
+	aScripter := BlScripter new.
+	anEditor := self scripterElement.
 	aScripter element: anEditor.
 
 	^ aScripter
