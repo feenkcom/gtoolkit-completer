@@ -6,5 +6,5 @@ I indicate that an entry for from the completion dialog was accepted and inserte
 Class {
 	#name : #GtCompleterCompletionAccepted,
 	#superclass : #Announcement,
-	#category : 'GToolkit-Completer-UI'
+	#category : #'GToolkit-Completer-UI'
 }

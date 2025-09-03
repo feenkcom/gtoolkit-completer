@@ -6,7 +6,7 @@ Class {
 		'position',
 		'searchStartPosition'
 	],
-	#category : 'GToolkit-Completer-Actions'
+	#category : #'GToolkit-Completer-Actions'
 }
 
 { #category : #'instance creation' }

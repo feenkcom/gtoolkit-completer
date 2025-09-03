@@ -1,7 +1,7 @@
 Class {
 	#name : #GtCompositePrefixTreeExamples,
 	#superclass : #Object,
-	#category : 'GToolkit-Completer-Examples'
+	#category : #'GToolkit-Completer-Examples'
 }
 
 { #category : #examples }

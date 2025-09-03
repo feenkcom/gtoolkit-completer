@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'newPosition'
 	],
-	#category : 'GToolkit-Completer-Actions'
+	#category : #'GToolkit-Completer-Actions'
 }
 
 { #category : #'instance creation' }

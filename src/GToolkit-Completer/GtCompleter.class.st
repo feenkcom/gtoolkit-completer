@@ -47,11 +47,25 @@ GtCompleter >> completeAsyncDo: aBlock in: aBlText at: anIndex [
 				completerMonitor critical: [ completerPromise := nil. ].
 				aBlock value: aResult ]
 			otherwise: [ :anError |
+				| errorSignalerContext |
+				(anError signalContext notNil and: [
+					(errorSignalerContext := anError signalerContext) notNil ])
+						ifTrue: [
+							NonInteractiveTranscript stdout
+								nextPutAll: '[';
+								nextPutAll: errorSignalerContext blocDefiningMethod printString;
+								nextPutAll: '] '
+							]
+						ifFalse: [
+							NonInteractiveTranscript stdout
+								nextPutAll: '[<cannot retrieve method>]'
+							].
+					
 				NonInteractiveTranscript stdout
-					nextPutAll: '[';
-					nextPutAll: anError signalerContext blocDefiningMethod printString;
-					nextPutAll: '] ';
 					print: anError;
+					nextPutAll: ' <';
+					nextPutAll: 'logged in GtCompleter>>#completeAsyncDo:in:at:';
+					nextPutAll: '>';
 					cr;
 					flush.	
 			completerMonitor critical: [ completerPromise := nil ].
