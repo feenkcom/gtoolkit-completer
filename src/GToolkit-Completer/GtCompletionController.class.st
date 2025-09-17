@@ -50,7 +50,7 @@ GtCompletionController class >> completeOnReturn: aBoolean [
 { #category : #'class initialization' }
 GtCompletionController class >> initialize [
 	PopupDelay := 200 milliSeconds.
-	CompleteOnReturn := true
+	CompleteOnReturn := false
 ]
 
 { #category : #'instance creation' }
@@ -295,6 +295,26 @@ GtCompletionController >> drillDown [
 			previewAction drillDownOn: self.
 			previewAction := nil.
 			self updatePopupItemsAt: self position autoSelect: true ]
+]
+
+{ #category : #views }
+GtCompletionController >> gtTextEditorHandlersFor: aView [
+	<gtView>
+	textEditorHandlers ifNil: [ ^ aView empty ].
+	^ aView columnedList
+		title: 'Text editor handlers';
+		items: [ textEditorHandlers ];
+		column: 'Value' text: [ :each | each gtDisplayString ]
+]
+
+{ #category : #views }
+GtCompletionController >> gtTextElementFiltersFor: aView [
+	<gtView>
+	textElementFilters ifNil: [ ^ aView empty ].
+	^ aView columnedList
+		title: 'Text element filters';
+		items: [ textElementFilters ];
+		column: 'Value' text: [ :each | each gtDisplayString ]
 ]
 
 { #category : #private }
