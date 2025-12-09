@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'action'
 	],
-	#category : 'GToolkit-Completer-Signals'
+	#category : #'GToolkit-Completer-Signals'
 }
 
 { #category : #testing }

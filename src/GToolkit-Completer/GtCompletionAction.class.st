@@ -73,6 +73,11 @@ GtCompletionAction >> isEmpty [
 ]
 
 { #category : #testing }
+GtCompletionAction >> isInsertion [
+	^ false
+]
+
+{ #category : #testing }
 GtCompletionAction >> isPartial [
 	^ partial
 ]

@@ -5,7 +5,7 @@ Class {
 		'referenceElement',
 		'overlayListener'
 	],
-	#category : 'GToolkit-Completer-UI'
+	#category : #'GToolkit-Completer-UI'
 }
 
 { #category : #'api - attaching / detaching' }

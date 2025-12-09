@@ -6,7 +6,7 @@ Class {
 		'position',
 		'searchStartPosition'
 	],
-	#category : 'GToolkit-Completer-Actions'
+	#category : #'GToolkit-Completer-Actions'
 }
 
 { #category : #'instance creation' }
@@ -81,6 +81,11 @@ GtInsertTextCompletionAction >> hash [
 { #category : #testing }
 GtInsertTextCompletionAction >> isEmpty [
 	^ text isEmpty
+]
+
+{ #category : #testing }
+GtInsertTextCompletionAction >> isInsertion [
+	^ true
 ]
 
 { #category : #executing }
