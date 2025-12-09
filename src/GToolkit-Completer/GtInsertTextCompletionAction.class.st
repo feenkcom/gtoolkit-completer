@@ -83,6 +83,11 @@ GtInsertTextCompletionAction >> isEmpty [
 	^ text isEmpty
 ]
 
+{ #category : #testing }
+GtInsertTextCompletionAction >> isInsertion [
+	^ true
+]
+
 { #category : #executing }
 GtInsertTextCompletionAction >> moveCursorOn: aCompletionController [
 	aCompletionController textEditor moveCursorTo: position + text size
