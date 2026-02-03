@@ -43,11 +43,14 @@ GtCompleter >> completeAsyncDo: aBlock in: aBlText at: anIndex [
 		completerPromise := nil.
 	
 		completerPromise := aNewCommand := [ self complete: aBlText at: anIndex ] asAsyncFuture await: (AsyncFutureExecutionConfiguration new customGroup: #Completer; lowPriority).
-		completerPromise then: [ :aResult |
+		completerPromise 
+			then: [ :aResult |
 				completerMonitor critical: [ completerPromise := nil. ].
 				aBlock value: aResult ]
 			otherwise: [ :anError |
 				| errorSignalerContext |
+				anError emit.
+				
 				(anError signalContext notNil and: [
 					(errorSignalerContext := anError signalerContext) notNil ])
 						ifTrue: [
