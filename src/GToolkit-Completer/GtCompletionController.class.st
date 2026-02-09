@@ -603,7 +603,7 @@ GtCompletionController >> processTabKey: forwardBoolean [
 
 { #category : #'private - popup' }
 GtCompletionController >> removeAttachmentAttribute [
-	self textEditor text clearAttributes: [ :each | each == attribute ]
+	textElement removeTextAttribute: attribute
 ]
 
 { #category : #'private - popup' }
