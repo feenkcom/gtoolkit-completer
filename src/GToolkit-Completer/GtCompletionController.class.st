@@ -440,6 +440,13 @@ GtCompletionController >> isAtStartOfLine [
 ]
 
 { #category : #testing }
+GtCompletionController >> isInstalled [
+	^ textElement isNotNil
+		and: [ textElementFilters isNotNil
+				and: [ textElement hasEventFilter: self textElementFilters anyOne ] ]
+]
+
+{ #category : #testing }
 GtCompletionController >> isShowingPopup [
 	"Return true if the popup is currently visible to the user (attached to the scene graph)"
 	<return: #Boolean>
