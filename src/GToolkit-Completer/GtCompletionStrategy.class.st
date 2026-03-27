@@ -1,6 +1,6 @@
 Class {
 	#name : #GtCompletionStrategy,
-	#superclass : #Object,
+	#superclass : #BrTextEditorCompletionStrategy,
 	#category : #'GToolkit-Completer-Strategies'
 }
 
