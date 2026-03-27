@@ -91,10 +91,14 @@ GtCompleter >> defaultStrategy: aGtCompletionStrategy [
 { #category : #initialization }
 GtCompleter >> initialize [
 	super initialize.
-	
-	defaultStrategy := GtStreamedCompletionStrategy new.
+	self initializeDefaultStrategy.
 	showRequested := false.
 	completerMonitor := Mutex new
+]
+
+{ #category : #initialization }
+GtCompleter >> initializeDefaultStrategy [
+	defaultStrategy := GtStreamedCompletionStrategy new
 ]
 
 { #category : #accessing }
