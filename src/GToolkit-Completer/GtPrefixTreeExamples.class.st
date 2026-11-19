@@ -24,8 +24,8 @@ GtPrefixTreeExamples >> caseSearching [
 	caseInsensitive := (tree asyncStreamStartingWith: #PrInTOn caseSensitive: false)
 			toArray wait asSortedCollection.
 	self assert: caseSensitive size < caseInsensitive size.
-	self assert: (caseSensitive includes: #PrInTOn).
-	self assert: (caseInsensitive includes: #printOn:).
+	self assert: (caseSensitive includes: 'PrInTOn').
+	self assert: (caseInsensitive includes: 'printOn:').
 	self
 		assert: (caseInsensitive intersection: caseSensitive) size = caseSensitive size.
 	self
