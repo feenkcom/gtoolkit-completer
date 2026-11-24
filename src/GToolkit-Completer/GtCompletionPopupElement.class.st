@@ -34,6 +34,7 @@ GtCompletionPopupElement >> detach [
 { #category : #initialization }
 GtCompletionPopupElement >> initialize [
 	super initialize.
+	self background: self theme default contentBackground.
 
 	self constraintsDo: [ :c | c ignoreByLayout ].
 

@@ -500,8 +500,7 @@ GtCompletionController >> newPopupElement [
 	^ GtCompletionPopupElement new
 		layout: BlLinearLayout vertical;
 		aptitude: BrShadowAptitude new;
-		background: Color white;
-		constraintsDo: [ :c |
+		constraintsDo: [ :c | 
 			c vertical fitContentLimited.
 			c horizontal fitContentLimited ]
 ]
@@ -798,29 +797,27 @@ GtCompletionController >> showOnTextModification: aBoolean [
 
 { #category : #'private - popup' }
 GtCompletionController >> showPopupAt: anIndex [
-
 	"Show the completion popup selecting the first relevant completion item"
-	textElement editor assertUIProcess.
-	
-	"if the show popup appears when editor is not in the scene graph,
+
+	textElement editor assertUIProcess.	"if the show popup appears when editor is not in the scene graph,
 	just ignore the request"
 	textElement isAttachedToSceneGraph ifFalse: [ ^ self ].
 
-	self updatePopupItemsAt: anIndex autoSelect: true andThen: [
-		(self isShowingPopup or: [ self completionResult hasCompletionActions not ])
-			ifTrue: [ completer showRequested: false ]
-			ifFalse: [ 
-				self
-					assert: [ overlay isAttachedToSceneGraph not ]
-					description: [ 'Overlay must not be already visible' ].
-				
-				"it is theoretically possible that the text element disappears from the scene graph
+	self
+		updatePopupItemsAt: anIndex
+		autoSelect: true
+		andThen: [ (self isShowingPopup
+				or: [ self completionResult hasCompletionActions not ])
+				ifTrue: [ completer showRequested: false ]
+				ifFalse: [ self
+						assert: [ overlay isAttachedToSceneGraph not ]
+						description: [ 'Overlay must not be already visible' ].	"it is theoretically possible that the text element disappears from the scene graph
 				while the completion is computed. in that case we shouldn't add an overlay"
-				textElement isAttachedToSceneGraph
-					ifTrue: [
-						self addAttachmentAttributeAt: anIndex.
+					textElement isAttachedToSceneGraph
+						ifTrue: [ overlay theme: textElement theme.
+							self addAttachmentAttributeAt: anIndex.
 
-						textElement space root addChild: overlay ] ] ]
+							textElement space root addChild: overlay ] ] ]
 ]
 
 { #category : #'private - preview' }
@@ -941,7 +938,10 @@ GtCompletionController >> textElementFilters [
 		ifNil: [ textElementFilters := {self activeShortcutHandler.
 					self inactiveShortcutHandler.
 					BlEventHandler on: BlBlurEvent do: [ :event | self removePopupOnLostFocus ].
-					BlEventHandler on: BlClickEvent do: [ :event | self removePopup ]} ]
+					BlEventHandler on: BlClickEvent do: [ :event | self removePopup ].
+					BlEventHandler
+						on: BlElementThemeChanged
+						do: [ :event | self isShowingPopup ifTrue: [ overlay theme: textElement theme ] ]} ]
 ]
 
 { #category : #'event handling' }
