@@ -20,18 +20,21 @@ GtPreviewCompletionAttribute class >> for: aString [
 GtPreviewCompletionAttribute >> affect: aTBrTextEditorTextualPiece in: anEditorElement [
 	| text attributes textElement |
 	text := string asRopedText.
-	attributes := (anEditorElement editor text attributesAt: aTBrTextEditorTextualPiece textEnd) reject: [ :each | each = self ].
+	attributes := (anEditorElement editor text
+			attributesAt: aTBrTextEditorTextualPiece textEnd)
+			reject: [ :each | each = self ].
 	text attributes: attributes.
 	textElement := (BlTextElement text: text)
-		editorMeasurement;
-		background: (BrGlamorousColors lightBorderColor alpha: 0.5);
-		yourself.
-	attributes 
-		detect: [:each | each isKindOf: BrTextParagraphLineSpacingAttribute]
+			editorMeasurement;
+			background: anEditorElement theme editor completionPreviewBackground;
+			yourself.
+	attributes
+		detect: [ :each | each isKindOf: BrTextParagraphLineSpacingAttribute ]
 		ifFound: [ :lineSpacingAttribute | 
-			textElement padding: (BlInsets 
-				top: (lineSpacingAttribute lineSpacing / 2) 
-				bottom: (lineSpacingAttribute lineSpacing / 2)) ].	
+			textElement
+				padding: (BlInsets
+						top: lineSpacingAttribute lineSpacing / 2
+						bottom: lineSpacingAttribute lineSpacing / 2) ].
 	^ textElement
 ]
 
